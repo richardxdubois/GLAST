@@ -24,11 +24,16 @@ source_name = "LSI61303"
 
 num_pickles = 10
 p_bins = np.arange(num_pickles)
+
 print(num_pickles, p_bins)
+
+super = True
+
+base_fn = "/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase"
 
 for phase_bin in np.arange(num_pickles):
 
-    p_name = "/Users/richarddubois/Code/GLAST/tmp/phase_pickles/pickle_" + str(phase_bin) + ".npy"
+    p_name = base_fn + str(phase_bin) + "/pickle_" + str(phase_bin) + ".npy"
 
     p = np.load(p_name, allow_pickle=True).flat[0]
 
@@ -63,26 +68,23 @@ for phase_bin in np.arange(num_pickles):
 
     print(norm, norm_error)
 
-norms.extend(norms)
-norms_errors.extend(norms_errors)
+fluxs.extend(fluxs)
+fluxs_errors.extend(fluxs_errors)
 q_bins = p_bins
 q_bins = np.append(q_bins, p_bins)
 r_bins = np.arange(len(q_bins))
 dict_ticker = {}
 for i in r_bins:
-    dict_ticker[str(r_bins[i])] = str(q_bins[i])
+    dict_ticker[r_bins[i]] = str(q_bins[i]/10.)
 
 q_hist = figure(title="N0", x_axis_label='Phase bin', y_axis_label='ph/MeV/cm^2/s', width=750)
-#q_hist.line(p_bins, norms, line_width=2)
-q_hist.vbar(top=norms, x=r_bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
-q_hist.circle(r_bins, norms, size=6, fill_color="white")
+q_hist.line(p_bins, norms, line_width=2)
+q_hist.circle(p_bins, norms, size=6, fill_color="white")
 upper = [x+e for x,e in zip(norms, norms_errors)]
 lower = [x-e for x,e in zip(norms, norms_errors)]
-source = ColumnDataSource(data=dict(groups=r_bins, counts=norms, upper=upper, lower=lower))
+source = ColumnDataSource(data=dict(groups=p_bins, counts=norms, upper=upper, lower=lower))
 q_hist.add_layout(Whisker(source=source, base="groups", upper="upper", lower="lower", level="overlay"))
 q_hist.y_range.start = 1.e-12
-q_hist.xaxis.ticker = r_bins
-q_hist.xaxis.major_label_overrides = dict_ticker
 
 r_hist = figure(title="Alpha", x_axis_label='Phase bin', width=750)
 r_hist.line(p_bins, alphas, line_width=2)
@@ -109,19 +111,27 @@ t_hist.line(p_bins, tss, line_width=2, color="red")
 t_hist.circle(p_bins, tss, size=6, fill_color="white")
 t_hist.y_range.start = 0
 
-u_hist = figure(title="flux", x_axis_label='Phase bin', width=750)
+u_hist = figure(title="flux", x_axis_label='Phase', width=750)
 #u_hist.line(p_bins, fluxs, line_width=2)
-u_hist.vbar(top=fluxs, x=p_bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
-u_hist.circle(p_bins, fluxs, size=6, fill_color="white")
+u_hist.vbar(top=fluxs, x=r_bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
+u_hist.circle(r_bins, fluxs, size=6, fill_color="white")
 f_upper = [x+e for x,e in zip(fluxs, fluxs_errors)]
 f_lower = [x-e for x,e in zip(fluxs, fluxs_errors)]
-f_source = ColumnDataSource(data=dict(groups=p_bins, counts=fluxs, upper=f_upper, lower=f_lower))
+f_source = ColumnDataSource(data=dict(groups=r_bins, counts=fluxs, upper=f_upper, lower=f_lower))
 u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay"))
 u_hist.y_range.start = 1.e-8
-vline_p = Span(location=2.3, dimension='height', line_color='red', line_width=2, line_dash='dashed')
-vline_a = Span(location=7.75, dimension='height', line_color='blue', line_width=2, line_dash='dashed')
-u_hist.add_layout(vline_p)
-u_hist.add_layout(vline_a)
+u_hist.xaxis.ticker = r_bins
+u_hist.xaxis.major_label_overrides = dict_ticker
+vline_p1 = Span(location=2.3, dimension='height', line_color='red', line_width=2, line_dash='dashed')
+vline_a1 = Span(location=7.75, dimension='height', line_color='blue', line_width=2, line_dash='dashed')
+
+vline_p2 = Span(location=12.3, dimension='height', line_color='red', line_width=2, line_dash='dashed')
+vline_a2 = Span(location=17.75, dimension='height', line_color='blue', line_width=2, line_dash='dashed')
+if not super:
+    u_hist.add_layout(vline_p1)
+    u_hist.add_layout(vline_a1)
+    u_hist.add_layout(vline_p2)
+    u_hist.add_layout(vline_a2)
 
 v_hist = figure(title="eflux", x_axis_label='Phase bin', width=750)
 v_hist.line(p_bins, efluxs, line_width=2)
@@ -132,9 +142,10 @@ ef_source = ColumnDataSource(data=dict(groups=p_bins, counts=efluxs, upper=ef_up
 v_hist.add_layout(Whisker(source=ef_source, base="groups", upper="upper", lower="lower", level="overlay"))
 v_hist.y_range.start = 1.e-5
 
-output_file("../../../../Home/HomeStuff/python/LS_params_2.html")
+output_file("LS_params_super.html")
 del_div = Div(text=source_name + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 l = layout(del_div, u_hist, v_hist, q_hist, r_hist, s_hist, t_hist)
+#l = layout(del_div, u_hist, v_hist)
 save(l, title="LS fit params")
 print("done")

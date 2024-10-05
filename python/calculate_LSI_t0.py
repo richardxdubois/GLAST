@@ -12,8 +12,7 @@ t0_MJD = 43366.275
 daysecs = 86400.
 orb = 26.4960 * daysecs
 
-#infile = '/Users/richarddubois/Code/GLAST/tmp/dbg/L24082417075904476C3F57_PH00.fits'
-infile = '/Users/richarddubois/Code/GLAST/tmp/dbg/ft1_0-0.fits'
+infile = '/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/ft1_fssc_gts.fits'
 h = fits.open(infile)
 h.info()
 gti_hdr = h[2]
@@ -51,7 +50,7 @@ print(num_periods, delta, t0_post_MET, check_mod)
 gti = {}
 new_gti = {}
 
-for b in np.arange(10.):
+for b in np.arange(10):
 
     gti[b] = []
     p = b/10.
@@ -75,34 +74,11 @@ for b in np.arange(10.):
     t1 = fits.Column(name='stop', array=merged_stops, format='D', unit='s')
     cols = fits.ColDefs([t0, t1])
     hdu = fits.BinTableHDU.from_columns(cols)
-    gti_hdr = hdu
-    #gti_hdr.data["START"] = merged_starts
-    #gti_hdr.data["STOP"] = merged_stops
-    h.writeto(infile, overwrite=True)
-
-    int_diffs = np.diff(gti_starts)/daysecs
-    int_lens = np.array((gti_stops - gti_starts))/daysecs
-    print(len(int_diffs), len(int_lens))
-
-    q_hist = figure(title="stop-start",
-                    x_axis_label='Time (days MET)', y_axis_label='counts',
-                    width=750)
-    counts_hist, counts_edges = np.histogram(int_lens, bins=200)
-    q_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
-                fill_alpha=0.2, bottom=0)
-
-    r_hist = figure(title="start - start",
-                    x_axis_label='Time (days MET)', y_axis_label='counts',
-                    width=750)
-    diff_hist, diff_edges = np.histogram(int_diffs, bins=200, range=(0., 0.5))
-    r_hist.vbar(top=diff_hist, x=diff_edges[1:], width=diff_edges[1]-diff_edges[0], fill_color='red',
-                fill_alpha=0.2, bottom=0)
+    h[2] = hdu
+    h[2].name = "GTI"
+    outname = "/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase" + str(b) + "/ft1_gti_updated-" + str(b) + ".fits"
+    h.writeto(outname, overwrite=True)
 
     print(len(gti[b]))
-    break
 
 print("done")
-
-output_file("../../../../Home/HomeStuff/python/test_phases.html")
-l = layout(q_hist, r_hist)
-save(l)

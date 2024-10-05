@@ -5,27 +5,29 @@ from datetime import datetime, date, timedelta
 from astropy.timeseries import LombScargle
 from scipy.signal import find_peaks
 
-from bokeh.models.widgets import Tabs, Panel, DataTable, TableColumn, Div, NumberFormatter
-from bokeh.models.formatters import DatetimeTickFormatter
-from bokeh.models import ColumnDataSource, Span, LinearAxis, Range1d, LinearColorMapper
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
+from bokeh.models.widgets import Div
 
 source = "LSI61303"
-html_name = source + "_phase.html"
+html_name = source + "_phase_orb_super.html"
 infile = OrderedDict()
 
 # Open the FITS file
 if source == "LSI61303":
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/L24082417075904476C3F57_PH00.fits'] = []
-    #infile['/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_500s.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/LSI61303_file_3_phase_1.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/LSI61303_file_0_phase_0.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/ft1_00-00.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/ft1_00-01.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/ft1_00-02.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/dbg/ft1_00-09.fits'] = []
-elif source == "LS5039":
+    infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/test/L24082417075904476C3F57_PH00.fits'] = []
+    infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase0/super_bins0/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase1/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase2/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase3/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase4/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase5/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase6/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase7/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase8/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase9/ft1_00.fits'] = []
+    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase0/ft1_gti_updated-0.fits'] = []
+if source == "LS5039":
     #infile = fits.open('/Users/richarddubois/Code/GLAST/tmp/LS5039_1_deg_500s.fits')
     infile.append('/Users/richarddubois/Code/GLAST/tmp/LS5039_3_deg_10800s.fits')
 
@@ -63,9 +65,10 @@ for f in infile:
     infile[f].append(p_hist)
 
     t_min = min(d_non_zero_times) - 30.
-    counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(t_min, t_min+300.), bins=100)
+    counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(t_min, t_min+800.), bins=100)
     p_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
+    p_hist.x_range.start = 2750.
 
     q_hist = figure(title="Time",
                     x_axis_label='Time (days MET)', y_axis_label='counts',
@@ -76,6 +79,7 @@ for f in infile:
     counts_hist, counts_edges = np.histogram(d_non_zero_times, bins=200)
     q_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
+    q_hist.x_range.start = 2750.
 
     r_hist = figure(title="Energy",
                     x_axis_label='Energy (MeV)', y_axis_label='counts', x_axis_type='log',
