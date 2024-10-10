@@ -27,9 +27,9 @@ class process_LAT_binned_exposure():
 
 # Open the FITS file
         if self.source == "LSI61303":
-            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
+            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
             #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_86400s.fits'
-            #self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
+            self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
             #fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_3_deg_mkt_10800s.fits'
 
             self.f_start = 1./28.5/86400.  # 40.
@@ -142,9 +142,9 @@ class process_LAT_binned_exposure():
 
         return r_weighted, weights
 
-    def calc_peak_error(self, frequency=None, power=None):
+    def calc_peak_error(self, frequency=None, power=None, peak_index=None):
 
-        pk_freq_idx = np.argmax(power)
+        pk_freq_idx = peak_index
         max_power = power[pk_freq_idx]
         max_freq = frequency[pk_freq_idx]
 
@@ -210,16 +210,21 @@ class process_LAT_binned_exposure():
         else:
             power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(frequency)
 
-        pk_error = self.calc_peak_error(frequency=frequency, power=power)
 
         print(max(frequency), max(power))
         print(min(frequency), min(power))
         freq_days = 1./frequency/86400.
 
         peaks_ls, props_ls = find_peaks(power, height=0.1 * max(power))
+        pk_days = (1./frequency[peaks_ls]/86400.)
+        close_idx = (np.abs(pk_days - self.nom_period)).argmin()
+        peak_idx = peaks_ls[close_idx]
+
+        pk_error = self.calc_peak_error(frequency=frequency, power=power, peak_index=peak_idx)
+
         print(peaks_ls, props_ls)
         print(frequency[peaks_ls])
-        print(1./frequency[peaks_ls]/86400.)
+        print(pk_days)
         print("peak error", pk_error)
 
         f1 = figure(title="full time span: power vs frequency",
@@ -230,7 +235,7 @@ class process_LAT_binned_exposure():
         f1.add_layout(vline_p1)
 
         timespan = self.time[-1] - self.time[0]
-        yr_bins = 2
+        yr_bins = 4
         delta = timespan / yr_bins    # ~ 1 yr
         yr_figs = []
         yr_exp = []
@@ -258,7 +263,6 @@ class process_LAT_binned_exposure():
                 yr_power = LombScargle(t=yr_times, y=yr_counts, dy=yr_weights).power(frequency)
 
             freq_days = 1. / frequency / 86400.
-            pk_error = self.calc_peak_error(frequency=frequency, power=yr_power)
 
             yr_figs.append(figure(title="time span: " + str(yr) + " " + str(tmin) + ", " + str(tmax) + " power vs frequency",
                                 x_axis_label='period (days)', y_axis_label='power',
@@ -267,6 +271,12 @@ class process_LAT_binned_exposure():
             yr_figs[yr].add_layout(vline_p1)
 
             yr_peaks_ls, yr_props_ls = find_peaks(yr_power, height=0.1 * max(yr_power))
+
+            pk_days = (1. / frequency[yr_peaks_ls] / 86400.)
+            close_idx = (np.abs(pk_days - self.nom_period)).argmin()
+            peak_idx = yr_peaks_ls[close_idx]
+            pk_error = self.calc_peak_error(frequency=frequency, power=yr_power, peak_index=peak_idx)
+
             print("yr", yr, "tmin", tmin, "tmax", tmax, "t[0]", yr_times[0], "t[1]", yr_times[-1],
                   "sum_weights", sum_weights, "num w bins", len(yr_weights), "num t bins", len(yr_counts))
             print(yr_peaks_ls, yr_props_ls)
