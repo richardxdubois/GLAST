@@ -6,7 +6,7 @@ from scipy.signal import find_peaks
 
 from bokeh.models.widgets import DataTable, TableColumn, Div, NumberFormatter
 from bokeh.models.formatters import DatetimeTickFormatter
-from bokeh.models import ColumnDataSource, Span, LinearAxis, Range1d, LinearColorMapper
+from bokeh.models import Label, Span, LinearAxis, Range1d, LinearColorMapper
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 
@@ -27,9 +27,9 @@ class process_LAT_binned_exposure():
 
 # Open the FITS file
         if self.source == "LSI61303":
-            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
+            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
             #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_86400s.fits'
-            self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
+            #self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
             #fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_3_deg_mkt_10800s.fits'
 
             self.f_start = 1./28.5/86400.  # 40.
@@ -233,6 +233,10 @@ class process_LAT_binned_exposure():
         f1.line(freq_days, power, line_width=2)
         vline_p1 = Span(location=self.nom_period, dimension='height', line_color='red', line_width=2, line_dash='dashed')
         f1.add_layout(vline_p1)
+        res_label = Label(x=25, y=props_ls["peak_heights"][close_idx]/2., text_font_size="8pt",
+                          text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
+                               str('{0:.3f}'.format(pk_error) + " days"))
+        f1.add_layout(res_label)
 
         timespan = self.time[-1] - self.time[0]
         yr_bins = 4
@@ -277,11 +281,16 @@ class process_LAT_binned_exposure():
             peak_idx = yr_peaks_ls[close_idx]
             pk_error = self.calc_peak_error(frequency=frequency, power=yr_power, peak_index=peak_idx)
 
+            res_label = Label(x=25, y=yr_props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
+                              text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
+                                   str('{0:.3f}'.format(pk_error) + " days"))
+            yr_figs[yr].add_layout(res_label)
+
             print("yr", yr, "tmin", tmin, "tmax", tmax, "t[0]", yr_times[0], "t[1]", yr_times[-1],
                   "sum_weights", sum_weights, "num w bins", len(yr_weights), "num t bins", len(yr_counts))
             print(yr_peaks_ls, yr_props_ls)
             print(frequency[yr_peaks_ls])
-            print(1. / frequency[yr_peaks_ls] / 86400.)
+            print(pk_days)
             print("peak error", pk_error)
 
             orb_power = 0.
