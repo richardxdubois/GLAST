@@ -210,7 +210,7 @@ class process_LAT_binned_exposure():
         else:
             power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(frequency)
 
-        pk_error = 1./(86400. *self.calc_peak_error(frequency=frequency, power=power))
+        pk_error = self.calc_peak_error(frequency=frequency, power=power)
 
         print(max(frequency), max(power))
         print(min(frequency), min(power))
