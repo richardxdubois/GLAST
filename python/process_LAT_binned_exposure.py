@@ -245,6 +245,7 @@ class process_LAT_binned_exposure():
         yr_exp = []
         yr_c = []
         yr_orb_power = []
+        yr_peak = []
 
         for yr in range(yr_bins):
             tmin = self.time[0] + yr * delta
@@ -280,6 +281,7 @@ class process_LAT_binned_exposure():
             close_idx = (np.abs(pk_days - self.nom_period)).argmin()
             peak_idx = yr_peaks_ls[close_idx]
             pk_error = self.calc_peak_error(frequency=frequency, power=yr_power, peak_index=peak_idx)
+            yr_peak.append(pk_days[close_idx])
 
             res_label = Label(x=25, y=yr_props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
                               text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
@@ -319,11 +321,21 @@ class process_LAT_binned_exposure():
             yr_exp[yr].vbar(top=exp_hist, x=exp_edges[1:], width=exp_edges[1] - exp_edges[0], fill_color='red', fill_alpha=0.2,
                         bottom=0)
 
-        f2 = figure(title="orb period power vs time bin",
+        f2 = figure(title="orb results vs time bin",
                                 x_axis_label='time bin', y_axis_label='power',
                                 width=750)
-        f2.line(np.arange(yr_bins), yr_orb_power, line_width=2)
+        f2.line(np.arange(yr_bins), yr_orb_power, line_width=2, legend_label="Power (left)")
+
         f2.scatter(np.arange(yr_bins), yr_orb_power, size=6, fill_color="white")
+        f2.y_range = Range1d(0.8*min(yr_orb_power), 1.2*max(yr_orb_power))
+        f2.extra_y_ranges = {"y2": Range1d(start=0.99*min(yr_peak), end=1.01*max(yr_peak))}
+        f2.add_layout(LinearAxis(y_range_name="y2"), 'right')
+        f2.line(np.arange(yr_bins), yr_peak, line_width=2, color="blue", legend_label="Period (right)",
+                y_range_name="y2")
+        f2.scatter(np.arange(yr_bins), yr_peak, size=6, color="white", y_range_name="y2")
+        # Set autoranging for both axes
+        #f2.y_range.start = None  # Autorange left axis
+        #f2.extra_y_ranges["right_axis"].start = None  # Autorange right axis
 
         del_div = Div(text=self.source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " for " + self.fn)
 
