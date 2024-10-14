@@ -20,7 +20,7 @@ fluxs_errors = []
 efluxs = []
 efluxs_errors = []
 
-source_name = "LSI61303"
+source_name = "LS5039"
 
 num_pickles = 10
 p_bins = np.arange(num_pickles)
@@ -29,7 +29,7 @@ print(num_pickles, p_bins)
 
 super = True
 
-base_fn = "/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase"
+base_fn = "/sdf/home/r/richard/fermi-user/LS5039/periods/phased/phase"
 
 for phase_bin in np.arange(num_pickles):
 
@@ -37,7 +37,7 @@ for phase_bin in np.arange(num_pickles):
 
     p = np.load(p_name, allow_pickle=True).flat[0]
 
-    LSI = p["sources"]['4FGL J0240.5+6113']
+    LSI = p["sources"]['4FGL J1826.2-1450']
     p_values = LSI["param_values"]
     p_errors = LSI["param_errors"]
     norm = p_values[0]
@@ -142,10 +142,10 @@ ef_source = ColumnDataSource(data=dict(groups=p_bins, counts=efluxs, upper=ef_up
 v_hist.add_layout(Whisker(source=ef_source, base="groups", upper="upper", lower="lower", level="overlay"))
 v_hist.y_range.start = 1.e-5
 
-output_file("LS_params_super.html")
+output_file(source_name + "_params.html")
 del_div = Div(text=source_name + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 l = layout(del_div, u_hist, v_hist, q_hist, r_hist, s_hist, t_hist)
 #l = layout(del_div, u_hist, v_hist)
-save(l, title="LS fit params")
+save(l, title=source_name + " fit params")
 print("done")

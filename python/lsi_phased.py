@@ -24,10 +24,10 @@ gta.free_sources(distance=3.0,pars='norm')
 # Free all parameters of isotropic and galactic diffuse components
 gta.free_source('galdiff')
 gta.free_source('isodiff')
-gta.free_source('4FGL J0240.5+6113')
+gta.free_source('4FGL J1826.2-1450')
 
 fit_results = gta.fit()
 print('Fit Quality: ',fit_results['fit_quality'])
-print(gta.roi['4FGL J0240.5+6113'])
+print(gta.roi['4FGL J1826.2-1450'])
 
 gta.write_roi(args.output,make_plots=True)
