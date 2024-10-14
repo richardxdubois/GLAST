@@ -1,5 +1,9 @@
 from astropy.io import fits
 import numpy as np
+
+import yaml
+import argparse
+
 from datetime import datetime, date, timedelta
 from astropy.timeseries import LombScargle
 from scipy.signal import find_peaks
@@ -12,41 +16,50 @@ from bokeh.layouts import row, layout, column
 
 
 class process_LAT_binned_exposure():
-    def __init__(self, source=None, suppress_zero=True, do_weights=True):
+    def __init__(self, input_yaml=None, source=None, suppress_zero=True, do_weights=True):
 
-        self.source = source
-        self.html_name = source + "_periodicity.html"
-        self.fn = ""
+        with open(input_yaml, "r") as f:
+            data = yaml.safe_load(f)
+
+        self.source = data["source"]
+        self.html_name = data["html"]
+        self.fn = data["input_file"]
+        self.suppress_zero = data["suppress_zero"]
+        self.do_weights = data["do_weights"]
+
+        self.f_start = 1./data["f_start"]/86400.
+        self.f_stop = 1./data["f_stop"]/86400.
+        self.nom_period = data["nom_period"]
+        self.power_threshold = data["power_threshold"]   # 0.4
+
         self.hdul = None
         self.time = None
         self.counts = None
         self.timedel = None
         self.exposure = None
-        self.suppress_zero = suppress_zero
-        self.do_weights = do_weights
+
 
 # Open the FITS file
-        if self.source == "LSI61303":
+        #if self.source == "LSI61303":
             #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
             #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_0-2.fits'
-            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_3-9.fits'
+            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_3-9.fits'
             #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_86400s.fits'
             #self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
             #fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_3_deg_mkt_10800s.fits'
 
-            self.f_start = 1./28.5/86400.  # 40.
-            self.f_stop = 1./24.5/86400.   # 5.
-            self.nom_period = 26.496
+            #self.f_start = 1./28.5/86400.  # 40.
+            #self.f_stop = 1./24.5/86400.   # 5.
+            #elf.nom_period = 26.496
 
-        elif self.source == "LS5039":
-            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_1deg_mkt_500s.fits'
+        #elif self.source == "LS5039":
+            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_1deg_mkt_500s.fits'
             #seld.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_3_deg_10800s.fits'
-            self.f_start = 1./5./86400.
-            self.f_stop = 1./3./86400.
-            self.nom_period = 3.9
+            #self.f_start = 1./4.2/86400.
+            #self.f_stop = 1./3.7/86400.
+            #self.nom_period = 3.905
 
         self.nom_freq = 1/self.nom_period/86400.
-        self.power_threshold = 0.4
 
     def get_data(self):
         # Print information about the FITS file
@@ -363,8 +376,14 @@ class process_LAT_binned_exposure():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
 
-    p = process_LAT_binned_exposure("LS5039")
+    parser.add_argument('--app_config',
+                        default="process_exposure_config.yaml",
+                        help="overall app config file")
+    args = parser.parse_args()
+
+    p = process_LAT_binned_exposure(input_yaml=args.app_config)
 
     p.get_data()
     p.make_plots()
