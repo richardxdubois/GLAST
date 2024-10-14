@@ -1,11 +1,24 @@
 import numpy as np
 from datetime import datetime
+import yaml
+import argparse
 
 from bokeh.models.widgets import Div, NumberFormatter
 from bokeh.models.formatters import DatetimeTickFormatter
 from bokeh.models import ColumnDataSource, Span, LinearAxis, Range1d, LinearColorMapper, Whisker
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--app_config',
+                    default="/Users/richarddubois/Code/GLAST/tmp/dbg/fetch_fpy_config.yaml",
+                    help="overall app config file")
+args = parser.parse_args()
+
+
+with open(args.app_config, "r") as f:
+    data = yaml.safe_load(f)
 
 norms = []
 norms_errors = []
@@ -20,16 +33,17 @@ fluxs_errors = []
 efluxs = []
 efluxs_errors = []
 
-source_name = "LS5039"
+source_name = data["source"]
 
-num_pickles = 10
+num_pickles = data["num_pickles"]
 p_bins = np.arange(num_pickles)
 
 print(num_pickles, p_bins)
 
-super = True
+#super = True
+super = data["super"]
 
-base_fn = "/sdf/home/r/richard/fermi-user/LS5039/periods/phased/phase"
+base_fn = data["base_fn"]
 
 for phase_bin in np.arange(num_pickles):
 
@@ -37,7 +51,8 @@ for phase_bin in np.arange(num_pickles):
 
     p = np.load(p_name, allow_pickle=True).flat[0]
 
-    LSI = p["sources"]['4FGL J1826.2-1450']
+    LSI = p["sources"][data["4FGL_source"]]
+
     p_values = LSI["param_values"]
     p_errors = LSI["param_errors"]
     norm = p_values[0]
@@ -122,11 +137,14 @@ u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="
 u_hist.y_range.start = 1.e-8
 u_hist.xaxis.ticker = r_bins
 u_hist.xaxis.major_label_overrides = dict_ticker
-vline_p1 = Span(location=2.3, dimension='height', line_color='red', line_width=2, line_dash='dashed')
-vline_a1 = Span(location=7.75, dimension='height', line_color='blue', line_width=2, line_dash='dashed')
+vline_p1 = Span(location=data["periastron"], dimension='height', line_color='red', line_width=2, line_dash='dashed')
+vline_a1 = Span(location=data["apastron"], dimension='height', line_color='blue', line_width=2, line_dash='dashed')
 
-vline_p2 = Span(location=12.3, dimension='height', line_color='red', line_width=2, line_dash='dashed')
-vline_a2 = Span(location=17.75, dimension='height', line_color='blue', line_width=2, line_dash='dashed')
+vline_p2 = Span(location=data["periastron"]+num_pickles, dimension='height', line_color='red', line_width=2,
+                line_dash='dashed')
+vline_a2 = Span(location=data["apastron"]+num_pickles, dimension='height', line_color='blue', line_width=2,
+                line_dash='dashed')
+
 if not super:
     u_hist.add_layout(vline_p1)
     u_hist.add_layout(vline_a1)
@@ -142,7 +160,7 @@ ef_source = ColumnDataSource(data=dict(groups=p_bins, counts=efluxs, upper=ef_up
 v_hist.add_layout(Whisker(source=ef_source, base="groups", upper="upper", lower="lower", level="overlay"))
 v_hist.y_range.start = 1.e-5
 
-output_file(source_name + "_params.html")
+output_file(data["html"])
 del_div = Div(text=source_name + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 l = layout(del_div, u_hist, v_hist, q_hist, r_hist, s_hist, t_hist)
