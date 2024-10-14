@@ -64,6 +64,7 @@ class prepare_gti():
 
         t0_post_MET = np.float128(delta_08 - mod_t0)
         self.t0_MET = t0_post_MET
+        print("t0_post_MET", t0_post_MET)
 
         return t0_post_MET
 
