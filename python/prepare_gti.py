@@ -52,7 +52,7 @@ class prepare_gti():
             self.t0_MET = self.t_min
             return self.t_min
 
-        date_t0_MJD = datetime.strptime("1977-08-11 06:36:00.000", "%Y-%m-%d %H:%M:%S.%f")
+        date_t0_MJD = datetime.strptime(self.t0_MJD, "%Y-%m-%d %H:%M:%S.%f")
 
         start_MET = datetime.strptime("2001-01-01 00:00:00.000", "%Y-%m-%d %H:%M:%S.%f")
         aug_2008 = datetime.strptime("2008-08-15 00:00:00.000", "%Y-%m-%d %H:%M:%S.%f")
