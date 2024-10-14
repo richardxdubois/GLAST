@@ -6,7 +6,7 @@ from scipy.signal import find_peaks
 
 from bokeh.models.widgets import DataTable, TableColumn, Div, NumberFormatter
 from bokeh.models.formatters import DatetimeTickFormatter
-from bokeh.models import Label, Span, LinearAxis, Range1d, LinearColorMapper
+from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 
@@ -27,7 +27,9 @@ class process_LAT_binned_exposure():
 
 # Open the FITS file
         if self.source == "LSI61303":
-            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
+            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
+            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_0-2.fits'
+            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_3-9.fits'
             #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_86400s.fits'
             #self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
             #fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_3_deg_mkt_10800s.fits'
@@ -37,13 +39,14 @@ class process_LAT_binned_exposure():
             self.nom_period = 26.496
 
         elif self.source == "LS5039":
-            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_1_deg_500s.fits'
+            self.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_1deg_mkt_500s.fits'
             #seld.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_3_deg_10800s.fits'
-            self.f_start = 1./10./86400.
-            self.f_stop = 1./2./86400.
+            self.f_start = 1./5./86400.
+            self.f_stop = 1./3./86400.
             self.nom_period = 3.9
 
         self.nom_freq = 1/self.nom_period/86400.
+        self.power_threshold = 0.4
 
     def get_data(self):
         # Print information about the FITS file
@@ -62,9 +65,16 @@ class process_LAT_binned_exposure():
         self.timedel = data.TIMEDEL
 
         if self.suppress_zero:
+            self.exposure = data.EXPOSURE[indices]
             self.time = data.TIME[indices] #+ self.timedel[0]/2.
             self.exposure = data.EXPOSURE[indices]
             self.counts = data.COUNTS[indices]
+
+            indices_exp = np.where(self.exposure != 0)
+
+            self.time = self.time[indices_exp] #+ self.timedel[0]/2.
+            self.exposure = self.exposure[indices_exp]
+            self.counts = self.counts[indices_exp]
         else:
             self.time = data.TIME + self.timedel[0]/2.
             self.exposure = data.EXPOSURE
@@ -115,13 +125,16 @@ class process_LAT_binned_exposure():
         if timeslice is None:
             cnts = self.counts
             exp = self.exposure
+            t = self.time
         else:
             cnts = self.counts[timeslice]
             exp = self.exposure[timeslice]
+            t = self.time[timeslice]
 
         mean_rate = np.sum(cnts) / np.sum(exp)
 
         for i, e in enumerate(exp):
+
             pop_counts = mean_rate * e
             perr = np.sqrt(pop_counts)
 
@@ -139,6 +152,7 @@ class process_LAT_binned_exposure():
 
         r_weighted = np.array(r_weighted)
         weights = np.array(weights)
+
 
         return r_weighted, weights
 
@@ -233,7 +247,7 @@ class process_LAT_binned_exposure():
         f1.line(freq_days, power, line_width=2)
         vline_p1 = Span(location=self.nom_period, dimension='height', line_color='red', line_width=2, line_dash='dashed')
         f1.add_layout(vline_p1)
-        res_label = Label(x=25, y=props_ls["peak_heights"][close_idx]/2., text_font_size="8pt",
+        res_label = Label(x=min(freq_days), y=props_ls["peak_heights"][close_idx]/2., text_font_size="8pt",
                           text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
                                str('{0:.3f}'.format(pk_error) + " days"))
         f1.add_layout(res_label)
@@ -246,6 +260,7 @@ class process_LAT_binned_exposure():
         yr_c = []
         yr_orb_power = []
         yr_peak = []
+        yr_peak_error = []
 
         for yr in range(yr_bins):
             tmin = self.time[0] + yr * delta
@@ -275,15 +290,16 @@ class process_LAT_binned_exposure():
             yr_figs[yr].line(freq_days, yr_power, line_width=2)
             yr_figs[yr].add_layout(vline_p1)
 
-            yr_peaks_ls, yr_props_ls = find_peaks(yr_power, height=0.1 * max(yr_power))
+            yr_peaks_ls, yr_props_ls = find_peaks(yr_power, height=self.power_threshold * max(yr_power))
 
             pk_days = (1. / frequency[yr_peaks_ls] / 86400.)
             close_idx = (np.abs(pk_days - self.nom_period)).argmin()
             peak_idx = yr_peaks_ls[close_idx]
             pk_error = self.calc_peak_error(frequency=frequency, power=yr_power, peak_index=peak_idx)
             yr_peak.append(pk_days[close_idx])
+            yr_peak_error.append(pk_error)
 
-            res_label = Label(x=25, y=yr_props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
+            res_label = Label(x=min(freq_days), y=yr_props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
                               text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
                                    str('{0:.3f}'.format(pk_error) + " days"))
             yr_figs[yr].add_layout(res_label)
@@ -328,14 +344,16 @@ class process_LAT_binned_exposure():
 
         f2.scatter(np.arange(yr_bins), yr_orb_power, size=6, fill_color="white")
         f2.y_range = Range1d(0.8*min(yr_orb_power), 1.2*max(yr_orb_power))
-        f2.extra_y_ranges = {"y2": Range1d(start=0.99*min(yr_peak), end=1.01*max(yr_peak))}
+        f2.extra_y_ranges = {"y2": Range1d(start=0.96*min(yr_peak), end=1.04*max(yr_peak))}
         f2.add_layout(LinearAxis(y_range_name="y2"), 'right')
         f2.line(np.arange(yr_bins), yr_peak, line_width=2, color="blue", legend_label="Period (right)",
                 y_range_name="y2")
-        f2.scatter(np.arange(yr_bins), yr_peak, size=6, color="white", y_range_name="y2")
-        # Set autoranging for both axes
-        #f2.y_range.start = None  # Autorange left axis
-        #f2.extra_y_ranges["right_axis"].start = None  # Autorange right axis
+        f2.scatter(np.arange(yr_bins), yr_peak, size=6, fill_color="white", y_range_name="y2")
+        f_upper = [x + e for x, e in zip(yr_peak, yr_peak_error)]
+        f_lower = [x - e for x, e in zip(yr_peak, yr_peak_error)]
+        f_source = ColumnDataSource(data=dict(groups=np.arange(yr_bins), counts=yr_peak, upper=f_upper, lower=f_lower))
+        f2.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay",
+                      y_range_name="y2"))
 
         del_div = Div(text=self.source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " for " + self.fn)
 
@@ -346,10 +364,9 @@ class process_LAT_binned_exposure():
 
 if __name__ == "__main__":
 
-    p = process_LAT_binned_exposure("LSI61303")
+    p = process_LAT_binned_exposure("LS5039")
 
     p.get_data()
-    r_weighted, weights = p.Robin_exp_weight()
     p.make_plots()
 
 # Close the FITS file
