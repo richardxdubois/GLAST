@@ -137,12 +137,14 @@ u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="
 u_hist.y_range.start = 1.e-8
 u_hist.xaxis.ticker = r_bins
 u_hist.xaxis.major_label_overrides = dict_ticker
-vline_p1 = Span(location=data["periastron"], dimension='height', line_color='red', line_width=2, line_dash='dashed')
-vline_a1 = Span(location=data["apastron"], dimension='height', line_color='blue', line_width=2, line_dash='dashed')
-
-vline_p2 = Span(location=data["periastron"]+num_pickles, dimension='height', line_color='red', line_width=2,
+vline_p1 = Span(location=data["periastron"]*num_pickles, dimension='height', line_color='red', line_width=2,
                 line_dash='dashed')
-vline_a2 = Span(location=data["apastron"]+num_pickles, dimension='height', line_color='blue', line_width=2,
+vline_a1 = Span(location=data["apastron"]*num_pickles, dimension='height', line_color='blue', line_width=2,
+                line_dash='dashed')
+
+vline_p2 = Span(location=(1.+data["periastron"])*num_pickles, dimension='height', line_color='red', line_width=2,
+                line_dash='dashed')
+vline_a2 = Span(location=(1.+data["apastron"])*num_pickles, dimension='height', line_color='blue', line_width=2,
                 line_dash='dashed')
 
 if not super:
