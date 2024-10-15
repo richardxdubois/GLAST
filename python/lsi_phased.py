@@ -32,6 +32,7 @@ fit_results = gta.fit()
 print('Fit Quality: ', fit_results['fit_quality'])
 print(gta.roi[args.source])
 
-sed = gta.sed(args.source)
+sed = gta.sed(args.source, make_plots=True)
+print(sed["eflux"])
 
 gta.write_roi(args.output, make_plots=True)
