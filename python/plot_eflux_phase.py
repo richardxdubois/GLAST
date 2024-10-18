@@ -37,7 +37,7 @@ seds = []
 
 for phase_bin in np.arange(num_pickles):
 
-    infile = base_fn + str(phase_bin) + "/" + fgl_source + "_sed.npy"
+    infile = base_fn + str(phase_bin) + "/pickle_" + str(phase_bin) + "_" + fgl_source + "_sed.npy"
 
     p = np.load(infile, allow_pickle=True).flat[0]
 
