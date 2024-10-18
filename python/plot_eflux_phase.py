@@ -38,7 +38,7 @@ seds = []
 
 for phase_bin in np.arange(num_pickles):
 
-    if sed_prefix[phase_bin] == "":
+    if sed_prefix == "":
         infile = base_fn + str(phase_bin) + "/" + fgl_source + "_sed.npy"
     else:
         infile = base_fn + str(phase_bin) + "/" + sed_prefix + str(phase_bin) + "_" + fgl_source + "_sed.npy"
