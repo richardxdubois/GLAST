@@ -32,12 +32,13 @@ page_title = data["page_title"]
 print(num_pickles, p_bins)
 
 base_fn = data["base_fn"]
+sed_prefix = data["sed_prefix"]
 
 seds = []
 
 for phase_bin in np.arange(num_pickles):
 
-    infile = base_fn + str(phase_bin) + "/pickle_" + str(phase_bin) + "_" + fgl_source + "_sed.npy"
+    infile = base_fn + str(phase_bin) + sed_prefix + str(phase_bin) + "_" + fgl_source + "_sed.npy"
 
     p = np.load(infile, allow_pickle=True).flat[0]
 
