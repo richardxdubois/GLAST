@@ -18,7 +18,7 @@ print("Entering lsi_phased.py using", args.config)
 gta = GTAnalysis(args.config, logging={'verbosity': 3})
 
 print(args.overwrite)
-gta.setup(overwrite=False)
+gta.setup(overwrite=args.overwrite)
 
 # Free Normalization of all Sources within 3 deg of ROI center
 gta.free_sources(distance=3.0, pars='norm')
