@@ -2,20 +2,36 @@ from astropy.io import fits
 from collections import OrderedDict
 import numpy as np
 from datetime import datetime, date, timedelta
-from astropy.timeseries import LombScargle
-from scipy.signal import find_peaks
+import yaml
+import argparse
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 from bokeh.models.widgets import Div
 
-source = "LSI61303"
-html_name = source + "_phase_orb_super.html"
-infile = OrderedDict()
+parser = argparse.ArgumentParser(description='plot SEDs')
 
+parser.add_argument('--app_config',
+                    default="/Users/richarddubois/Code/GLAST/tmp/test_phase_config.yaml",
+                    help="overall app config file")
+
+args = parser.parse_args()
+
+with open(args.app_config, "r") as f:
+    data = yaml.safe_load(f)
+
+
+source = data["source"]
+html_name = data["html"]
+html_title = data["html_title"]
+
+infile = OrderedDict(data["file_dict"])
+
+"""
 # Open the FITS file
 if source == "LSI61303":
     infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/test/L24082417075904476C3F57_PH00.fits'] = []
+    infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase0/super_bins0/ft1_00.fits'] = []
     infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase0/super_bins0/ft1_00.fits'] = []
     #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase1/ft1_00.fits'] = []
     #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase2/ft1_00.fits'] = []
@@ -29,8 +45,10 @@ if source == "LSI61303":
     #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase0/ft1_gti_updated-0.fits'] = []
 if source == "LS5039":
     #infile = fits.open('/Users/richarddubois/Code/GLAST/tmp/LS5039_1_deg_500s.fits')
-    infile.append('/Users/richarddubois/Code/GLAST/tmp/LS5039_3_deg_10800s.fits')
-
+    #infile['/Users/richarddubois/Code/GLAST/tmp/LS5039_J1826_merged_phase-save.fits'] = []
+    #infile['/Users/richarddubois/Code/GLAST/tmp/J1826_ft1_00.fits'] = []
+    infile['/Users/richarddubois/Code/GLAST/tmp/LS5039_ft1_00.fits'] = []
+"""
 
 for f in infile:
 
@@ -49,6 +67,7 @@ for f in infile:
     print(h[1].columns)
     print(gti.columns)
     header = primary_hdu.header
+    print(header)
     data = h[1].data
 
     d_non_zero_times = data.TIME / 86400.
@@ -64,8 +83,8 @@ for f in infile:
                     width=750)
     infile[f].append(p_hist)
 
-    t_min = min(d_non_zero_times) - 30.
-    counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(t_min, t_min+800.), bins=100)
+    t_min = min(d_non_zero_times) - 10.
+    counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(t_min, t_min+80.), bins=100)
     p_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
     p_hist.x_range.start = 2750.
@@ -87,9 +106,8 @@ for f in infile:
     infile[f].append(r_hist)
 
     #counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(2780, 3580), bins=1000)
-    e_hist, e_edges = np.histogram(energy, bins=100)
-    r_hist.vbar(top=e_hist, x=e_edges[1:], width=e_edges[1]-e_edges[0], fill_color='red',
-                fill_alpha=0.2, bottom=0)
+    e_hist, e_edges = np.histogram(energy, bins=200, range=(0, 50000.))
+    r_hist.line(y=e_hist, x=e_edges[1:], color='red')
 
     s_hist = figure(title="RA",
                     x_axis_label='RA (deg)', y_axis_label='counts',
@@ -126,4 +144,4 @@ for f in infile:
 
 output_file(html_name)
 l = layout(children=infile.values())
-save(l, title=source + " Phase selected times")
+save(l, title=html_title)
