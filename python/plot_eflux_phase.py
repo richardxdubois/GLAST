@@ -70,5 +70,5 @@ for phase_bin in np.arange(num_pickles):
 del_div = Div(text=source_name + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 output_file(html)
-l = layout(column(seds))
+l = layout(del_div, column(seds))
 save(l, title=page_title)
