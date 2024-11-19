@@ -100,7 +100,7 @@ class prepare_super_orbital():
         batch_out = os.path.join(sub_dir, "fpy_slurm.txt")
         rc = self.prepare_file(template_file_path=batch_in, tgt_file_path=batch_out, bin=bin)
 
-        if self.update_configs_only:
+        if self.update_configs_only is False:
             input_file = os.path.join(dir, self.input_file + ".fits")
             tgt_file = os.path.join(sub_dir, "ft1_gti_updated-" + bin + ".fits")
             rc = self.prepare_fits_file(input_file=input_file, tgt_file=tgt_file, bin=bin)
