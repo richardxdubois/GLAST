@@ -5,18 +5,10 @@ import yaml
 from datetime import datetime
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
-from bokeh.layouts import row, layout, column
+from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource
 from bokeh.models.widgets import Div
 
-# Command line arguments
-parser = argparse.ArgumentParser(description='plot SEDs')
-
-parser.add_argument('--app_config',
-                    default="/Users/richarddubois/Code/GLAST/tmp/dbg/plot_eflux_config.yaml",
-                    help="overall app config file")
-
-args = parser.parse_args()
 
 class plot_eflux_phase():
 
@@ -33,6 +25,8 @@ class plot_eflux_phase():
         self.p_bins = np.arange(self.num_pickles)
         self.html = data["html"]
         self.page_title = data["page_title"]
+        self.fig_height = data["fig_height"]
+        self.fig_width = data["fig_width"]
 
         self.base_fn = data["base_fn"]
         self.sed_prefix = data["sed_prefix"]
@@ -45,6 +39,9 @@ class plot_eflux_phase():
         self.b_lower = None
         self.b_upper = None
 
+        self.type_1 = None
+        self.type_2 = None
+
         self.num_pickles_2 = 0
         self.base_fn_2 = None
         self.p_bins_2 = []
@@ -52,6 +49,8 @@ class plot_eflux_phase():
             self.num_pickles_2 = data["num_pickles_2"]
             self.base_fn_2 = data["base_fn_2"]
             self.p_bins_2 = np.arange(self.num_pickles_2)
+            self.type_1 = data["type_1"]
+            self.type_2 = data["type_2"]
         except KeyError:
             pass
 
@@ -68,7 +67,7 @@ class plot_eflux_phase():
                               str(phase_bin) + "_" + self.fgl_source + "_sed.npy"
                 else:
                     infile = (self.base_fn + str(phase_bin) + "/" + self.base_fn_2 +
-                        str(phase_bin_2) + self.sed_prefix + str(phase_bin_2) + "_" +
+                              str(phase_bin_2) + "/" + self.sed_prefix + str(phase_bin_2) + "_" +
                               self.fgl_source + "_sed.npy")
 
                 p = np.load(infile, allow_pickle=True).flat[0]
@@ -88,13 +87,13 @@ class plot_eflux_phase():
         source = ColumnDataSource(data=dict(x=self.loge_ctr, y=self.eflux, upper=self.b_upper,
                                             lower=self.b_lower))
 
-        title = "Phase bin " + str(phase_bin1)
+        title = self.type_1 + " Phase bin " + str(phase_bin1)
         if phase_bin2 is not None:
-            title += " , Phase bin 2 " + str(phase_bin2)
+            title += " " + self.type_2 + " Phase bin " + str(phase_bin2)
         title += " : E^2 dN/dE vs Energy"
 
         # Log-log plot
-        p_fig = figure(x_axis_type="log", y_axis_type="log",
+        p_fig = figure(x_axis_type="log", y_axis_type="log", height=self.fig_height, width=self.fig_width,
                        title=title, x_axis_label='E (MeV)',
                        y_axis_label='E^2 dN/dE', tooltips=[('Eflux', '@y'), ('Energy', '@x')], x_range=(100, 100000),
                        y_range=(5e-7, 5.e-4))
@@ -112,5 +111,26 @@ class plot_eflux_phase():
                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
         output_file(self.html)
-        l = layout(del_div, column(self.seds))
+
+        # Prepare Bokeh figures for grid layout
+        plots = []
+        for i in self.p_bins:
+            plots.append(self.seds[i])
+        grid = gridplot(plots)
+
+        l = layout(del_div, grid)
         save(l, title=self.page_title)
+
+if __name__ == "__main__":
+    # Command line arguments
+    parser = argparse.ArgumentParser(description='plot SEDs')
+
+    parser.add_argument('--app_config',
+                        default="/Users/richarddubois/Code/GLAST/tmp/dbg/plot_eflux_config.yaml",
+                        help="overall app config file")
+
+    args = parser.parse_args()
+
+    p = plot_eflux_phase(args.app_config)
+    rc = p.loop_over_bins()
+    rc = p.output_plot()
