@@ -88,6 +88,7 @@ class plot_eflux_phase():
 
         source = ColumnDataSource(data=dict(x=self.loge_ctr, y=self.eflux, upper=self.b_upper,
                                             lower=self.b_lower))
+        initial_guesses = [1e-4, 1.5, 1e3, 0, 1e3]
 
         title = self.type_1 + " Phase bin " + str(phase_bin1)
         if phase_bin2 is not None:
@@ -116,13 +117,16 @@ class plot_eflux_phase():
                 E.append(E_i)
 
         print("Processing super bin ", phase_bin1, "orb bin ", phase_bin2)
-        initial_guesses = [1e-4, 1.5, 1e3, 0, 1e3]
-        params, covariance = fit_SED(E, flux, errors, initial_guesses)
 
-        # Generate data for the fit line
-        E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
-        flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
-        p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
+        try:
+            params, covariance = fit_SED(E, flux, errors, initial_guesses)
+
+            # Generate data for the fit line
+            E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
+            flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
+            p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
+        except RuntimeError:
+            pass
 
         self.seds[phase_bin1].append(p_fig)
 
