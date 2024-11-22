@@ -115,6 +115,7 @@ class plot_eflux_phase():
                 errors.append(self.eflux_err_hi[i])
                 E.append(E_i)
 
+        print("Processing super bin ", phase_bin1, "orb bin ", phase_bin2)
         initial_guesses = [1e-4, 1.5, 1e3, 0, 1e3]
         params, covariance = fit_SED(E, flux, errors, initial_guesses)
 
