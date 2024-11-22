@@ -4,6 +4,8 @@ import argparse
 import yaml
 from datetime import datetime
 
+from fit_SED import SED_function, fit_SED
+
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource
@@ -98,10 +100,28 @@ class plot_eflux_phase():
                        y_axis_label='E^2 dN/dE', tooltips=[('Eflux', '@y'), ('Energy', '@x')], x_range=(100, 100000),
                        y_range=(5e-7, 5.e-4))
 
-        p_fig.line(source=source, x="x", y="y", legend_label="E^2 dN/dE", line_width=2)
+        #p_fig.line(source=source, x="x", y="y", legend_label="E^2 dN/dE", line_width=2)
         p_fig.scatter(self.loge_ctr, self.eflux, size=8, fill_color="white")
         p_fig.add_layout(Whisker(source=source, base="x", upper="upper",
                                  lower="lower", level="overlay"))
+
+        flux = []
+        errors = []
+        E = []
+
+        for i, E_i in enumerate(self.loge_ctr):
+            if E_i <= 10000.:
+                flux.append(self.eflux[i])
+                errors.append(self.eflux_err_hi[i])
+                E.append(E_i)
+
+        initial_guesses = [1e-4, 1.5, 1e3, 0, 1e3]
+        params, covariance = fit_SED(E, flux, errors, initial_guesses)
+
+        # Generate data for the fit line
+        E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
+        flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
+        p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
 
         self.seds[phase_bin1].append(p_fig)
 
