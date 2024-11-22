@@ -47,6 +47,8 @@ class plot_eflux_phase():
         self.num_pickles_2 = 0
         self.base_fn_2 = None
         self.p_bins_2 = []
+        self.failed_fits = 0
+
         try:
             self.num_pickles_2 = data["num_pickles_2"]
             self.base_fn_2 = data["base_fn_2"]
@@ -127,6 +129,7 @@ class plot_eflux_phase():
             p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
         except RuntimeError:
             print("fit failed")
+            self.failed_fits += 1
             pass
 
         self.seds[phase_bin1].append(p_fig)
@@ -159,4 +162,6 @@ if __name__ == "__main__":
 
     p = plot_eflux_phase(args.app_config)
     rc = p.loop_over_bins()
+    print("# failed fits", p.failed_fits)
+
     rc = p.output_plot()
