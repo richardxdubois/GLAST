@@ -2,8 +2,8 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 
-def SED_function(E, A, alpha, E_cut, beta, E_0):
-    return E*E*A * (E / E_0)**(-alpha) * np.exp(-E / E_cut) + beta
+def SED_function(E, A, alpha, E_cut, E_0):
+    return E*E*A * (E / E_0)**(-alpha) * np.exp(-E / E_cut)
 
 
 def fit_SED(E, flux, errors, initial_guesses):
