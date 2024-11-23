@@ -124,15 +124,14 @@ class plot_eflux_phase():
 
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
+            # Generate data for the fit line
+            E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
+            flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
+            p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
         except RuntimeError:
             print("fit failed")
             self.failed_fits += 1
-            params, covariance = fit_SED(E, flux, errors, self.backup_guesses)
-
-        # Generate data for the fit line
-        E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
-        flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
-        p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
+            pass
 
         self.seds[phase_bin1].append(p_fig)
 
