@@ -125,6 +125,7 @@ class plot_eflux_phase():
         E = np.array(E_ii, dtype=np.float64)
 
         print("Processing super bin ", phase_bin1, "orb bin ", phase_bin2)
+        print(flux)
 
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
