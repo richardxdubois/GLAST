@@ -110,15 +110,19 @@ class plot_eflux_phase():
         p_fig.add_layout(Whisker(source=source, base="x", upper="upper",
                                  lower="lower", level="overlay"))
 
-        flux = []
-        errors = []
-        E = []
+        flux_i = []
+        errors_i = []
+        E_ii = []
 
         for i, E_i in enumerate(self.loge_ctr):
             if E_i <= 10000.:
-                flux.append(self.eflux[i])
-                errors.append(self.eflux_err_hi[i])
-                E.append(E_i)
+                flux_i.append(self.eflux[i])
+                errors_i.append(self.eflux_err_hi[i])
+                E_ii.append(E_i)
+
+        flux = np.array(flux_i, dtype=np.float64)
+        errors = np.array(errors_i, dtype=np.float64)
+        E = np.array(E_ii, dtype=np.float64)
 
         print("Processing super bin ", phase_bin1, "orb bin ", phase_bin2)
 
