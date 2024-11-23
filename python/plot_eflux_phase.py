@@ -48,8 +48,8 @@ class plot_eflux_phase():
         self.base_fn_2 = None
         self.p_bins_2 = []
         self.failed_fits = 0
-        self.initial_guesses = [1e-4, 2., 1e3, 0, 1e3]
-        self.backup_guesses = [1e-4, -0.5, 1e3, 0, 1e3]
+        self.initial_guesses = [1e-4, 2., 1e3, 1e3]
+        self.backup_guesses = [1e-4, -0.5, 1e3, 1e3]
 
         try:
             self.num_pickles_2 = data["num_pickles_2"]
