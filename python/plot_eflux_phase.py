@@ -76,6 +76,7 @@ class plot_eflux_phase():
                               str(phase_bin_2) + "/" + self.sed_prefix + str(phase_bin_2) + "_" +
                               self.fgl_source + "_sed.npy")
 
+                print("working on ",infile)
                 p = np.load(infile, allow_pickle=True).flat[0]
 
                 self.eflux = p["e2dnde"]
