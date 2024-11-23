@@ -21,7 +21,7 @@ def fit_SED(E, flux, errors, initial_guesses):
         flux,
         p0=initial_guesses,
         sigma=errors,
-        absolute_sigma=True
+        absolute_sigma=True, method="trf"
     )
 
 
