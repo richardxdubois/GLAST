@@ -48,6 +48,8 @@ class plot_eflux_phase():
         self.base_fn_2 = None
         self.p_bins_2 = []
         self.failed_fits = 0
+        self.initial_guesses = [1e-4, 1.5, 1e3, 0, 1e3]
+        self.backup_guesses = [1e-4, -0.5, 1e3, 0, 1e3]
 
         try:
             self.num_pickles_2 = data["num_pickles_2"]
@@ -90,7 +92,6 @@ class plot_eflux_phase():
 
         source = ColumnDataSource(data=dict(x=self.loge_ctr, y=self.eflux, upper=self.b_upper,
                                             lower=self.b_lower))
-        initial_guesses = [1e-4, 1.5, 1e3, 0, 1e3]
 
         title = self.type_1 + " Phase bin " + str(phase_bin1)
         if phase_bin2 is not None:
@@ -121,16 +122,16 @@ class plot_eflux_phase():
         print("Processing super bin ", phase_bin1, "orb bin ", phase_bin2)
 
         try:
-            params, covariance = fit_SED(E, flux, errors, initial_guesses)
-
-            # Generate data for the fit line
-            E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
-            flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
-            p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
+            params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
         except RuntimeError:
             print("fit failed")
             self.failed_fits += 1
-            pass
+            params, covariance = fit_SED(E, flux, errors, self.backup_guesses)
+
+        # Generate data for the fit line
+        E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
+        flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
+        p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
 
         self.seds[phase_bin1].append(p_fig)
 
