@@ -20,6 +20,6 @@ def fit_SED(E, flux, errors, initial_guesses):
 
 
     # Extract fitted parameters
-    A, alpha, E_cut, beta, E_0 = params
+    A, alpha, E_cut, E_0 = params
 
     return params, covariance
