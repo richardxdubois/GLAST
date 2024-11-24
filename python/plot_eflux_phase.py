@@ -270,7 +270,7 @@ class plot_eflux_phase():
                         E_cut[i] = -1.
                     } else {
                         A[i] = A_orig;
-                        alpha[i] = alpha_orig;
+                        alpha[i] = 50.;
                         E_cut[i] = E_cut_orig;
                     }
                 }
