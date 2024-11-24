@@ -9,7 +9,7 @@ from fit_SED import SED_function, fit_SED
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs,
-                          TabPanel, RangeSlider, CustomJS)
+                          TabPanel, RangeSlider, CustomJS, Button)
 from bokeh.models.widgets import Div
 from bokeh.palettes import Plasma256 as palette
 from bokeh.transform import linear_cmap
@@ -249,9 +249,6 @@ class plot_eflux_phase():
             const A = data['A'];
             const alpha = data['alpha'];
             const E_cut = data['E_cut'];
-            const A_orig = data['A'];
-            const alpha_orig = data['alpha'];
-            const E_cut_orig = data['E_cut'];
             
             const lowerLimit_A = slider1.value[0];
             const upperLimit_A = slider1.value[1];
@@ -275,6 +272,18 @@ class plot_eflux_phase():
             }
             source.change.emit();
         """)
+        # Create a button to execute the custom JavaScript callback
+        button = Button(label="Save Original Data", button_type="success")
+
+        # CustomJS callback to save the original data in JavaScript
+        button.js_on_load(CustomJS(args=dict(source=source), code="""
+            // Save the original data in a JavaScript variable
+            const original_data = {
+                A_orig: source.data['A'].slice(),
+                alpha_orig: source.data['alpha'].slice()
+                E_cut_orig: source.data['E_cut'].slice()
+            };
+        """))
 
         # Attach the callback to the sliders
         slider_A.js_on_change('value', callback)
