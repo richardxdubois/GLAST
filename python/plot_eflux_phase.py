@@ -262,9 +262,9 @@ class plot_eflux_phase():
                 
                 if (A[i] < lowerLimit_A || A[i] > upperLimit_A || alpha[i] < lowerLimit_alpha || alpha[i] > upperLimit_alpha 
                 || E_cut[i] < lowerLimit_E_cut || E_cut[i] > upperLimit_E_cut) {
-                    A[i] = -1.;
-                    alpha[i] = -1.;
-                    E_cut[i] = -1.;
+                    A[i] = 100000.;
+                    alpha[i] = 100000.;
+                    E_cut[i] = 100000.;
                 } else {
                     console.log('about to restore data')
                     source.data["A"][i] = original_data.A_orig[i];
