@@ -249,12 +249,11 @@ class plot_eflux_phase():
             const A = data['A'];
             const alpha = data['alpha'];
             const E_cut = data['E_cut'];
-            const colors = data['colors'];
             
             const lowerLimit_A = slider1.value[0];
             const upperLimit_A = slider1.value[1];
             const lowerLimit_alpha = slider2.value[0];
-            const upperLimit_alpha = slider2.value[1);
+            const upperLimit_alpha = slider2.value[1];
             const lowerLimit_E_cut = slider3.value[0];
             const upperLimit_E_cut = slider3.value[1];
 
