@@ -8,7 +8,8 @@ from fit_SED import SED_function, fit_SED
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
-from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs, TabPanel
+from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs,
+                          TabPanel, RangeSlider, CustomJS)
 from bokeh.models.widgets import Div
 from bokeh.palettes import Plasma256 as palette
 from bokeh.transform import linear_cmap
@@ -230,7 +231,48 @@ class plot_eflux_phase():
 
             heatmap_figs.append(p)
 
-        h_layout = column(del_div, column(heatmap_figs))
+        # create sliders
+        steps = (high - low)/20.
+
+        slider_A = RangeSlider(start=low[0], end=high[0], value=(low[0], high[0]), step=steps[0], title="A")
+        slider_alpha = RangeSlider(start=low[1], end=high[0], value=(low[1], high[1]), step=steps[1], title="alpha")
+
+        slider_E_cut = RangeSlider(start=low[2], end=high[2], value=(low[2], high[2]), step=steps[2], title="E_cut")
+
+        # CustomJS callback to update rectangle colors based on slider values
+        callback = CustomJS(
+            args=dict(source=source, slider1=slider_A, slider2=slider_alpha,
+                      slider3=slider_E_cut), code="""
+            const data = source.data;
+            const y = data['y'];
+            const colors = data['colors'];
+            const lowerLimit_A = slider1.value(0);
+            const upperLimit_A = slider1.value(1);
+            const lowerLimit_alpha = slider1.value(0);
+            const upperLimit_alpha = slider1.value(1);
+            const lowerLimit_E_cut = slider1.value(0);
+            const upperLimit_E_cut = slider1.value(1);
+
+            for (let i = 0; i < y.length; i++) {
+                color_orig = colors[i];
+                if (y[i] < lowerLimit_A || y[i] > upperLimit_A || y[i] < lowerLimit_alpha || y[i] > upperLimit_alpha 
+                || y[i] < lowerLimit_E_cut || y[i] > upperLimit_E_cut) {
+                    colors[i] = 'white'; // Change the color to white or a color signifying disappearance
+                } else {
+                    colors[i] = color_orig; // Original color
+                }
+            }
+            source.change.emit();
+        """)
+
+        # Attach the callback to the sliders
+        slider_A.js_on_change('value', callback)
+        slider_alpha.js_on_change('value', callback)
+        slider_E_cut.js_on_change('value', callback)
+
+        # Layout the sliders and the plot
+        s = column(slider_A, slider_alpha, slider_E_cut)
+        h_layout = column(del_div, s, column(heatmap_figs))
 
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
         panel2 = TabPanel(child=l, title="SED matrix")
