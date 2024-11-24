@@ -8,8 +8,10 @@ from fit_SED import SED_function, fit_SED
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
-from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource
+from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Panel, Tabs
 from bokeh.models.widgets import Div
+from bokeh.palettes import Plasma256 as palette
+from bokeh.transform import linear_cmap
 
 
 class plot_eflux_phase():
@@ -51,6 +53,13 @@ class plot_eflux_phase():
         self.initial_guesses = [1e-4, 1., 1e3, 1e3]
         self.backup_guesses = [1e-4, -0.5, 1e3, 1e3]
 
+        self.all_x = []
+        self.all_y = []
+        self.all_A = []
+        self.all_alpha = []
+        self.all_E_0 = []
+        self.all_E_cut = []
+
         try:
             self.num_pickles_2 = data["num_pickles_2"]
             self.base_fn_2 = data["base_fn_2"]
@@ -67,6 +76,9 @@ class plot_eflux_phase():
             self.seds[phase_bin] = []
 
             for phase_bin_2 in self.p_bins_2:
+
+                self.all_x.append(phase_bin)
+                self.all_y.append(phase_bin_2)
 
                 if self.num_pickles_2 == 0:
                     infile = self.base_fn + str(phase_bin) + "/" + self.sed_prefix + \
@@ -130,6 +142,11 @@ class plot_eflux_phase():
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
             print("Fitted parameters:", params)
+            self.all_A = params[0]
+            self.all_alpha = params[1]
+            self.all_E_cut = params[2]
+            self.all_E_0 = params[3]
+
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
             flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
@@ -155,7 +172,69 @@ class plot_eflux_phase():
         grid = gridplot(plots)
 
         l = layout(del_div, grid)
-        save(l, title=self.page_title)
+
+        # do heatmaps of fit parameters
+
+        source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, a=self.all_A, alpha=self.all_alpha,
+                                            E_0=self.all_E_0, E_cut=self.all_E_cut))
+
+        # this is the colormap from the original NYTimes plot
+        colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
+
+        TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
+
+        heatmap_figs = []
+        dict_ticker = {}
+        for i, x in self.all_x:
+            dict_ticker[self.all_x[i]] = str(x / 10.)
+
+        tooltips = [[('phases', 'Orbital: @x super: @y'), ('A', '@a')],
+                    [('alpha', '@alpha'), ('E_0', '@E_0')],
+                    [('E_cut', '@E_cut')],
+                    [('E_0', '@E_0')]
+                    ]
+        title = ["A", "alpha", "E_cut", "E_0"]
+
+        for h in range(3):
+
+            p = figure(title=title[h],
+                       x_axis_location="above", width=900, height=900,
+                       tools=TOOLS, toolbar_location='below', y_axis_label="super phase", x_axis_label="orbital phase",
+                       tooltips=tooltips[h])
+
+            p.grid.grid_line_color = None
+            p.axis.axis_line_color = None
+            p.axis.major_tick_line_color = None
+            p.axis.major_label_text_font_size = "12px"
+            p.axis.major_label_standoff = 0
+            p.xaxis.major_label_orientation = np.pi / 3
+
+            r = p.rect(x="x", y="y", width=1, height=1, source=source,
+                       fill_color=linear_cmap("flux", palette=palette, low=0., high=1.2e-6),
+                       line_color=None, )
+            p.xaxis.ticker = self.all_x
+            p.xaxis.major_label_overrides = dict_ticker
+            p.yaxis.ticker = self.all_y
+            p.yaxis.major_label_overrides = dict_ticker
+
+            p.add_layout(r.construct_color_bar(
+                major_label_text_font_size="12px",
+                ticker=BasicTicker(desired_num_ticks=len(colors)),
+
+                label_standoff=6,
+                border_line_color=None,
+                padding=5,
+            ), 'right')
+
+            heatmap_figs.append(p)
+
+        h_layout = layout(column(heatmap_figs))
+
+        panel1 = Panel(child=h_layout, Title="Parameter heatmaps")
+        panel2 = Panel(child=l, Title="SED matrix")
+        tabs = Tabs(tabs=[panel1, panel2])
+
+        save(tabs, title=self.page_title)
 
 if __name__ == "__main__":
     # Command line arguments
