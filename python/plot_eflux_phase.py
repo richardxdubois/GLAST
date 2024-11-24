@@ -175,7 +175,7 @@ class plot_eflux_phase():
 
         # do heatmaps of fit parameters
 
-        source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, a=self.all_A, alpha=self.all_alpha,
+        source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, A=self.all_A, alpha=self.all_alpha,
                                             E_0=self.all_E_0, E_cut=self.all_E_cut))
 
         # this is the colormap from the original NYTimes plot
