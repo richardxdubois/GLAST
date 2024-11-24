@@ -194,7 +194,7 @@ class plot_eflux_phase():
                     [('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
                     ]
         title = ["A", "alpha", "E_cut", "E_0"]
-        high = [2.e-4, 3., 2000., 2000.]
+        high = [2.e-6, 3., 5000., 5000.]
 
         for h in range(4):
 
@@ -229,7 +229,7 @@ class plot_eflux_phase():
 
             heatmap_figs.append(p)
 
-        h_layout = column(heatmap_figs)
+        h_layout = column(del_div, heatmap_figs)
 
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
         panel2 = TabPanel(child=l, title="SED matrix")
