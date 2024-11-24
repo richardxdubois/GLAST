@@ -239,6 +239,11 @@ class plot_eflux_phase():
 
         slider_E_cut = RangeSlider(start=low[2], end=high[2], value=(low[2], high[2]), step=steps[2], title="E_cut")
 
+        # JavaScript global variable
+        global_js_code = """
+            var originalData = {}; // Declare a global variable
+        """
+
         # CustomJS callback to update rectangle colors based on slider values
         callback = CustomJS(
             args=dict(source=source, slider1=slider_A, slider2=slider_alpha,
@@ -265,9 +270,9 @@ class plot_eflux_phase():
                     alpha[i] = -1.
                     E_cut[i] = -1.
                 } else {
-                    A[i] = A_orig;
-                    alpha[i] = alpha_orig;
-                    E_cut[i] = E_cut_orig;
+                    A[i] = original_data.A_orig[i];
+                    alpha[i] = original_data.alpha_orig[i];
+                    E_cut[i] = original_data.E_cut_orig[i];
                 }
             }
             source.change.emit();
@@ -278,11 +283,11 @@ class plot_eflux_phase():
         # CustomJS callback to save the original data in JavaScript
         button.js_on_click(CustomJS(args=dict(source=source), code="""
             // Save the original data in a JavaScript variable
-            const original_data = {
-                A_orig: source.data['A'].slice(),
-                alpha_orig: source.data['alpha'].slice()
-                E_cut_orig: source.data['E_cut'].slice()
-            };
+           
+            original_data.A_orig: source.data['A'].slice(),
+            original_data.alpha_orig: source.data['alpha'].slice()
+            original_data.E_cut_orig: source.data['E_cut'].slice()
+            
         """))
 
         # Attach the callback to the sliders
