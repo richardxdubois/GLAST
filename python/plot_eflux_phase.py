@@ -276,7 +276,7 @@ class plot_eflux_phase():
         button = Button(label="Save Original Data", button_type="success")
 
         # CustomJS callback to save the original data in JavaScript
-        button.js_on_load(CustomJS(args=dict(source=source), code="""
+        button.js_on_click(CustomJS(args=dict(source=source), code="""
             // Save the original data in a JavaScript variable
             const original_data = {
                 A_orig: source.data['A'].slice(),
@@ -291,7 +291,7 @@ class plot_eflux_phase():
         slider_E_cut.js_on_change('value', callback)
 
         # Layout the sliders and the plot
-        s = column(slider_A, slider_alpha, slider_E_cut)
+        s = column(button, slider_A, slider_alpha, slider_E_cut)
         h_layout = column(del_div, s, column(heatmap_figs))
 
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
