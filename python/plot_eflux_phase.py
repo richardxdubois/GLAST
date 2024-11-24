@@ -1,5 +1,6 @@
 from astropy.io import fits
 import numpy as np
+import pandas as pd
 import argparse
 import yaml
 from datetime import datetime
@@ -129,6 +130,8 @@ class plot_eflux_phase():
 
         for i, E_i in enumerate(self.loge_ctr):
             if E_i <= 10000.:
+                if pd.isna(self.eflux_err_lo[i]):
+                    continue
                 flux_i.append(self.eflux[i])
                 errors_i.append(self.eflux_err_hi[i])
                 E_ii.append(E_i)
