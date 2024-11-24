@@ -145,7 +145,7 @@ class plot_eflux_phase():
             self.all_A.append(params[0])
             self.all_alpha.append(params[1])
             self.all_E_cut.append(params[2])
-            self.all_E_0.append(params[3])
+            #self.all_E_0.append(params[3])
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
@@ -176,7 +176,7 @@ class plot_eflux_phase():
         # do heatmaps of fit parameters
 
         source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, A=self.all_A, alpha=self.all_alpha,
-                                            E_0=self.all_E_0, E_cut=self.all_E_cut))
+                                            E_cut=self.all_E_cut))
 
         # this is the colormap from the original NYTimes plot
         colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
@@ -190,11 +190,11 @@ class plot_eflux_phase():
 
         tooltips = [[('phases', 'Orbital: @x super: @y'), ('A', '@A')],
                     [('phases', 'Orbital: @x super: @y'), ('alpha', '@alpha')],
-                    [('phases', 'Orbital: @x super: @y'), ('E_cut', '@E_cut')],
-                    [('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
+                    [('phases', 'Orbital: @x super: @y'), ('E_cut', '@E_cut')]
+                    #[('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
                     ]
-        title = ["A", "alpha", "E_cut", "E_0"]
-        high = [2.e-6, 3., 5000., 5000.]
+        title = ["A", "alpha", "E_cut"]
+        high = [2.e-6, 3., 5000.]
 
         for h in range(4):
 
