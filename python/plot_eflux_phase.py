@@ -8,7 +8,7 @@ from fit_SED import SED_function, fit_SED
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
-from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Panel, TabPanel
+from bokeh.models import Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs, TabPanel
 from bokeh.models.widgets import Div
 from bokeh.palettes import Plasma256 as palette
 from bokeh.transform import linear_cmap
@@ -230,9 +230,9 @@ class plot_eflux_phase():
 
         h_layout = column(heatmap_figs)
 
-        panel1 = Panel(child=h_layout, Title="Parameter heatmaps")
-        panel2 = Panel(child=l, Title="SED matrix")
-        tabs = TabPanel(tabs=[panel1, panel2])
+        panel1 = TabPanel(child=h_layout, Title="Parameter heatmaps")
+        panel2 = TabPanel(child=l, Title="SED matrix")
+        tabs = Tabs(tabs=[panel1, panel2])
 
         save(tabs, title=self.page_title)
 
