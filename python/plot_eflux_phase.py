@@ -171,7 +171,7 @@ class plot_eflux_phase():
             plots.append(self.seds[i])
         grid = gridplot(plots)
 
-        l = layout(del_div, grid)
+        l = column(del_div, grid)
 
         # do heatmaps of fit parameters
 
@@ -228,7 +228,7 @@ class plot_eflux_phase():
 
             heatmap_figs.append(p)
 
-        h_layout = layout(column(heatmap_figs))
+        h_layout = column(heatmap_figs)
 
         panel1 = Panel(child=h_layout, Title="Parameter heatmaps")
         panel2 = Panel(child=l, Title="SED matrix")
