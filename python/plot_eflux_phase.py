@@ -77,8 +77,8 @@ class plot_eflux_phase():
 
             for phase_bin_2 in self.p_bins_2:
 
-                self.all_x.append(phase_bin)
-                self.all_y.append(phase_bin_2)
+                self.all_y.append(phase_bin)
+                self.all_x.append(phase_bin_2)
 
                 if self.num_pickles_2 == 0:
                     infile = self.base_fn + str(phase_bin) + "/" + self.sed_prefix + \
@@ -188,9 +188,9 @@ class plot_eflux_phase():
         for i, x in enumerate(self.all_x):
             dict_ticker[self.all_x[i]] = str(x / 10.)
 
-        tooltips = [[('phases', 'Orbital: @x super: @y'), ('A', '@A')],
-                    [('phases', 'Orbital: @x super: @y'), ('alpha', '@alpha')],
-                    [('phases', 'Orbital: @x super: @y'), ('E_cut', '@E_cut')]
+        tooltips = [[('phases', 'super: @x orbital: @y'), ('A', '@A')],
+                    [('phases', 'super: @x orbital: @y'), ('alpha', '@alpha')],
+                    [('phases', 'super: @x orbital: @y'), ('E_cut', '@E_cut')]
                     #[('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
                     ]
         title = ["A", "alpha", "E_cut"]
