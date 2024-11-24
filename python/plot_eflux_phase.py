@@ -196,7 +196,7 @@ class plot_eflux_phase():
         title = ["A", "alpha", "E_cut", "E_0"]
         high = [2.e-4, 3., 2000., 2000.]
 
-        for h in range(3):
+        for h in range(4):
 
             p = figure(title=title[h],
                        x_axis_location="above", width=900, height=900,
