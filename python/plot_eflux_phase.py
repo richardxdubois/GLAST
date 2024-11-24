@@ -194,7 +194,7 @@ class plot_eflux_phase():
                     #[('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
                     ]
         title = ["A", "alpha", "E_cut"]
-        high = [2.e-10, 3., 5000.]
+        high = [6.e-11, 3., 5000.]
 
         for h in range(3):
 
