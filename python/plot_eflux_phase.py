@@ -194,6 +194,7 @@ class plot_eflux_phase():
                     [('E_0', '@E_0')]
                     ]
         title = ["A", "alpha", "E_cut", "E_0"]
+        high = [2.e-4, 3., 2000., 2000.]
 
         for h in range(3):
 
@@ -210,7 +211,7 @@ class plot_eflux_phase():
             p.xaxis.major_label_orientation = np.pi / 3
 
             r = p.rect(x="x", y="y", width=1, height=1, source=source,
-                       fill_color=linear_cmap("flux", palette=palette, low=0., high=1.2e-6),
+                       fill_color=linear_cmap(title[h], palette=palette, low=0., high=high[h]),
                        line_color=None, )
             p.xaxis.ticker = self.all_x
             p.xaxis.major_label_overrides = dict_ticker
