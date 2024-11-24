@@ -238,7 +238,7 @@ class plot_eflux_phase():
         steps = (high - low)/20.
 
         slider_A = RangeSlider(start=low[0], end=high[0], value=(low[0], high[0]), step=steps[0], title="A",
-                               formatter=ScientificFormatter(precision=3))
+                               format=ScientificFormatter(precision=3))
         #slider_A.format = ScientificFormatter(precision=3)  # Set format to scientific notation
         slider_alpha = RangeSlider(start=low[1], end=high[1], value=(low[1], high[1]), step=steps[1], title="alpha")
 
