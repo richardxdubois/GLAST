@@ -259,9 +259,9 @@ class plot_eflux_phase():
 
             for (let i = 0; i < y.length; i++) {
                 for (let j = 0; j < x.length; j++) {
-                    A_orig = A[i];
-                    alpha_orig = alpha[i];
-                    E_cut_orig = E_cut[i];
+                    const A_orig = A[i];
+                    const alpha_orig = alpha[i];
+                    const E_cut_orig = E_cut[i];
                     
                     if (A[i] < lowerLimit_A || A[i] > upperLimit_A || alpha[i] < lowerLimit_alpha || alpha[i] > upperLimit_alpha 
                     || E_cut[i] < lowerLimit_E_cut || E_cut[i] > upperLimit_E_cut) {
