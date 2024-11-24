@@ -268,11 +268,9 @@ class plot_eflux_phase():
                     alpha[i] = -1.;
                     E_cut[i] = -1.;
                 } else {
-                    console.log('about to restore data')
                     source.data["A"][i] = original_data.A_orig[i];
                     source.data["alpha"][i] = original_data.alpha_orig[i];
                     source.data["E_cut"][i] = original_data.E_cut_orig[i];
-                    console.log('restored data for cell', i)
                 }
             }
             source.change.emit();
@@ -283,11 +281,11 @@ class plot_eflux_phase():
         # CustomJS callback to save the original data in JavaScript
         button.js_on_click(CustomJS(args=dict(source=source), code="""
             // Save the original data in a JavaScript variable
-            console.log('about to save original data')
+        
             original_data.A_orig = source.data['A'].slice();
             original_data.alpha_orig = source.data['alpha'].slice();
             original_data.E_cut_orig = source.data['E_cut'].slice();
-            console.log('saved original data')
+            
         """))
 
         # Attach the callback to the sliders
