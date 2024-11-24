@@ -230,8 +230,8 @@ class plot_eflux_phase():
 
         h_layout = column(heatmap_figs)
 
-        panel1 = TabPanel(child=h_layout, Title="Parameter heatmaps")
-        panel2 = TabPanel(child=l, Title="SED matrix")
+        panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
+        panel2 = TabPanel(child=l, title="SED matrix")
         tabs = Tabs(tabs=[panel1, panel2])
 
         save(tabs, title=self.page_title)
