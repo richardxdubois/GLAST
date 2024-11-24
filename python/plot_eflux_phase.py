@@ -235,7 +235,7 @@ class plot_eflux_phase():
         steps = (high - low)/20.
 
         slider_A = RangeSlider(start=low[0], end=high[0], value=(low[0], high[0]), step=steps[0], title="A")
-        slider_alpha = RangeSlider(start=low[1], end=high[0], value=(low[1], high[1]), step=steps[1], title="alpha")
+        slider_alpha = RangeSlider(start=low[1], end=high[1], value=(low[1], high[1]), step=steps[1], title="alpha")
 
         slider_E_cut = RangeSlider(start=low[2], end=high[2], value=(low[2], high[2]), step=steps[2], title="E_cut")
 
@@ -245,21 +245,35 @@ class plot_eflux_phase():
                       slider3=slider_E_cut), code="""
             const data = source.data;
             const y = data['y'];
+            const x = data['x'];
+            const A = data['A'];
+            const alpha = data['alpha'];
+            const E_cut = data['E_cut'];
             const colors = data['colors'];
+            
             const lowerLimit_A = slider1.value(0);
             const upperLimit_A = slider1.value(1);
-            const lowerLimit_alpha = slider1.value(0);
-            const upperLimit_alpha = slider1.value(1);
-            const lowerLimit_E_cut = slider1.value(0);
-            const upperLimit_E_cut = slider1.value(1);
+            const lowerLimit_alpha = slider2.value(0);
+            const upperLimit_alpha = slider2.value(1);
+            const lowerLimit_E_cut = slider3.value(0);
+            const upperLimit_E_cut = slider3.value(1);
 
             for (let i = 0; i < y.length; i++) {
-                color_orig = colors[i];
-                if (y[i] < lowerLimit_A || y[i] > upperLimit_A || y[i] < lowerLimit_alpha || y[i] > upperLimit_alpha 
-                || y[i] < lowerLimit_E_cut || y[i] > upperLimit_E_cut) {
-                    colors[i] = 'white'; // Change the color to white or a color signifying disappearance
-                } else {
-                    colors[i] = color_orig; // Original color
+                for (let j = 0; j < x.length; j++) {
+                    A_orig = A[i];
+                    alpha_orig = alpha[i];
+                    E_cut_orig = E_cut[i];
+                    
+                    if (A[i] < lowerLimit_A || A[i] > upperLimit_A || alpha[i] < lowerLimit_alpha || alpha[i] > upperLimit_alpha 
+                    || E_cut[i] < lowerLimit_E_cut || E_cut[i] > upperLimit_E_cut) {
+                        A[i] = -1.
+                        alpha[i] = -1.
+                        E_cut[i] = -1.
+                    } else {
+                        A[i] = A_orig;
+                        alpha[i] = alpha_orig;
+                        E_cut[i] = E_cut_orig;
+                    }
                 }
             }
             source.change.emit();
