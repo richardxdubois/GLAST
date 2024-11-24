@@ -267,9 +267,9 @@ class plot_eflux_phase():
                     E_cut[i] = -1.;
                 } else {
                     console.log('about to restore data')
-                    A[i] = original_data.A_orig[i];
-                    alpha[i] = original_data.alpha_orig[i];
-                    E_cut[i] = original_data.E_cut_orig[i];
+                    source.data["A"][i] = original_data.A_orig[i];
+                    source.data["alpha"][i] = original_data.alpha_orig[i];
+                    source.data["E_cut"][i] = original_data.E_cut_orig[i];
                     console.log('restored data for cell', i)
                 }
             }
