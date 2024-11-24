@@ -142,10 +142,10 @@ class plot_eflux_phase():
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
             print("Fitted parameters:", params)
-            self.all_A = params[0]
-            self.all_alpha = params[1]
-            self.all_E_cut = params[2]
-            self.all_E_0 = params[3]
+            self.all_A.append(params[0])
+            self.all_alpha.append(params[1])
+            self.all_E_cut.append(params[2])
+            self.all_E_0.append(params[3])
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
