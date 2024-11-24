@@ -10,7 +10,7 @@ from fit_SED import SED_function, fit_SED
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs,
-                          TabPanel, RangeSlider, CustomJS, Button)
+                          TabPanel, RangeSlider, CustomJS, Button, NumeralTickFormatter)
 from bokeh.models.widgets import Div
 from bokeh.palettes import Plasma256 as palette
 from bokeh.transform import linear_cmap
@@ -238,6 +238,7 @@ class plot_eflux_phase():
         steps = (high - low)/20.
 
         slider_A = RangeSlider(start=low[0], end=high[0], value=(low[0], high[0]), step=steps[0], title="A")
+        slider_A.formatter = NumeralTickFormatter(format="0.000e+0")  # Set format to scientific notation
         slider_alpha = RangeSlider(start=low[1], end=high[1], value=(low[1], high[1]), step=steps[1], title="alpha")
 
         slider_E_cut = RangeSlider(start=low[2], end=high[2], value=(low[2], high[2]), step=steps[2], title="E_cut")
