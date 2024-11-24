@@ -185,7 +185,7 @@ class plot_eflux_phase():
 
         heatmap_figs = []
         dict_ticker = {}
-        for i, x in self.all_x:
+        for i, x in enumerate(self.all_x):
             dict_ticker[self.all_x[i]] = str(x / 10.)
 
         tooltips = [[('phases', 'Orbital: @x super: @y'), ('A', '@a')],
