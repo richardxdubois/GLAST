@@ -188,10 +188,10 @@ class plot_eflux_phase():
         for i, x in enumerate(self.all_x):
             dict_ticker[self.all_x[i]] = str(x / 10.)
 
-        tooltips = [[('phases', 'Orbital: @x super: @y'), ('A', '@a')],
-                    [('alpha', '@alpha'), ('E_0', '@E_0')],
-                    [('E_cut', '@E_cut')],
-                    [('E_0', '@E_0')]
+        tooltips = [[('phases', 'Orbital: @x super: @y'), ('A', '@A')],
+                    [('phases', 'Orbital: @x super: @y'), ('alpha', '@alpha')],
+                    [('phases', 'Orbital: @x super: @y'), ('E_cut', '@E_cut')],
+                    [('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
                     ]
         title = ["A", "alpha", "E_cut", "E_0"]
         high = [2.e-4, 3., 2000., 2000.]
