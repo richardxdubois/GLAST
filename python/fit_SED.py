@@ -21,7 +21,7 @@ def fit_SED(E, flux, errors, initial_guesses):
         flux,
         p0=initial_guesses,
         sigma=errors,
-        absolute_sigma=True, method="trf", bounds=(0, [1e-4, 3., 8000.])
+        absolute_sigma=True, method="trf", bounds=(0, [1e-4, 3., 15000.])
         )
 
     return params, covariance
