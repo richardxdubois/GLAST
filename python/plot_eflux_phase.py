@@ -258,21 +258,19 @@ class plot_eflux_phase():
             const upperLimit_E_cut = slider3.value[1];
 
             for (let i = 0; i < y.length; i++) {
-                for (let j = 0; j < x.length; j++) {
-                    const A_orig = A[i];
-                    const alpha_orig = alpha[i];
-                    const E_cut_orig = E_cut[i];
-                    
-                    if (A[i] < lowerLimit_A || A[i] > upperLimit_A || alpha[i] < lowerLimit_alpha || alpha[i] > upperLimit_alpha 
-                    || E_cut[i] < lowerLimit_E_cut || E_cut[i] > upperLimit_E_cut) {
-                        A[i] = -1.
-                        alpha[i] = -1.
-                        E_cut[i] = -1.
-                    } else {
-                        A[i] = A_orig;
-                        alpha[i] = 50.;
-                        E_cut[i] = E_cut_orig;
-                    }
+                const A_orig = A[i];
+                const alpha_orig = alpha[i];
+                const E_cut_orig = E_cut[i];
+                
+                if (A[i] < lowerLimit_A || A[i] > upperLimit_A || alpha[i] < lowerLimit_alpha || alpha[i] > upperLimit_alpha 
+                || E_cut[i] < lowerLimit_E_cut || E_cut[i] > upperLimit_E_cut) {
+                    A[i] = -1.
+                    alpha[i] = -1.
+                    E_cut[i] = -1.
+                } else {
+                    A[i] = A_orig;
+                    alpha[i] = 50.;
+                    E_cut[i] = E_cut_orig;
                 }
             }
             source.change.emit();
