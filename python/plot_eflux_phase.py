@@ -249,6 +249,9 @@ class plot_eflux_phase():
             const A = data['A'];
             const alpha = data['alpha'];
             const E_cut = data['E_cut'];
+            const A_orig = data['A'];
+            const alpha_orig = data['alpha'];
+            const E_cut_orig = data['E_cut'];
             
             const lowerLimit_A = slider1.value[0];
             const upperLimit_A = slider1.value[1];
@@ -258,9 +261,6 @@ class plot_eflux_phase():
             const upperLimit_E_cut = slider3.value[1];
 
             for (let i = 0; i < y.length; i++) {
-                const A_orig = A[i];
-                const alpha_orig = alpha[i];
-                const E_cut_orig = E_cut[i];
                 
                 if (A[i] < lowerLimit_A || A[i] > upperLimit_A || alpha[i] < lowerLimit_alpha || alpha[i] > upperLimit_alpha 
                 || E_cut[i] < lowerLimit_E_cut || E_cut[i] > upperLimit_E_cut) {
@@ -269,7 +269,7 @@ class plot_eflux_phase():
                     E_cut[i] = -1.
                 } else {
                     A[i] = A_orig;
-                    alpha[i] = 50.;
+                    alpha[i] = alpha_orig;
                     E_cut[i] = E_cut_orig;
                 }
             }
