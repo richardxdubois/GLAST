@@ -25,6 +25,7 @@ source = data["source"]
 html_name = data["html"]
 html_title = data["html_title"]
 histo_start_date = data["histo_start_date"]
+histo_zoom_width = data["histo_zoom_width"]
 
 infile = OrderedDict(data["file_dict"])
 
@@ -85,7 +86,8 @@ for f in infile:
     infile[f].append(p_hist)
 
     t_min = min(d_non_zero_times) - 10.
-    counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(t_min, t_min+80.), bins=100)
+    counts_hist, counts_edges = np.histogram(d_non_zero_times,
+                                             range=(t_min, t_min+histo_zoom_width), bins=100)
     p_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
     p_hist.x_range.start = histo_start_date
