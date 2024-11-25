@@ -71,7 +71,7 @@ class prepare_super_orbital():
 
         rc = self.prep_gti.get_infile_stuff(infile=tgt_file)
         rc = self.prep_gti.extrapolate_t0(t0_MJD=self.zero_phase, orb=orb)
-        rc = self.prep_gti.make_new_gti(phase_bin=bin)
+        rc = self.prep_gti.make_new_gti(phase_bin=bin, num_bins=self.num_super_bins)
         rc = self.prep_gti.merge_gtis()
 
         return 0
