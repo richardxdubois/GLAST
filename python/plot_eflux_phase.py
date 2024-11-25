@@ -151,7 +151,7 @@ class plot_eflux_phase():
             self.all_A.append(params[0])
             self.all_alpha.append(params[1])
             self.all_E_cut.append(params[2])
-            self.integrated_fits, int_error = quad(fit_SED, 0.1, 10000., args=tuple(params))
+            self.integrated_fits, int_error = quad(SED_function, 0.1, 10000., args=tuple(params))
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
