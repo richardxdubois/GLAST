@@ -73,7 +73,7 @@ class prepare_super_orbital():
         rc = self.prep_gti.extrapolate_t0(t0_MJD=self.zero_phase, orb=orb)
 
         if self.do_orb_only:
-            num_bins = self.num_super_bins
+            num_bins = self.num_orb_bins
         else:
             num_bins = self.num_super_bins
         rc = self.prep_gti.make_new_gti(phase_bin=bin, num_bins=num_bins)
