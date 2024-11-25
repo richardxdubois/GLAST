@@ -68,10 +68,10 @@ class prepare_gti():
 
         return t0_post_MET
 
-    def make_new_gti(self, phase_bin):
+    def make_new_gti(self, phase_bin, num_bins):
 
         gti = []
-        p = int(phase_bin)/10.
+        p = int(phase_bin)/num_bins
 
         # start on orbit boundary before first time measure
         t = np.float128(self.t0_MET - math.ceil((self.t_min - self.t0_MET)/self.orb) * self.orb)
