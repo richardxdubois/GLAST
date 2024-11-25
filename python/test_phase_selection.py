@@ -24,6 +24,7 @@ with open(args.app_config, "r") as f:
 source = data["source"]
 html_name = data["html"]
 html_title = data["html_title"]
+histo_start_date = data["histo_start_date"]
 
 infile = OrderedDict(data["file_dict"])
 
@@ -87,7 +88,7 @@ for f in infile:
     counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(t_min, t_min+80.), bins=100)
     p_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
-    p_hist.x_range.start = 2750.
+    p_hist.x_range.start = histo_start_date
 
     q_hist = figure(title="Time",
                     x_axis_label='Time (days MET)', y_axis_label='counts',
@@ -98,7 +99,7 @@ for f in infile:
     counts_hist, counts_edges = np.histogram(d_non_zero_times, bins=200)
     q_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
-    q_hist.x_range.start = 2750.
+    q_hist.x_range.start = histo_start_date
 
     r_hist = figure(title="Energy",
                     x_axis_label='Energy (MeV)', y_axis_label='counts', x_axis_type='log',
