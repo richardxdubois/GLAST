@@ -218,7 +218,7 @@ class plot_eflux_phase():
             p.axis.major_label_standoff = 0
             p.xaxis.major_label_orientation = np.pi / 3
 
-            if h == 3:  # E_cut
+            if h == 2:  # E_cut
                 fill_color = log_cmap(title[h], palette=palette, low=low[h], high=high[h])
             else:
                 fill_color = linear_cmap(title[h], palette=palette, low=low[h], high=high[h])
