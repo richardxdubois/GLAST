@@ -4,6 +4,7 @@ import pandas as pd
 import argparse
 import yaml
 from datetime import datetime
+from scipy.integrate import quad
 
 from fit_SED import SED_function, fit_SED
 
@@ -61,6 +62,7 @@ class plot_eflux_phase():
         self.all_alpha = []
         self.all_E_0 = []
         self.all_E_cut = []
+        self.integrated_fits = []
 
         try:
             self.num_pickles_2 = data["num_pickles_2"]
@@ -149,7 +151,7 @@ class plot_eflux_phase():
             self.all_A.append(params[0])
             self.all_alpha.append(params[1])
             self.all_E_cut.append(params[2])
-            #self.all_E_0.append(params[3])
+            self.integrated_fits, int_error = quad(fit_SED, 0.1, 10000., args=tuple(params))
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
@@ -180,7 +182,7 @@ class plot_eflux_phase():
         # do heatmaps of fit parameters
 
         source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, A=self.all_A, alpha=self.all_alpha,
-                                            E_cut=self.all_E_cut))
+                                            E_cut=self.all_E_cut), int_f=self.integrated_fits)
 
         # this is the colormap from the original NYTimes plot
         colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
@@ -195,13 +197,13 @@ class plot_eflux_phase():
         tooltips = [[('phases', 'super: @y orbital: @x'), ('A', '@A')],
                     [('phases', 'super: @y orbital: @x'), ('alpha', '@alpha')],
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')]
-                    #[('phases', 'Orbital: @x super: @y'), ('E_0', '@E_0')]
+                    [('phases', 'super: @x orbital: @y'), ('int_f', '@int_f')]
                     ]
         title = ["A", "alpha", "E_cut"]
-        high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut)])
-        low = 0.99*np.array([min(self.all_A), min(self.all_alpha), min(self.all_E_cut)])
+        high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), 0.])
+        low = 0.99*np.array([min(self.all_A), min(self.all_alpha), min(self.all_E_cut), 1.5e-4])
 
-        for h in range(3):
+        for h in range(4):
 
             p = figure(title=title[h],
                        x_axis_location="above", width=900, height=900,
