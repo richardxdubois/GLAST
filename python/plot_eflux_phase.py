@@ -14,7 +14,7 @@ from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataS
                           TabPanel, RangeSlider, CustomJS, Button, NumeralTickFormatter, BasicTickFormatter)
 from bokeh.models.widgets import Div
 from bokeh.palettes import Plasma256 as palette
-from bokeh.transform import linear_cmap
+from bokeh.transform import linear_cmap, log_cmap
 
 
 class plot_eflux_phase():
@@ -218,8 +218,13 @@ class plot_eflux_phase():
             p.axis.major_label_standoff = 0
             p.xaxis.major_label_orientation = np.pi / 3
 
+            if h == 3:  # E_cut
+                fill_color = log_cmap(title[h], palette=palette, low=low[h], high=high[h])
+            else:
+                fill_color = linear_cmap(title[h], palette=palette, low=low[h], high=high[h])
+
             r = p.rect(x="x", y="y", width=1, height=1, source=source,
-                       fill_color=linear_cmap(title[h], palette=palette, low=low[h], high=high[h]),
+                       fill_color=fill_color,
                        line_color=None, )
             p.xaxis.ticker = self.all_x
             p.xaxis.major_label_overrides = dict_ticker
