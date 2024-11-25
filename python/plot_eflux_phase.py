@@ -151,7 +151,7 @@ class plot_eflux_phase():
             self.all_A.append(params[0])
             self.all_alpha.append(params[1])
             self.all_E_cut.append(params[2])
-            integrated_fits, int_error = quad(flux_function, 0.1, 10000., args=tuple(params))
+            integrated_fits, int_error = quad(flux_function, 100., 10000., args=tuple(params))
             self.integrated_fits.append(integrated_fits)
 
             # Generate data for the fit line
