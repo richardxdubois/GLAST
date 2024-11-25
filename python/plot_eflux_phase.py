@@ -196,7 +196,7 @@ class plot_eflux_phase():
 
         tooltips = [[('phases', 'super: @y orbital: @x'), ('A', '@A')],
                     [('phases', 'super: @y orbital: @x'), ('alpha', '@alpha')],
-                    [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')]
+                    [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
                     [('phases', 'super: @x orbital: @y'), ('int_f', '@int_f')]
                     ]
         title = ["A", "alpha", "E_cut"]
