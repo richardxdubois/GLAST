@@ -11,6 +11,13 @@ def SED_function(E, A, alpha, E_cut):
 
     return E*E*A * (E / 1800.)**(-alpha) * np.exp(-E / E_cut)
 
+def flux_function(E, A, alpha, E_cut):
+    E = np.float64(E)
+    A = np.float64(A)
+    alpha = np.float64(alpha)
+    E_cut = np.float64(E_cut)
+    #E_0 = np.float64(E_0)
+    return A * (E/1800.)**(-alpha) * np.exp(-E/E_cut)
 
 def fit_SED(E, flux, errors, initial_guesses):
 
