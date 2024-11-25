@@ -200,7 +200,7 @@ class plot_eflux_phase():
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
                     [('phases', 'super: @x orbital: @y'), ('int_f', '@int_f')]
                     ]
-        title = ["A", "alpha", "E_cut", "Fit integration"]
+        title = ["A", "alpha", "E_cut", "int_f"]
         high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), 0.])
         low = 0.99*np.array([min(self.all_A), min(self.all_alpha), min(self.all_E_cut), 1.5e-4])
 
