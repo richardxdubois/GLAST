@@ -202,7 +202,7 @@ class plot_eflux_phase():
                     ]
         title = ["A", "alpha", "E_cut", "int_f"]
         high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), 0.])
-        low = 0.99*np.array([min(self.all_A), min(self.all_alpha), min(self.all_E_cut), 1.5e-6])
+        low = 0.99*np.array([min(self.all_A), min(self.all_alpha), min(self.all_E_cut), 1.5e-3])
 
         for h in range(4):
 
