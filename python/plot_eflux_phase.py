@@ -283,13 +283,14 @@ class plot_eflux_phase():
         button = Button(label="Save Original Data before using sliders", button_type="danger")
 
         # CustomJS callback to save the original data in JavaScript
-        button.js_on_click(CustomJS(args=dict(source=source), code="""
+        button.js_on_click(CustomJS(args=dict(source=source, button=button), code="""
             // Save the original data in a JavaScript variable
         
             original_data.A_orig = source.data['A'].slice();
             original_data.alpha_orig = source.data['alpha'].slice();
             original_data.E_cut_orig = source.data['E_cut'].slice();
             button.button_type = 'success'
+            button.label = 'Data saved'
             
         """))
 
