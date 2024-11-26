@@ -138,7 +138,7 @@ u_hist.y_range.start = 1.e-8
 u_hist.xaxis.ticker = r_bins
 u_hist.xaxis.major_label_overrides = dict_ticker
 u_hist.xaxis.major_label_orientation = 0.7
-line_p1 = Span(location=data["periastron"]*num_pickles, dimension='height', line_color='red', line_width=2,
+vline_p1 = Span(location=data["periastron"]*num_pickles, dimension='height', line_color='red', line_width=2,
                 line_dash='dashed')
 vline_a1 = Span(location=data["apastron"]*num_pickles, dimension='height', line_color='blue', line_width=2,
                 line_dash='dashed')
