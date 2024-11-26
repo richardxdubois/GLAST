@@ -280,7 +280,7 @@ class plot_eflux_phase():
                     A[i] = -1.;
                     alpha[i] = -1.;
                     E_cut[i] = -1.;
-                    int_f = -1.
+                    int_f[i] = -1.
                 } else {
                     source.data["A"][i] = original_data.A_orig[i];
                     source.data["alpha"][i] = original_data.alpha_orig[i];
