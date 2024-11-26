@@ -256,6 +256,7 @@ class plot_eflux_phase():
         callback = CustomJS(
             args=dict(source=source, slider1=slider_A, slider2=slider_alpha,
                       slider3=slider_E_cut), code="""
+            console.log('trying to save initial data')
             if (original_data.size == 0) {
                 original_data.A_orig = source.data['A'].slice();
                 original_data.alpha_orig = source.data['alpha'].slice();
