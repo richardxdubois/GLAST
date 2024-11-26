@@ -262,6 +262,7 @@ class plot_eflux_phase():
             const A = data['A'];
             const alpha = data['alpha'];
             const E_cut = data['E_cut'];
+            const int_f = data['int_f'];
             
             const lowerLimit_A = slider1.value[0];
             const upperLimit_A = slider1.value[1];
@@ -279,10 +280,12 @@ class plot_eflux_phase():
                     A[i] = -1.;
                     alpha[i] = -1.;
                     E_cut[i] = -1.;
+                    int_f = -1.
                 } else {
                     source.data["A"][i] = original_data.A_orig[i];
                     source.data["alpha"][i] = original_data.alpha_orig[i];
                     source.data["E_cut"][i] = original_data.E_cut_orig[i];
+                    source.data["int_f"][i] = original_data.int_f[i];
                 }
             }
             source.change.emit();
@@ -297,6 +300,7 @@ class plot_eflux_phase():
             original_data.A_orig = source.data['A'].slice();
             original_data.alpha_orig = source.data['alpha'].slice();
             original_data.E_cut_orig = source.data['E_cut'].slice();
+            original_data.int_f = source.data['int_f'].slice();
             button.button_type = 'success'
             button.label = 'Data saved'
             
