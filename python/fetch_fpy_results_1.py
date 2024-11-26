@@ -90,7 +90,7 @@ q_bins = np.append(q_bins, p_bins)
 r_bins = np.arange(len(q_bins))
 dict_ticker = {}
 for i in r_bins:
-    dict_ticker[r_bins[i]] = str(q_bins[i]/10.)
+    dict_ticker[r_bins[i]] = str(q_bins[i]/num_pickles)
 
 q_hist = figure(title="N0", x_axis_label='Phase bin', y_axis_label='ph/MeV/cm^2/s', width=750)
 q_hist.line(p_bins, norms, line_width=2)
@@ -137,7 +137,8 @@ u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="
 u_hist.y_range.start = 1.e-8
 u_hist.xaxis.ticker = r_bins
 u_hist.xaxis.major_label_overrides = dict_ticker
-vline_p1 = Span(location=data["periastron"]*num_pickles, dimension='height', line_color='red', line_width=2,
+u_hist.xaxis.major_label_orientation = 0.7
+line_p1 = Span(location=data["periastron"]*num_pickles, dimension='height', line_color='red', line_width=2,
                 line_dash='dashed')
 vline_a1 = Span(location=data["apastron"]*num_pickles, dimension='height', line_color='blue', line_width=2,
                 line_dash='dashed')
