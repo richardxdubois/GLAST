@@ -198,7 +198,7 @@ class plot_eflux_phase():
         tooltips = [[('phases', 'super: @y orbital: @x'), ('A', '@A')],
                     [('phases', 'super: @y orbital: @x'), ('alpha', '@alpha')],
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
-                    [('phases', 'super: @x orbital: @y'), ('int_f', '@int_f')]
+                    [('phases', 'super: @y orbital: @x'), ('int_f', '@int_f')]
                     ]
         title = ["A", "alpha", "E_cut", "int_f"]
         high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), max(self.integrated_fits)])
