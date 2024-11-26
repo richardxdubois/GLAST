@@ -256,13 +256,11 @@ class plot_eflux_phase():
         callback = CustomJS(
             args=dict(source=source, slider1=slider_A, slider2=slider_alpha,
                       slider3=slider_E_cut), code="""
-            console.log('trying to save initial data')
             if (Object.keys(original_data).length == 0) {
                 original_data.A_orig = source.data['A'].slice();
                 original_data.alpha_orig = source.data['alpha'].slice();
                 original_data.E_cut_orig = source.data['E_cut'].slice();
                 original_data.int_f = source.data['int_f'].slice();
-                console.log('saved original_data')
                 }
             const data = source.data;
             const y = data['y'];
@@ -319,8 +317,8 @@ class plot_eflux_phase():
         slider_alpha.js_on_change('value', callback)
         slider_E_cut.js_on_change('value', callback)
 
-        # Layout the sliders and the plot
-        s = column(button, slider_A, slider_alpha, slider_E_cut)
+        # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
+        s = column(slider_A, slider_alpha, slider_E_cut)
         h_layout = column(del_div, s, column(heatmap_figs))
 
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
