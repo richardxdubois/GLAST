@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import argparse
 import yaml
+import pickle
 from datetime import datetime
 from scipy.integrate import quad
 
@@ -31,6 +32,7 @@ class plot_eflux_phase():
         self.num_pickles = data["num_pickles"]
         self.p_bins = np.arange(self.num_pickles)
         self.html = data["html"]
+        self.params_save_pickle = self.html.split(".")[0] + "_params.pkl"
         self.page_title = data["page_title"]
         self.fig_height = data["fig_height"]
         self.fig_width = data["fig_width"]
@@ -166,6 +168,11 @@ class plot_eflux_phase():
         self.seds[phase_bin1].append(p_fig)
 
     def output_plot(self):
+
+        all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut]
+        # Write to a pickle file
+        with open(self.params_save_pickle, 'wb') as file:
+            pickle.dump(all_lists_params, file)
 
         del_div = Div(text=self.source_name + " Run on: " +
                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
