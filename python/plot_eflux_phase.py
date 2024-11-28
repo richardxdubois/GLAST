@@ -169,7 +169,8 @@ class plot_eflux_phase():
 
     def output_plot(self):
 
-        all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut]
+        all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
+                            self.integrated_fits]
         # Write to a pickle file
         with open(self.params_save_pickle, 'wb') as file:
             pickle.dump(all_lists_params, file)
