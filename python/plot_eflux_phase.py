@@ -65,6 +65,7 @@ class plot_eflux_phase():
         self.all_E_0 = []
         self.all_E_cut = []
         self.integrated_fits = []
+        self.covariance = []
 
         try:
             self.num_pickles_2 = data["num_pickles_2"]
@@ -155,6 +156,7 @@ class plot_eflux_phase():
             self.all_E_cut.append(params[2])
             integrated_fits, int_error = quad(flux_function, 100., 10000., args=tuple(params))
             self.integrated_fits.append(integrated_fits)
+            self.covariance.append(covariance)
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
@@ -170,7 +172,7 @@ class plot_eflux_phase():
     def output_plot(self):
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
-                            self.integrated_fits]
+                            self.integrated_fits, self.covariance]
         # Write to a pickle file
         with open(self.params_save_pickle, 'wb') as file:
             pickle.dump(all_lists_params, file)
