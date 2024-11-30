@@ -82,8 +82,10 @@ class plot_eflux_phase():
 
             self.seds[phase_bin] = []
 
+            print(phase_bin, self.p_bins_2)
             for phase_bin_2 in self.p_bins_2:
 
+                print(phase_bin_2)
                 self.all_y.append(phase_bin)
                 self.all_x.append(phase_bin_2)
 
