@@ -71,6 +71,9 @@ class plot_eflux_phase():
             self.num_pickles_2 = data["num_pickles_2"]
             self.base_fn_2 = data["base_fn_2"]
             self.p_bins_2 = np.arange(self.num_pickles_2)
+            if self.num_pickles_2 == 0:
+                self.p_bins_2 = np.arange(1)
+
             self.type_1 = data["type_1"]
             self.type_2 = data["type_2"]
         except KeyError:
