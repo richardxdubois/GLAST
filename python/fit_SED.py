@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import curve_fit
-
+from scipy.integrate import quad
 
 def SED_function(E, A, alpha, E_cut):
     E = np.float64(E)
@@ -32,3 +32,24 @@ def fit_SED(E, flux, errors, initial_guesses):
         )
 
     return params, covariance
+
+
+def fit_SED_errors(E_min, E_max, params, covariance):
+
+    i_params = []
+    integral_diffs = []
+
+    for p in range(len(params)):
+
+        cov = covariance[p][p]
+        err = []
+        for i in range(-1,2):
+            i_params = list(params)
+            i_params[p] += i*np.sqrt(cov)
+            integrated_fits, int_error = quad(flux_function, E_min, E_max,
+                                              args=(i_params[0], i_params[1], i_params[2]))
+            err.append(integrated_fits)
+        integral_diffs.append(abs(err[1]-err[0]))
+        integral_diffs.append(abs(err[2]-err[1]))
+
+    return max(integral_diffs)
