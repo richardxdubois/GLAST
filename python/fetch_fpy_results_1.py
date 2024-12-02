@@ -36,8 +36,13 @@ efluxs_errors = []
 source_name = data["source"]
 
 num_pickles = data["num_pickles"]
-p_bins = np.arange(num_pickles)
 
+try:
+    phase_offset = data["phase_offset"]
+except KeyError:
+    phase_offset = 0
+
+p_bins = np.arange(num_pickles) + phase_offset
 print(num_pickles, p_bins)
 
 #super = True
