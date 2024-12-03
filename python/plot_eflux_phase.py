@@ -206,6 +206,27 @@ class plot_eflux_phase():
 
         print("shifted phase bins by", self.phase_offset)
 
+        min_flux = min(self.integrated_fits)
+        min_flux_index = self.integrated_fits.index(min_flux)
+        min_flux_params = [self.all_A[min_flux_index], self.all_alpha[min_flux_index],
+                                self.all_E_cut[min_flux_index]]
+        max_flux = max(self.integrated_fits)
+        max_flux_index = self.integrated_fits.index(max_flux)
+        max_flux_params = [self.all_A[max_flux_index], self.all_alpha[max_flux_index],
+                                self.all_E_cut[max_flux_index]]
+
+        flux_diffs = []   #  comparing lowest to highest flux bins
+        for f in self.integrated_fits:
+            f_diff_ratio = (f - min_flux) / (max_flux - min_flux)
+            flux_diffs.append(f_diff_ratio)
+
+        E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
+        for i_s, s in enumerate(self.all_x):
+            o = self.all_y[i_s]
+            flux_fit = (SED_function(E_fit, *min_flux_params) + flux_diffs[i_s] *
+                        SED_function(E_fit, [self.all_A[i_s], self.all_alpha[i_s], self.all_E_cut[i_s]]))  # Calculate the fitted flux
+            self.seds[s][o].line(E_fit, flux_fit, color='blue', legend_label='pulsarness')
+
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
                             self.integrated_fits, self.covariance]
         # Write to a pickle file
