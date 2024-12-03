@@ -88,6 +88,17 @@ class plot_eflux_phase():
         n = n % len(lst)  # Ensure n is within the bounds of the list length
         return lst[n:] + lst[:n]
 
+    def shift_map(self, map, n):
+
+        keys = list(map.keys())  # Get the keys as a list
+        n = n % len(keys)  # Ensure n is within the bounds of the keys length
+        shifted_keys = keys[n:] + keys[:n]  # Shift the keys
+        # Create a new dictionary with shifted keys
+        shifted_dict = {key: d[key] for key in shifted_keys}
+
+        return shifted_dict
+
+
     def loop_over_bins(self):
 
         for phase_bin in self.p_bins:
@@ -190,7 +201,7 @@ class plot_eflux_phase():
         self.all_E_cut = self.shift_list(self.all_E_cut, self.phase_offset)
         self.integrated_fits = self.shift_list(self.integrated_fits, self.phase_offset)
         self.covariance = self.shift_list(self.covariance, self.phase_offset)
-        self.seds = self.shift_list(self.seds, self.phase_offset)
+        self.seds = self.shift_map(self.seds, self.phase_offset)
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
                             self.integrated_fits, self.covariance]
