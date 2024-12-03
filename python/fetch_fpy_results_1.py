@@ -9,6 +9,12 @@ from bokeh.models import ColumnDataSource, Span, LinearAxis, Range1d, LinearColo
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 
+
+def shift_list(lst, n):
+    n = n % len(lst)  # Ensure n is within the bounds of the list length
+    return lst[n:] + lst[:n]
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--app_config',
@@ -42,7 +48,7 @@ try:
 except KeyError:
     phase_offset = 0
 
-p_bins = np.arange(num_pickles) + phase_offset
+p_bins = np.arange(num_pickles)
 print(num_pickles, p_bins)
 
 #super = True
@@ -87,6 +93,9 @@ for phase_bin in np.arange(num_pickles):
     tss.append(ts)
 
     print(norm, norm_error)
+
+fluxs = shift_list(fluxs, phase_offset)
+fluxs_errors = shift_list(fluxs_errors, phase_offset)
 
 fluxs.extend(fluxs)
 fluxs_errors.extend(fluxs_errors)
