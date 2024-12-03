@@ -221,10 +221,10 @@ class plot_eflux_phase():
             flux_diffs.append(f_diff_ratio)
 
         E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
-        for i_o, o in enumerate(self.all_x):
-            s = self.all_y[i_o]
-            flux_fit = (SED_function(E_fit, *min_flux_params) + flux_diffs[i_o] *
-                        SED_function(E_fit, self.all_A[i_o], self.all_alpha[i_o], self.all_E_cut[i_o]))  # Calculate the fitted flux
+        for i_s, s in enumerate(self.all_y):
+            o = self.all_x[i_s]
+            flux_fit = (SED_function(E_fit, *min_flux_params) + flux_diffs[i_s] *
+                        SED_function(E_fit, self.all_A[i_s], self.all_alpha[i_s], self.all_E_cut[i_s]))  # Calculate the fitted flux
             self.seds[s][o].line(E_fit, flux_fit, color='blue', legend_label='pulsarness')
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
