@@ -424,7 +424,7 @@ class plot_eflux_phase():
                        line_color=None, )
             pc.xaxis.ticker = self.all_x[0:self.num_pickles]
             pc.xaxis.major_label_overrides = dict_ticker
-            pc.yaxis.ticker = self.all_y[0:self.num_pickles_2]
+            pc.yaxis.ticker = self.all_x[0:self.num_pickles_2]
             pc.yaxis.major_label_overrides = dict_ticker
 
             pc.add_layout(r.construct_color_bar(
