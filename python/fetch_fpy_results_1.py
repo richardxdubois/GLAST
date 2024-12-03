@@ -44,7 +44,7 @@ source_name = data["source"]
 num_pickles = data["num_pickles"]
 
 try:
-    phase_offset = data["phase_offset"]
+    phase_offset = int(data["phase_offset"])
 except KeyError:
     phase_offset = 0
 
