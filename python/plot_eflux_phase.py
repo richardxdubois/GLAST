@@ -187,7 +187,6 @@ class plot_eflux_phase():
         self.all_y = self.shift_list(self.all_y, self.phase_offset)
         self.all_A = self.shift_list(self.all_A, self.phase_offset)
         self.all_alpha = self.shift_list(self.all_alpha, self.phase_offset)
-        self.all_E_0 = self.shift_list(self.all_E_0, self.phase_offset)
         self.all_E_cut = self.shift_list(self.all_E_cut, self.phase_offset)
         self.integrated_fits = self.shift_list(self.integrated_fits, self.phase_offset)
         self.covariance = self.shift_list(self.covariance, self.phase_offset)
