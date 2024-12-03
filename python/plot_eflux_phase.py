@@ -151,7 +151,6 @@ class plot_eflux_phase():
         p_fig.scatter(self.loge_ctr, self.eflux, size=8, fill_color="white")
         p_fig.add_layout(Whisker(source=source, base="x", upper="upper",
                                  lower="lower", level="overlay"))
-        p_fig.legend.location = "bottom_right"
 
         flux_i = []
         errors_i = []
@@ -186,6 +185,7 @@ class plot_eflux_phase():
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
             flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
             p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
+            p_fig.legend.location = "bottom_right"
         except RuntimeError:
             print("fit failed")
             self.failed_fits += 1
