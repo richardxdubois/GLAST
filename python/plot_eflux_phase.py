@@ -388,9 +388,62 @@ class plot_eflux_phase():
         s = column(slider_A, slider_alpha, slider_E_cut)
         h_layout = column(del_div, s, column(heatmap_figs))
 
+        if self.source_name == "LSI61303":
+
+            # do heatmaps of fit parameters
+
+            source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, flux_d=flux_diffs))
+
+            # this is the colormap from the original NYTimes plot
+            colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
+
+            TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
+
+            dict_ticker = {}
+            for i, x_i in enumerate(self.all_x[0:self.num_pickles]):
+                dict_ticker[self.all_x[i]] = str(x_i / self.num_pickles)
+
+            tooltips = [('phases', 'super: @y orbital: @x'), ('flux_d', '@flux_d')]
+
+            pc = figure(title="Flux ratio",
+                       x_axis_location="above", width=900, height=900,
+                       tools=TOOLS, toolbar_location='below', y_axis_label="super phase", x_axis_label="orbital phase",
+                       tooltips=tooltips)
+
+            pc.grid.grid_line_color = None
+            pc.axis.axis_line_color = None
+            pc.axis.major_tick_line_color = None
+            pc.axis.major_label_text_font_size = "12px"
+            pc.axis.major_label_standoff = 0
+            pc.xaxis.major_label_orientation = np.pi / 3
+
+            fill_color = linear_cmap("flux_d", palette=palette, low=0, high=1)
+
+            r = pc.rect(x="x", y="y", width=1, height=1, source=source,
+                       fill_color=fill_color,
+                       line_color=None, )
+            pc.xaxis.ticker = self.all_x[0:self.num_pickles]
+            pc.xaxis.major_label_overrides = dict_ticker
+            pc.yaxis.ticker = self.all_y[0:self.num_pickles_2]
+            pc.yaxis.major_label_overrides = dict_ticker
+
+            pc.add_layout(r.construct_color_bar(
+                major_label_text_font_size="12px",
+                ticker=BasicTicker(desired_num_ticks=len(colors)),
+
+                label_standoff=6,
+                border_line_color=None,
+                padding=5,
+            ), 'right')
+
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
         panel2 = TabPanel(child=l, title="SED matrix")
-        tabs = Tabs(tabs=[panel1, panel2])
+
+        if source.name == "LSI61303":
+            panel3 = TabPanel(child=pc, title="LSI61303 pulsarness")
+            tabs = Tabs(tabs=[panel1, panel2, panel3])
+        else:
+            tabs = Tabs(tabs=[panel1, panel2])
 
         save(tabs, title=self.page_title)
 
