@@ -79,6 +79,15 @@ class plot_eflux_phase():
         except KeyError:
             pass
 
+        try:
+            self.phase_offset = int(data["phase_offset"])
+        except KeyError:
+            self.phase_offset = 0
+
+    def shift_list(self, lst, n):
+        n = n % len(lst)  # Ensure n is within the bounds of the list length
+        return lst[n:] + lst[:n]
+
     def loop_over_bins(self):
 
         for phase_bin in self.p_bins:
@@ -173,6 +182,16 @@ class plot_eflux_phase():
         self.seds[phase_bin1].append(p_fig)
 
     def output_plot(self):
+
+        self.all_x = self.shift_list(self.all_x, self.phase_offset)
+        self.all_y = self.shift_list(self.all_y, self.phase_offset)
+        self.all_A = self.shift_list(self.all_A, self.phase_offset)
+        self.all_alpha = self.shift_list(self.all_alpha, self.phase_offset)
+        self.all_E_0 = self.shift_list(self.all_E_0, self.phase_offset)
+        self.all_E_cut = self.shift_list(self.all_E_cut, self.phase_offset)
+        self.integrated_fits = self.shift_list(self.integrated_fits, self.phase_offset)
+        self.covariance = self.shift_list(self.covariance, self.phase_offset)
+        self.seds = self.shift_list(self.seds, self.phase_offset)
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
                             self.integrated_fits, self.covariance]
