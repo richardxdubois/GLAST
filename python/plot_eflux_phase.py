@@ -202,6 +202,7 @@ class plot_eflux_phase():
         self.integrated_fits = self.shift_list(self.integrated_fits, self.phase_offset)
         self.covariance = self.shift_list(self.covariance, self.phase_offset)
         self.seds = self.shift_map(self.seds, self.phase_offset)
+        print("shifted phase bins by", self.phase_offset)
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
                             self.integrated_fits, self.covariance]
