@@ -185,7 +185,7 @@ class plot_eflux_phase():
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
             flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
             p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
-            p_fig.legend.location = "bottom_right"
+            p_fig.legend.location = "bottom_left"
         except RuntimeError:
             print("fit failed")
             self.failed_fits += 1
