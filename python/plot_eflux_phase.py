@@ -94,7 +94,7 @@ class plot_eflux_phase():
         n = n % len(keys)  # Ensure n is within the bounds of the keys length
         shifted_keys = keys[n:] + keys[:n]  # Shift the keys
         # Create a new dictionary with shifted keys
-        shifted_dict = {key: d[key] for key in shifted_keys}
+        shifted_dict = {key: map[key] for key in shifted_keys}
 
         return shifted_dict
 
