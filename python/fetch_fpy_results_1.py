@@ -94,8 +94,15 @@ for phase_bin in np.arange(num_pickles):
 
     print(norm, norm_error)
 
-fluxs = shift_list(fluxs, phase_offset)
-fluxs_errors = shift_list(fluxs_errors, phase_offset)
+if phase_offset != 0:
+    fluxs = shift_list(fluxs, phase_offset)
+    fluxs_errors = shift_list(fluxs_errors, phase_offset)
+    alphas = shift_list(alphas, phase_offset)
+    betas = shift_list(betas, phase_offset)
+    efluxs = shift_list(efluxs, phase_offset)
+    efluxs_errors = shift_list(fluxs_errors, phase_offset)
+    npreds = shift_list(npreds, phase_offset)
+    tss = shift_list(tss, phase_offset)
 
 fluxs.extend(fluxs)
 fluxs_errors.extend(fluxs_errors)
