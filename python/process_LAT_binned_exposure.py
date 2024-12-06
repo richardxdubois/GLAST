@@ -93,41 +93,6 @@ class process_LAT_binned_exposure():
             self.exposure = data.EXPOSURE
             self.counts = data.COUNTS
 
-    def kludge_exp_weight(self):
-
-        r_weighted = []
-        weights = []
-
-        mean_counts = np.average(self.counts)
-        mean_rate = np.sum(self.counts) / np.sum(self.exposure)
-        mean_sub = self.counts - mean_counts
-
-        print("mean_counts", mean_counts, "mean_rate", mean_rate)
-
-        # best weighting so far:
-        #  err - np.sqrt(mean_rate*e)
-        #  r_weighted.append(self.counts[i]/ave)
-
-        for i, e in enumerate(self.exposure):
-            if e == 0.:
-                r_weighted.append(0.)
-                print("skipped over zero exposure at ", i, self.counts[i])
-            else:
-                pred = mean_rate*e
-                err = np.sqrt(pred)
-                #err = mean_rate*np.sqrt(e)  # "predicted" count error - optimal
-                if not self.do_weights:
-                    ave = 1.
-                #r_weighted.append(mean_sub[i] / e)
-                r_weighted.append(self.counts[i]/err)
-                weights.append(err)
-
-        r_weighted = np.array(r_weighted)
-        #weights = np.array(weights)
-        weights = None
-
-        return r_weighted, weights
-
     def Robin_exp_weight(self, timeslice=None):
 
         r_weighted = []
