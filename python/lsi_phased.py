@@ -9,7 +9,7 @@ parser.add_argument('--evfile', default='LSI_phase_0.txt', help="events file lis
 parser.add_argument('--output', default='pickle_0', help="output pickle file")
 parser.add_argument('--source', default='4FGL J1826.2-1450', help="source name")
 parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
-
+parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
 
 args = parser.parse_args()
 
@@ -21,7 +21,8 @@ print(args.overwrite)
 gta.setup(overwrite=args.overwrite)
 
 # Free Normalization of all Sources within 3 deg of ROI center
-gta.free_sources(distance=3.0, pars='norm')
+if args.freeze > 0.:
+    gta.free_sources(distance=args.freeze, pars='norm')
 
 # Free all parameters of isotropic and galactic diffuse components
 gta.free_source('galdiff')
