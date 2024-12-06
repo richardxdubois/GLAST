@@ -230,7 +230,7 @@ class process_LAT_binned_exposure():
         print("t_start", t_start, "t_end", t_end, "num orig bins", len(self.time), "num non-zero bins",
               len(self.counts))
 
-        frequency = np.linspace(self.f_start, self.f_stop, 100000)  # for orbital 100000
+        frequency = np.linspace(self.f_start, self.f_stop, 1000)  # for orbital 100000
 
         if weights is None:
             power = LombScargle(t=self.time, y=r_weighted).power(frequency)
