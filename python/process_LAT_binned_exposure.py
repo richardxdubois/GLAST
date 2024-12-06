@@ -166,7 +166,7 @@ class process_LAT_binned_exposure():
 
         r_weighted = np.array(r_weighted)
         #weights = np.array(weights)
-        weights = None
+        weights = np.ones(len(r_weighted))
 
 
         return r_weighted, weights
