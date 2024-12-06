@@ -140,10 +140,11 @@ class process_LAT_binned_exposure():
             exp = self.exposure
             t = self.time
         else:
-            cnts = self.counts[timeslice]
-            exp = self.exposure[timeslice]
-            t = self.time[timeslice]
+            cnts = list(self.counts[timeslice])
+            exp = list(self.exposure[timeslice])
+            t = list(self.time[timeslice])
 
+        print(" len cnts, exp, t", len(cnts), len(exp), len(t))
         mean_rate = np.sum(cnts) / np.sum(exp)
 
         for i, e in enumerate(exp):
