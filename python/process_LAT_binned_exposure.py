@@ -165,7 +165,8 @@ class process_LAT_binned_exposure():
             weights.append(err_rate)
 
         r_weighted = np.array(r_weighted)
-        weights = np.array(weights)
+        #weights = np.array(weights)
+        weights = None
 
 
         return r_weighted, weights
