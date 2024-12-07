@@ -70,8 +70,14 @@ for phase_bin in np.arange(num_pickles):
     norm_error = p_errors[0]
     alpha = p_values[1]
     alpha_error = p_errors[1]
-    beta = p_values[2]
-    beta_error = p_errors[2]
+
+    try:
+        beta = p_values[2]
+        beta_error = p_errors[2]
+    except KeyError:  # PL fit
+        beta = -999.
+        beta_error = -999.
+
     flux = LSI["flux"]
     flux_error =LSI["flux_err"]
     eflux = LSI["eflux"]
