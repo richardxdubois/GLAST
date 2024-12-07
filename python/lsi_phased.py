@@ -20,6 +20,8 @@ gta = GTAnalysis(args.config, logging={'verbosity': 3})
 print(args.overwrite)
 gta.setup(overwrite=args.overwrite)
 
+gta.optimize()
+
 # Free Normalization of all Sources within 3 deg of ROI center
 if args.freeze > 0.:
     gta.free_sources(distance=args.freeze, pars='norm')
