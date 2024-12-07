@@ -25,8 +25,9 @@ gta.optimize()
 
 if args.lowE:
     print("switching ", args.source, "to PL model")
-    source_glon = gta.model[args.source]['glon']
-    source_glat = gta.model[args.source]['glat']
+    model = gta.get_source(args.source)
+    source_glon = model[args.source]['glon']
+    source_glat = model[args.source]['glat']
 
     gta.delete_source(args.source)
 
