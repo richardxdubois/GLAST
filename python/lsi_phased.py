@@ -10,6 +10,7 @@ parser.add_argument('--output', default='pickle_0', help="output pickle file")
 parser.add_argument('--source', default='4FGL J1826.2-1450', help="source name")
 parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
 parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
+parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
 
 args = parser.parse_args()
 
@@ -21,6 +22,19 @@ print(args.overwrite)
 gta.setup(overwrite=args.overwrite)
 
 gta.optimize()
+
+if args.lowE:
+    print("switching ", args.source, "to PL model")
+    source_glon = gta.model[args.source]['glon']
+    source_glat = gta.model[args.source]['glat']
+
+    gta.delete_source(args.source)
+
+    # Add SourceA to the model
+    gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
+                    'SpectrumType' : 'PowerLaw', 'Index': 2.0,
+                    'Scale': 1000, 'Prefactor': 1e-11,
+                    'SpatialModel': 'PointSource'})
 
 # Free Normalization of all Sources within 3 deg of ROI center
 if args.freeze > 0.:
