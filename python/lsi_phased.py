@@ -11,7 +11,7 @@ parser.add_argument('--source', default='4FGL J1826.2-1450', help="source name")
 parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
 parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
 parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
-parser.add_argument('--gated', action='store_true', help="replace gated pulsar with log parabola")
+parser.add_argument('--gated', default='', help="replace named gated pulsar with log parabola")
 
 args = parser.parse_args()
 
@@ -33,22 +33,12 @@ if args.lowE:
 
     gta.delete_source(args.source)
 
-    # Add SourceA to the model
+    # Add Source back to the model
     gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
                     'SpectrumType' : 'PowerLaw', 'Index': 2.0,
                     'Scale': 1000, 'Prefactor': 1e-11,
                     'SpatialModel': 'PointSource'})
 
-if args.gated:
-    print("switching pulsar", args.source, "to LogParabola model")
-
-    gta.delete_source(args.source)
-
-    # Add SourceA to the model
-    gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
-                    'SpectrumType' : 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
-                    'Scale': 1000, 'norm': 1e-11,
-                    'SpatialModel': 'PointSource'})
 
 # Free Normalization of all Sources within 3 deg of ROI center
 if args.freeze > 0.:
@@ -58,6 +48,23 @@ if args.freeze > 0.:
 gta.free_source('galdiff')
 gta.free_source('isodiff')
 gta.free_source(args.source)
+
+if args.gated != '':
+
+    gta.delete_source(args.gated)
+
+    model_p = gta.roi.get_source_by_name(args.gated)
+    p_glon = model_p['glon']
+    p_glat = model_p['glat']
+
+    # Add Source back to the model
+    gta.add_source(args.gated, {'glon': p_glon, 'glat': p_glat,
+                                 'SpectrumType': 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
+                                 'Scale': 1000, 'norm': 1e-11,
+                                 'SpatialModel': 'PointSource'})
+    print("switching pulsar", args.gated, "to LogParabola model, and freeing")
+
+    gta.free_source(args.gated)
 
 fit_results = gta.fit()
 print('Fit Quality: ', fit_results['fit_quality'])
