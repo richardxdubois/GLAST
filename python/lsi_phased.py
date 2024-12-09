@@ -43,6 +43,7 @@ if args.lowE:
 # Free Normalization of all Sources within specified deg of ROI center
 
 gta.free_sources(distance=args.freeze, pars='norm')
+print("freeing sources to ", args.freeze, "deg")
 
 # Free all parameters of isotropic and galactic diffuse components
 gta.free_source('galdiff')
