@@ -40,9 +40,9 @@ if args.lowE:
                     'SpatialModel': 'PointSource'})
 
 
-# Free Normalization of all Sources within 3 deg of ROI center
-if args.freeze > 0.:
-    gta.free_sources(distance=args.freeze, pars='norm')
+# Free Normalization of all Sources within specified deg of ROI center
+
+gta.free_sources(distance=args.freeze, pars='norm')
 
 # Free all parameters of isotropic and galactic diffuse components
 gta.free_source('galdiff')
