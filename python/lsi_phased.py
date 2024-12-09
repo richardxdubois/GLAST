@@ -11,6 +11,7 @@ parser.add_argument('--source', default='4FGL J1826.2-1450', help="source name")
 parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
 parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
 parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
+parser.add_argument('--gated', action='store_true', help="replace gated pulsar with log parabola")
 
 args = parser.parse_args()
 
@@ -23,11 +24,12 @@ gta.setup(overwrite=args.overwrite)
 
 gta.optimize()
 
+model = gta.roi.get_source_by_name(args.source)
+source_glon = model['glon']
+source_glat = model['glat']
+
 if args.lowE:
     print("switching ", args.source, "to PL model")
-    model = gta.roi.get_source_by_name(args.source)
-    source_glon = model['glon']
-    source_glat = model['glat']
 
     gta.delete_source(args.source)
 
@@ -35,6 +37,17 @@ if args.lowE:
     gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
                     'SpectrumType' : 'PowerLaw', 'Index': 2.0,
                     'Scale': 1000, 'Prefactor': 1e-11,
+                    'SpatialModel': 'PointSource'})
+
+if args.gated:
+    print("switching pulsar", args.source, "to LogParabola model")
+
+    gta.delete_source(args.source)
+
+    # Add SourceA to the model
+    gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
+                    'SpectrumType' : 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
+                    'Scale': 1000, 'norm': 1e-11,
                     'SpatialModel': 'PointSource'})
 
 # Free Normalization of all Sources within 3 deg of ROI center
