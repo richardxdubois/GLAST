@@ -51,11 +51,11 @@ gta.free_source(args.source)
 
 if args.gated != '':
 
-    gta.delete_source(args.gated)
-
     model_p = gta.roi.get_source_by_name(args.gated)
     p_glon = model_p['glon']
     p_glat = model_p['glat']
+
+    gta.delete_source(args.gated)
 
     # Add Source back to the model
     gta.add_source(args.gated, {'glon': p_glon, 'glat': p_glat,
