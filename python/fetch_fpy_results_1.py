@@ -133,7 +133,6 @@ upper = [x+e for x,e in zip(norms, norms_errors)]
 lower = [x-e for x,e in zip(norms, norms_errors)]
 source = ColumnDataSource(data=dict(groups=p_bins, counts=norms, upper=upper, lower=lower))
 q_hist.add_layout(Whisker(source=source, base="groups", upper="upper", lower="lower", level="overlay"))
-q_hist.y_range.start = 1.e-12
 
 r_hist = figure(title="Alpha", x_axis_label='Phase bin', width=750)
 r_hist.line(p_bins, alphas, line_width=2)
@@ -168,7 +167,7 @@ f_upper = [x+e for x,e in zip(fluxs, fluxs_errors)]
 f_lower = [x-e for x,e in zip(fluxs, fluxs_errors)]
 f_source = ColumnDataSource(data=dict(groups=r_bins, counts=fluxs, upper=f_upper, lower=f_lower))
 u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay"))
-u_hist.y_range.start = 1.e-8
+
 u_hist.xaxis.ticker = r_bins
 u_hist.xaxis.major_label_overrides = dict_ticker
 u_hist.xaxis.major_label_orientation = 0.7
