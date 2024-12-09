@@ -56,9 +56,14 @@ super = data["super"]
 
 base_fn = data["base_fn"]
 
+try:
+    pickle_base = data["pickle_base"]
+except KeyError:
+    pickle_base = "pickle_"
+
 for phase_bin in np.arange(num_pickles):
 
-    p_name = base_fn + str(phase_bin) + "/pickle_" + str(phase_bin) + ".npy"
+    p_name = base_fn + str(phase_bin) + "/" + pickle_base + str(phase_bin) + ".npy"
 
     p = np.load(p_name, allow_pickle=True).flat[0]
 
