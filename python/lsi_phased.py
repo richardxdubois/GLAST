@@ -74,4 +74,7 @@ print(gta.roi[args.source])
 sed = gta.sed(args.source, make_plots=True, prefix=args.output)
 print(sed["eflux"])
 
+resid_map = gta.residmap(args.source,
+                model={'SpatialModel': 'PointSource', 'Index': 2.0})
+
 gta.write_roi(args.output, make_plots=True)
