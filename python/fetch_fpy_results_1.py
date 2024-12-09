@@ -61,6 +61,8 @@ try:
 except KeyError:
     pickle_base = "pickle_"
 
+print("pickle base", pickle_base)
+
 for phase_bin in np.arange(num_pickles):
 
     p_name = base_fn + str(phase_bin) + "/" + pickle_base + str(phase_bin) + ".npy"
