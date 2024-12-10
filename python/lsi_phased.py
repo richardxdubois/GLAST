@@ -45,9 +45,9 @@ if args.lowE:
 gta.free_sources(distance=args.freeze, pars='norm')
 print("freeing sources to ", args.freeze, "deg")
 
-# Free all parameters of isotropic and galactic diffuse components
-gta.free_source('galdiff')
-gta.free_source('isodiff')
+# Free norm parameters of isotropic and galactic diffuse components
+gta.free_source('galdiff', 'norm')
+gta.free_source('isodiff', 'norm')
 gta.free_source(args.source)
 
 if args.gated != '':
