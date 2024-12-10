@@ -67,6 +67,18 @@ if args.gated != '':
 
     gta.free_source(args.gated)
 
+free_sources = []
+for source_name, source in gta.model.items():
+    # Check if the source has any free parameters
+    free_params = [param for param in source['parameters'].values() if param['free']]
+    if free_params:
+        free_sources.append(source_name)
+
+print("Currently free sources in the model:")
+for source in free_sources:
+    print(source)
+
+
 fit_results = gta.fit()
 print('Fit Quality: ', fit_results['fit_quality'])
 print(gta.roi[args.source])
