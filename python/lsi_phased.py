@@ -22,7 +22,7 @@ gta = GTAnalysis(args.config, logging={'verbosity': 3})
 print(args.overwrite)
 gta.setup(overwrite=args.overwrite)
 
-#gta.optimize()
+gta.optimize()
 
 model = gta.roi.get_source_by_name(args.source)
 print(model)
@@ -89,5 +89,6 @@ print(sed["eflux"])
 
 r_model = {'Index' : 2.0, 'SpatialModel' : 'Gaussian', 'SpatialWidth' : 0.3 }
 resid_map = gta.residmap(args.source, make_plots=True, model=r_model)
+gta.plotter.make_residmap_plots(resid_map, roi=gta.roi)
 
 gta.write_roi(args.output, make_plots=True)
