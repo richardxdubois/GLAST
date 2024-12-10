@@ -68,11 +68,11 @@ if args.gated != '':
     gta.free_source(args.gated)
 
 free_sources = []
-for source_name, source in gta.model.items():
+source_model = gta.roi.get_sources()
+for m in source_model:
     # Check if the source has any free parameters
-    free_params = [param for param in source['parameters'].values() if param['free']]
-    if free_params:
-        free_sources.append(source_name)
+    if m.is_free():
+        free_sources.append(m.name)
 
 print("Currently free sources in the model:")
 for source in free_sources:
