@@ -89,6 +89,6 @@ print(sed["eflux"])
 
 r_model = {'Index' : 2.0, 'SpatialModel' : 'Gaussian', 'SpatialWidth' : 0.3 }
 resid_map = gta.residmap(args.source, make_plots=True, model=r_model)
-gta.plotter.make_residmap_plots(resid_map, roi=gta.roi)
+gta.plotter.make_residmap_plots(resid_map, roi=None)
 
 gta.write_roi(args.output, make_plots=True)
