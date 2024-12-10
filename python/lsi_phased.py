@@ -71,7 +71,7 @@ free_sources = []
 source_model = gta.roi.get_sources()
 for m in source_model:
     # Check if the source has any free parameters
-    if m.is_free():
+    if m.is_free:
         free_sources.append(m.name)
 
 print("Currently free sources in the model:")
