@@ -25,6 +25,7 @@ gta.setup(overwrite=args.overwrite)
 gta.optimize()
 
 model = gta.roi.get_source_by_name(args.source)
+print(model)
 source_glon = model['glon']
 source_glat = model['glat']
 
