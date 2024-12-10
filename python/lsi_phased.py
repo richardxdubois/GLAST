@@ -1,5 +1,6 @@
 from fermipy.gtanalysis import GTAnalysis
 import argparse
+import re
 
 # Command line arguments
 parser = argparse.ArgumentParser(description='run phased analysis')
@@ -87,8 +88,9 @@ print(gta.roi[args.source])
 sed = gta.sed(args.source, make_plots=True, prefix=args.output)
 print(sed["eflux"])
 
+map_name = args.output + re.sub(r'\s+', '_', args.source) + "_"
 r_model = {'Index' : 2.0, 'SpatialModel' : 'Gaussian', 'SpatialWidth' : 0.3 }
-resid_map = gta.residmap(args.source, make_plots=True, model=r_model)
+resid_map = gta.residmap(map_name, make_plots=True, model=r_model)
 gta.plotter.make_residmap_plots(resid_map, roi=None)
 
 gta.write_roi(args.output, make_plots=True)
