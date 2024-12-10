@@ -57,7 +57,7 @@ if args.gated != '':
     p_glat = model_p['glat']
 
     gta.delete_source(args.gated)
-
+    """
     # Add Source back to the model
     gta.add_source(args.gated, {'glon': p_glon, 'glat': p_glat,
                                  'SpectrumType': 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
@@ -65,7 +65,7 @@ if args.gated != '':
                                  'SpatialModel': 'PointSource'})
     print("switching pulsar", args.gated, "to LogParabola model, and freeing")
 
-    gta.free_source(args.gated)
+    gta.free_source(args.gated) """
 
 free_sources = []
 source_model = gta.roi.get_sources()
