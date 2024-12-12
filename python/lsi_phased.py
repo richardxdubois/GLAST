@@ -91,6 +91,6 @@ print(sed["eflux"])
 map_name = args.output + "_" + re.sub(r'\s+', '_', args.source) + "_"
 r_model = {'Index' : 2.0, 'SpatialModel' : 'Gaussian', 'SpatialWidth' : 0.3 }
 resid_map = gta.residmap(map_name, make_plots=True, model=r_model)
-gta.plotter.make_residmap_plots(resid_map, roi=None)
+gta.plotter.make_residmap_plots(resid_map, roi=model)
 
 gta.write_roi(args.output, make_plots=True)
