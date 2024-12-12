@@ -93,4 +93,7 @@ r_model = {'Index' : 2.0, 'SpatialModel' : 'Gaussian', 'SpatialWidth' : 0.3 }
 resid_map = gta.residmap(map_name, make_plots=True, model=r_model)
 gta.plotter.make_residmap_plots(resid_map, roi=None)
 
+ts_map = gta.ts(map_name, make_plots=True, model=r_model)
+gta.plotter.make_tsmap_plots(map_name, roi=None)
+
 gta.write_roi(args.output, make_plots=True)
