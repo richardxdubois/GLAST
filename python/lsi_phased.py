@@ -94,6 +94,6 @@ resid_map = gta.residmap(map_name, make_plots=True, model=r_model)
 gta.plotter.make_residmap_plots(resid_map, roi=None)
 
 ts_map = gta.tsmap(map_name, make_plots=True, model=r_model)
-gta.plotter.make_tsmap_plots(map_name, roi=None)
+gta.plotter.make_tsmap_plots(ts_map, roi=None)
 
 gta.write_roi(args.output, make_plots=True)
