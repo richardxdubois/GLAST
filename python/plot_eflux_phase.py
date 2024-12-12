@@ -221,12 +221,13 @@ class plot_eflux_phase():
             f_diff_ratio = (f - min_flux) / (max_flux - min_flux)
             flux_diffs.append(f_diff_ratio)
 
-        E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
-        for i_s, s in enumerate(self.all_y):
-            o = self.all_x[i_s]
-            flux_fit = ((1.-flux_diffs[i_s])*SED_function(E_fit, *min_flux_params) + flux_diffs[i_s] *
-                        SED_function(E_fit, self.all_A[i_s], self.all_alpha[i_s], self.all_E_cut[i_s]))  # Calculate the fitted flux
-            self.seds[s][o].line(E_fit, flux_fit, color='blue', legend_label='pulsarness')
+        if self.source_name == "LSI61303":
+            E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
+            for i_s, s in enumerate(self.all_y):
+                o = self.all_x[i_s]
+                flux_fit = ((1.-flux_diffs[i_s])*SED_function(E_fit, *min_flux_params) + flux_diffs[i_s] *
+                            SED_function(E_fit, self.all_A[i_s], self.all_alpha[i_s], self.all_E_cut[i_s]))  # Calculate the fitted flux
+                self.seds[s][o].line(E_fit, flux_fit, color='blue', legend_label='pulsarness')
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
                             self.integrated_fits, self.covariance]
