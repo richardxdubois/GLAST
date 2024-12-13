@@ -72,8 +72,8 @@ for phase_bin in np.arange(num_pickles):
 
     for super_bin in np.arange(num_pickles):
 
-            p_name = (base_fn + str(phase_bin) +
-                      base_super + str(super_bin) + pickle_base + str(super_bin) + ".npy")
+            p_name = (base_fn + str(phase_bin) + "/" +
+                      base_super + str(super_bin) + "/" + pickle_base + str(super_bin) + ".npy")
 
             p = np.load(p_name, allow_pickle=True).flat[0]
 
