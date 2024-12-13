@@ -1,6 +1,8 @@
 import numpy as np
 from datetime import datetime
 import pickle
+import argparse
+import yaml
 
 from bokeh.models.widgets import Div, NumberFormatter
 from bokeh.models.formatters import DatetimeTickFormatter
@@ -8,18 +10,43 @@ from bokeh.models import ColumnDataSource, Span, LinearAxis, Range1d, LinearColo
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--app_config', default="", help="overall app config file")
+args = parser.parse_args()
 
 
-source_name = "LSI61303"
+with open(args.app_config, "r") as f:
+    data = yaml.safe_load(f)
 
-num_pickles = 10
+
+source_name = data["source_name"]
+source_4fgl = data["source_4fgl"]
+
+num_pickles = data["num_pickles"]
+
+p_bins = np.arange(num_pickles)
+print(num_pickles, p_bins)
+
+base_fn = data["base_fn"]
+base_super = data["base_super"]
+
+plot_kind = data["plot_kind"]
+
+try:
+    pickle_base = data["pickle_base"]
+except KeyError:
+    pickle_base = "pickle_"
+
+html_file = data["html_file"]
+
 p_bins = np.arange(num_pickles)
 q_bins = p_bins
 q_bins = np.append(q_bins, p_bins)
 r_bins = np.arange(len(q_bins))
 dict_ticker = {}
 for i in r_bins:
-    dict_ticker[r_bins[i]] = str(q_bins[i]/10.)
+    dict_ticker[r_bins[i]] = str(q_bins[i]/float(num_pickles))
 
 
 d_hist = []
@@ -45,12 +72,13 @@ for phase_bin in np.arange(num_pickles):
 
     for super_bin in np.arange(num_pickles):
 
-            p_name = ("/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase" + str(phase_bin) +
-                      "/super_bins" + str(super_bin) + "/pickle_" + str(super_bin) + ".npy")
+            p_name = (base_fn + str(phase_bin) +
+                      base_super + str(super_bin) + pickle_base + str(super_bin) + ".npy")
 
             p = np.load(p_name, allow_pickle=True).flat[0]
 
-            LSI = p["sources"]['4FGL J0240.5+6113']
+            #LSI = p["sources"]['4FGL J0240.5+6113']
+            LSI = p["sources"][source_4fgl]
             p_values = LSI["param_values"]
             p_errors = LSI["param_errors"]
 
@@ -85,7 +113,8 @@ for phase_bin in np.arange(num_pickles):
     fluxs.extend(fluxs)
     fluxs_errors.extend(fluxs_errors)
 
-    u_hist = figure(title="flux - super phase bin:" + str(phase_bin) , x_axis_label='Phase bin', width=750)
+    title = "flux - " + plot_kind + " phase bin:" + str(phase_bin)
+    u_hist = figure(title=title, x_axis_label='Phase bin', width=750)
     #u_hist.line(p_bins, fluxs, line_width=2)
     color = "red"
     if phase_bin < 5:
@@ -120,7 +149,7 @@ with open('heatmap.pkl', 'wb') as file:
     # Dump the data into the file
     pickle.dump([all_x, all_y, all_flux], file)
     
-output_file("LS_params_orb_super_sliced.html")
+output_file(html_file)
 del_div = Div(text=source_name + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 l = layout(del_div, column(d_hist, sizing_mode="stretch_width", spacing=0))
