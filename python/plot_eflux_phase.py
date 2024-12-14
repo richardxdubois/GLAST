@@ -451,7 +451,7 @@ class plot_eflux_phase():
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
         panel2 = TabPanel(child=l, title="SED matrix")
 
-        if self.source_name == "LSI61303":
+        if self.source_name == "LSI61303" and not self.no_comp:
             panel3 = TabPanel(child=pc, title="LSI61303 pulsarness")
             tabs = Tabs(tabs=[panel1, panel2, panel3])
         else:
