@@ -226,7 +226,7 @@ class plot_eflux_phase():
             f_diff_ratio = (f - min_flux) / (max_flux - min_flux)
             flux_diffs.append(f_diff_ratio)
 
-        if self.source_name == "LSI61303" and not args.no_comp:
+        if self.source_name == "LSI61303" and not self.no_comp:
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
             for i_s, s in enumerate(self.all_y):
                 o = self.all_x[i_s]
