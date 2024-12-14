@@ -13,6 +13,7 @@ parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
 parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
 parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
 parser.add_argument('--gated', default='', help="replace named gated pulsar with log parabola")
+parser.add_argument('--add_fixed', action='store_true', help="add fixed source at target location")
 
 args = parser.parse_args()
 
@@ -47,6 +48,16 @@ if args.lowE:
 gta.free_sources(distance=args.freeze, pars='norm')
 print("freeing sources to ", args.freeze, "deg")
 
+if args.add_fixed:
+    fixed_source_name = args.source + '_fixed'
+    gta.add_source(fixed_source_name, { 'glon': source_glon, 'glat': source_glat,
+                    'SpectrumType' : 'LogParabola', 'alpha': 2.164,
+                    'Scale': 1000, 'norm': 3.696e-11, 'beta': 0.1728, 'Eb':1178.,
+                    'SpatialModel': 'PointSource'}, free=False)
+    print("adding fixed source: ", fixed_source_name)
+
+
+
 # Free norm parameters of isotropic and galactic diffuse components
 gta.free_source('galdiff', pars='norm')
 gta.free_source('isodiff', pars='norm')
@@ -80,10 +91,13 @@ print("Currently free sources in the model:")
 for source in free_sources:
     print(source)
 
-
 fit_results = gta.fit()
 print('Fit Quality: ', fit_results['fit_quality'])
 print(gta.roi[args.source])
+
+if args.add_fixed:
+    print(gta.roi[fixed_source_name])
+
 
 sed = gta.sed(args.source, make_plots=True, prefix=args.output)
 print(sed["eflux"])
