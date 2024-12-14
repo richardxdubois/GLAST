@@ -24,7 +24,7 @@ gta = GTAnalysis(args.config, logging={'verbosity': 3})
 print(args.overwrite)
 gta.setup(overwrite=args.overwrite)
 
-gta.optimize()
+#gta.optimize()
 
 model = gta.roi.get_source_by_name(args.source)
 print(model)
