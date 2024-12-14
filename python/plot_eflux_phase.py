@@ -280,7 +280,8 @@ class plot_eflux_phase():
                     ]
         title = ["A", "alpha", "E_cut", "int_f"]
         high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), max(self.integrated_fits)])
-        low = 0.99*np.array([min(self.all_A), min(self.all_alpha), min(self.all_E_cut), min(self.integrated_fits)])
+        low = 0.99*np.array([max(0.,min(self.all_A)), max(0.,min(self.all_alpha)),
+                             max(0.,min(self.all_E_cut)), max(0.,min(self.integrated_fits))])
 
         for h in range(4):
 
@@ -399,7 +400,7 @@ class plot_eflux_phase():
         s = column(slider_A, slider_alpha, slider_E_cut)
         h_layout = column(del_div, s, column(heatmap_figs))
 
-        if self.source_name == "LSI61303":
+        if self.source_name == "LSI61303" and not self.no_comp:
 
             # do heatmaps of fit parameters
 
