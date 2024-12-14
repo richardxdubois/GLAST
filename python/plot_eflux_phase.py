@@ -186,7 +186,7 @@ class plot_eflux_phase():
             flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
             p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
             p_fig.legend.location = "bottom_left"
-        except RuntimeError:
+        except:
             print("fit failed")
             self.failed_fits += 1
             pass
