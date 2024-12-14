@@ -194,6 +194,11 @@ class plot_eflux_phase():
         except:
             print("fit failed")
             self.failed_fits += 1
+            self.all_A.append(-999.)
+            self.all_alpha.append(-999.)
+            self.all_E_cut.append(-999.)
+            self.integrated_fits.append(-999.)
+            self.covariance.append(-999.)
             pass
 
         self.seds[phase_bin1].append(p_fig)
