@@ -70,6 +70,7 @@ class plot_eflux_phase():
         self.fermipy_fit = []
         self.fermipy_flux = []
         self.fermipy_alpha = []
+        self.fermipy_TS = []
 
         try:
             self.num_pickles_2 = data["num_pickles_2"]
@@ -188,6 +189,7 @@ class plot_eflux_phase():
         print(flux, errors, E)
 
         self.fermipy_flux.append(self.fermipy_fit["flux"])
+        self.fermipy_flux.append(self.fermipy_TS["ts"])
         self.fermipy_alpha.append(-1.*self.fermipy_fit["param_values"][1])
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
@@ -229,6 +231,7 @@ class plot_eflux_phase():
             self.seds = self.shift_map(self.seds, self.phase_offset)
             self.fermipy_flux = self.shift_map(self.fermipy_flux, self.phase_offset)
             self.fermipy_alpha = self.shift_map(self.fermipy_alpha, self.phase_offset)
+            self.fermipy_TS = self.shift_map(self.fermipy_TS, self.phase_offset)
 
         print("shifted phase bins by", self.phase_offset)
 
@@ -277,7 +280,8 @@ class plot_eflux_phase():
 
         source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, A=self.all_A, alpha=self.all_alpha,
                                             E_cut=self.all_E_cut, int_f=self.integrated_fits,
-                                            fpy_flux=self.fermipy_flux, fpy_alpha=self.fermipy_alpha))
+                                            fpy_flux=self.fermipy_flux, fpy_alpha=self.fermipy_alpha,
+                                            TS=self.fermipy_TS))
 
         # this is the colormap from the original NYTimes plot
         colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
@@ -294,14 +298,16 @@ class plot_eflux_phase():
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
                     [('phases', 'super: @y orbital: @x'), ('int_f', '@int_f')],
                     [('phases', 'super: @y orbital: @x'), ('fpy_flux', '@fpy_flux')],
-                    [('phases', 'super: @y orbital: @x'), ('fpy_alpha', '@fpy_alpha')]
+                    [('phases', 'super: @y orbital: @x'), ('fpy_alpha', '@fpy_alpha')],
+                    [('phases', 'super: @y orbital: @x'), ('TS', '@TS')]
                     ]
-        title = ["A", "alpha", "E_cut", "int_f", "fpy_flux", "fpy_alpha"]
+        title = ["A", "alpha", "E_cut", "int_f", "fpy_flux", "fpy_alpha", "TS"]
         high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), max(self.integrated_fits),
-                              max(self.fermipy_flux), max(self.fermipy_alpha)])
+                              max(self.fermipy_flux), max(self.fermipy_alpha), max(self.fermipy_TS)])
         low = 0.99*np.array([max(0.,min(self.all_A)), max(0.,min(self.all_alpha)),
                              max(0.,min(self.all_E_cut)), max(0.,min(self.integrated_fits)),
-                             max(0.,min(self.fermipy_flux)), max(0.,min(self.fermipy_alpha))])
+                             max(0.,min(self.fermipy_flux)), max(0.,min(self.fermipy_alpha)),
+                             max(0.,min(self.fermipy_TS))])
 
         for h in range(len(title)):
 
@@ -344,6 +350,7 @@ class plot_eflux_phase():
         # create sliders
         steps = (high - low)/20.
 
+        slider_TS = RangeSlider(start=low[5], end=high[5], value=(low[5], high[5]), step=steps[5], title="TS")
         slider_A = RangeSlider(start=low[0], end=high[0], value=(low[0], high[0]), step=steps[0], title="A")
         slider_A.format = BasicTickFormatter(use_scientific=True)  # Set format to scientific notation
         slider_alpha = RangeSlider(start=low[1], end=high[1], value=(low[1], high[1]), step=steps[1], title="alpha")
@@ -382,11 +389,13 @@ class plot_eflux_phase():
                 || original_data.alpha_orig[i] < lowerLimit_alpha 
                 || original_data.alpha_orig[i] > upperLimit_alpha 
                 ||original_data.E_cut_orig[i] < lowerLimit_E_cut || original_data.E_cut_orig[i] > upperLimit_E_cut) {
+                    TS[i] = -1.;
                     A[i] = -1.;
                     alpha[i] = -1.;
                     E_cut[i] = -1.;
                     int_f[i] = -1.
                 } else {
+                    source.data["TS"][i] = original_data.TS_orig[i];
                     source.data["A"][i] = original_data.A_orig[i];
                     source.data["alpha"][i] = original_data.alpha_orig[i];
                     source.data["E_cut"][i] = original_data.E_cut_orig[i];
@@ -402,6 +411,7 @@ class plot_eflux_phase():
         button.js_on_click(CustomJS(args=dict(source=source, button=button), code="""
             // Save the original data in a JavaScript variable
         
+            original_data.TS_orig = source.data['TS'].slice();
             original_data.A_orig = source.data['A'].slice();
             original_data.alpha_orig = source.data['alpha'].slice();
             original_data.E_cut_orig = source.data['E_cut'].slice();
@@ -412,12 +422,13 @@ class plot_eflux_phase():
         """))
 
         # Attach the callback to the sliders
+        slider_TS.js_on_change('value', callback)
         slider_A.js_on_change('value', callback)
         slider_alpha.js_on_change('value', callback)
         slider_E_cut.js_on_change('value', callback)
 
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
-        s = column(slider_A, slider_alpha, slider_E_cut)
+        s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
         h_layout = column(del_div, s, column(heatmap_figs))
 
         if self.source_name == "LSI61303" and not self.no_comp:
