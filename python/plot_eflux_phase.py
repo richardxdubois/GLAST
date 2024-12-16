@@ -69,6 +69,7 @@ class plot_eflux_phase():
 
         self.fermipy_fit = []
         self.fermipy_flux = []
+        self.fermipy_alpha = []
 
         try:
             self.num_pickles_2 = data["num_pickles_2"]
@@ -187,6 +188,7 @@ class plot_eflux_phase():
         print(flux, errors, E)
 
         self.fermipy_flux.append(self.fermipy_fit["flux"])
+        self.fermipy_alpha.append(self.fermipy_fit["param_values"][1])
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
             print("Fitted parameters:", params)
@@ -226,6 +228,7 @@ class plot_eflux_phase():
             self.covariance = self.shift_list(self.covariance, self.phase_offset)
             self.seds = self.shift_map(self.seds, self.phase_offset)
             self.fermipy_flux = self.shift_map(self.fermipy_flux, self.phase_offset)
+            self.fermipy_alpha = self.shift_map(self.fermipy_alpha, self.phase_offset)
 
         print("shifted phase bins by", self.phase_offset)
 
@@ -274,7 +277,7 @@ class plot_eflux_phase():
 
         source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, A=self.all_A, alpha=self.all_alpha,
                                             E_cut=self.all_E_cut, int_f=self.integrated_fits,
-                                            fpy_flux=self.fermipy_flux))
+                                            fpy_flux=self.fermipy_flux, fpy_alpha=self.fermipy_alpha))
 
         # this is the colormap from the original NYTimes plot
         colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
@@ -290,14 +293,15 @@ class plot_eflux_phase():
                     [('phases', 'super: @y orbital: @x'), ('alpha', '@alpha')],
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
                     [('phases', 'super: @y orbital: @x'), ('int_f', '@int_f')],
-                    [('phases', 'super: @y orbital: @x'), ('fpy_flux', '@fpy_flux')]
+                    [('phases', 'super: @y orbital: @x'), ('fpy_flux', '@fpy_flux')],
+                    [('phases', 'super: @y orbital: @x'), ('fpy_alpha', '@fpy_alpha')]
                     ]
-        title = ["A", "alpha", "E_cut", "int_f", "fpy_flux"]
+        title = ["A", "alpha", "E_cut", "int_f", "fpy_flux", "fpy_alpha"]
         high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), max(self.integrated_fits),
-                              max(self.fermipy_flux)])
+                              max(self.fermipy_flux), max(self.fermipy_alpha)])
         low = 0.99*np.array([max(0.,min(self.all_A)), max(0.,min(self.all_alpha)),
                              max(0.,min(self.all_E_cut)), max(0.,min(self.integrated_fits)),
-                             max(0.,min(self.fermipy_flux))])
+                             max(0.,min(self.fermipy_flux)), max(0.,min(self.fermipy_alpha))])
 
         for h in range(len(title)):
 
