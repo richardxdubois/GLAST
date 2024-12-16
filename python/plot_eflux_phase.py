@@ -67,6 +67,9 @@ class plot_eflux_phase():
         self.integrated_fits = []
         self.covariance = []
 
+        self.fermipy_fit = []
+        self.fermipy_flux = []
+
         try:
             self.num_pickles_2 = data["num_pickles_2"]
             self.base_fn_2 = data["base_fn_2"]
@@ -116,14 +119,16 @@ class plot_eflux_phase():
                 self.all_x.append(phase_bin_2)
 
                 if self.num_pickles_2 == 0:
-                    infile = self.base_fn + str(phase_bin) + "/" + self.sed_prefix + \
-                              str(phase_bin) + "_" + self.fgl_source + "_sed.npy"
+                    infile_b = self.base_fn + str(phase_bin) + "/" + self.sed_prefix + \
+                              str(phase_bin)
+                    infile = infile_b + "_" + self.fgl_source + "_sed.npy"
                 else:
-                    infile = (self.base_fn + str(phase_bin) + "/" + self.base_fn_2 +
-                              str(phase_bin_2) + "/" + self.sed_prefix + str(phase_bin_2) + "_" +
-                              self.fgl_source + "_sed.npy")
+                    infile_b = (self.base_fn + str(phase_bin) + "/" + self.base_fn_2 +
+                              str(phase_bin_2) + "/" + self.sed_prefix + str(phase_bin_2))
+                    infile = infile_b + "_" + self.fgl_source + "_sed.npy"
+                infile_f = infile_b + ".npy"
 
-                print("working on ",infile)
+                print("working on ", infile)
                 p = np.load(infile, allow_pickle=True).flat[0]
 
                 self.eflux = p["e2dnde"]
@@ -133,6 +138,10 @@ class plot_eflux_phase():
 
                 self.b_upper = [x+e for x, e in zip(self.eflux, self.eflux_err_hi)]
                 self.b_lower = [x-e for x, e in zip(self.eflux, self.eflux_err_lo)]
+
+                p_fermipy = np.load(infile_f, allow_pickle=True).flat[0]
+
+                self.fit_fermipy = p_fermipy["sources"][self.fgl_source]
 
                 rc = self.make_plot(phase_bin1=phase_bin, phase_bin2=phase_bin_2)
 
@@ -185,6 +194,7 @@ class plot_eflux_phase():
             integrated_fits, int_error = quad(flux_function, 100., 10000., args=tuple(params))
             self.integrated_fits.append(integrated_fits)
             self.covariance.append(covariance)
+            self.fermipy_flux.append(self.fermipy_fit["flux"])
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
@@ -199,6 +209,7 @@ class plot_eflux_phase():
             self.all_E_cut.append(-999.)
             self.integrated_fits.append(-999.)
             self.covariance.append(-999.)
+            self.fermipy_flux.append(-999.)
             pass
 
         self.seds[phase_bin1].append(p_fig)
@@ -214,6 +225,7 @@ class plot_eflux_phase():
             self.integrated_fits = self.shift_list(self.integrated_fits, self.phase_offset)
             self.covariance = self.shift_list(self.covariance, self.phase_offset)
             self.seds = self.shift_map(self.seds, self.phase_offset)
+            self.fermipy_flux = self.shift_map(self.fermipy_flux, self.phase_offset)
 
         print("shifted phase bins by", self.phase_offset)
 
@@ -261,7 +273,8 @@ class plot_eflux_phase():
         # do heatmaps of fit parameters
 
         source = ColumnDataSource(data=dict(x=self.all_x, y=self.all_y, A=self.all_A, alpha=self.all_alpha,
-                                            E_cut=self.all_E_cut, int_f=self.integrated_fits))
+                                            E_cut=self.all_E_cut, int_f=self.integrated_fits),
+                                            fpy_flux=self.fermipy_flux)
 
         # this is the colormap from the original NYTimes plot
         colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
@@ -277,13 +290,16 @@ class plot_eflux_phase():
                     [('phases', 'super: @y orbital: @x'), ('alpha', '@alpha')],
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
                     [('phases', 'super: @y orbital: @x'), ('int_f', '@int_f')]
+                    [('phases', 'super: @y orbital: @x'), ('fpy_flux', '@fpy_flux')]
                     ]
-        title = ["A", "alpha", "E_cut", "int_f"]
-        high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), max(self.integrated_fits)])
+        title = ["A", "alpha", "E_cut", "int_f", "fpy_flux"]
+        high = 1.01*np.array([max(self.all_A), max(self.all_alpha), max(self.all_E_cut), max(self.integrated_fits),
+                              max(self.fermipy_flux)])
         low = 0.99*np.array([max(0.,min(self.all_A)), max(0.,min(self.all_alpha)),
-                             max(0.,min(self.all_E_cut)), max(0.,min(self.integrated_fits))])
+                             max(0.,min(self.all_E_cut)), max(0.,min(self.integrated_fits)),
+                             max(0.,min(self.fermipy_flux))])
 
-        for h in range(4):
+        for h in range(len(title)):
 
             p = figure(title=title[h],
                        x_axis_location="above", width=900, height=900,
