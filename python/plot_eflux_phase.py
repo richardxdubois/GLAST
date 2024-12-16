@@ -142,7 +142,7 @@ class plot_eflux_phase():
                 p_fermipy = np.load(infile_f, allow_pickle=True).flat[0]
 
                 f_name = self.fgl_source.replace("_", " ").upper()
-                self.fit_fermipy = p_fermipy["sources"][f_name]
+                self.fermipy_fit = p_fermipy["sources"][f_name]
 
                 rc = self.make_plot(phase_bin1=phase_bin, phase_bin2=phase_bin_2)
 
