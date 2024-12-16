@@ -141,7 +141,8 @@ class plot_eflux_phase():
 
                 p_fermipy = np.load(infile_f, allow_pickle=True).flat[0]
 
-                self.fit_fermipy = p_fermipy["sources"][self.fgl_source]
+                f_name = self.fgl_source.replace("_", " ").upper()
+                self.fit_fermipy = p_fermipy["sources"][f_name]
 
                 rc = self.make_plot(phase_bin1=phase_bin, phase_bin2=phase_bin_2)
 
@@ -289,7 +290,7 @@ class plot_eflux_phase():
         tooltips = [[('phases', 'super: @y orbital: @x'), ('A', '@A')],
                     [('phases', 'super: @y orbital: @x'), ('alpha', '@alpha')],
                     [('phases', 'super: @y orbital: @x'), ('E_cut', '@E_cut')],
-                    [('phases', 'super: @y orbital: @x'), ('int_f', '@int_f')]
+                    [('phases', 'super: @y orbital: @x'), ('int_f', '@int_f')],
                     [('phases', 'super: @y orbital: @x'), ('fpy_flux', '@fpy_flux')]
                     ]
         title = ["A", "alpha", "E_cut", "int_f", "fpy_flux"]
