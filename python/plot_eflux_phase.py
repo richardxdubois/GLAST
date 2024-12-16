@@ -186,6 +186,7 @@ class plot_eflux_phase():
         print("Processing super bin ", phase_bin1, "orb bin ", phase_bin2)
         print(flux, errors, E)
 
+        self.fermipy_flux.append(self.fermipy_fit["flux"])
         try:
             params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
             print("Fitted parameters:", params)
@@ -195,7 +196,6 @@ class plot_eflux_phase():
             integrated_fits, int_error = quad(flux_function, 100., 10000., args=tuple(params))
             self.integrated_fits.append(integrated_fits)
             self.covariance.append(covariance)
-            self.fermipy_flux.append(self.fermipy_fit["flux"])
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
@@ -210,7 +210,6 @@ class plot_eflux_phase():
             self.all_E_cut.append(-999.)
             self.integrated_fits.append(-999.)
             self.covariance.append(-999.)
-            self.fermipy_flux.append(-999.)
             pass
 
         self.seds[phase_bin1].append(p_fig)
