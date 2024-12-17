@@ -366,8 +366,11 @@ class plot_eflux_phase():
             if (typeof original_data == 'undefined') {
                 console.log('about to initialize original data');
                 original_data = new Map();
+                console.log('created empty map for original_data');
                 original_data.TS_orig = source.data['TS'].slice();
+                console.log('add TS to original_data');
                 original_data.A_orig = source.data['A'].slice();
+                console.log('add A to original_data');
                 original_data.alpha_orig = source.data['alpha'].slice();
                 original_data.E_cut_orig = source.data['E_cut'].slice();
                 original_data.int_f = source.data['int_f'].slice();
