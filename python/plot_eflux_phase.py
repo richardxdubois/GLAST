@@ -259,6 +259,7 @@ class plot_eflux_phase():
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
                             self.integrated_fits, self.covariance]
+
         # Write to a pickle file
         with open(self.params_save_pickle, 'wb') as file:
             pickle.dump(all_lists_params, file)
@@ -346,6 +347,16 @@ class plot_eflux_phase():
             ), 'right')
 
             heatmap_figs.append(p)
+
+        # histograms
+
+        fpy_alpha_hist, fpy_alpha_edges = np.histogram(self.fermipy_alpha, bins=100)
+        alpha_hist = figure(title="fpy Alpha",
+                            x_axis_label='Index', y_axis_label='counts',
+                            width=750)
+
+        alpha_hist.vbar(top=fpy_alpha_hist, x=fpy_alpha_edges[1:], width=fpy_alpha_edges[1] - fpy_alpha_edges[0],
+                        fill_color='red', fill_alpha=0.2, bottom=0)
 
         # create sliders
         steps = (high - low)/20.
@@ -445,7 +456,7 @@ class plot_eflux_phase():
 
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
         s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
-        h_layout = column(del_div, s, column(heatmap_figs))
+        h_layout = row(column(del_div, s, column(heatmap_figs)), alpha_hist)
 
         if self.source_name == "LSI61303" and not self.no_comp:
 
@@ -494,6 +505,7 @@ class plot_eflux_phase():
                 border_line_color=None,
                 padding=5,
             ), 'right')
+
 
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
         panel2 = TabPanel(child=l, title="SED matrix")
