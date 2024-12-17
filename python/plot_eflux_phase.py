@@ -362,10 +362,10 @@ class plot_eflux_phase():
         callback = CustomJS(
             args=dict(source=source, slider0=slider_TS, slider1=slider_A, slider2=slider_alpha,
                       slider3=slider_E_cut), code="""
-            if (Object.keys(original_data).length == 0) {
-                //if (typeof original_data == 'undefined') {
+            //if (Object.keys(original_data).length == 0) {
+            if (typeof original_data == 'undefined') {
                 console.log('about to initialize original data');
-                var original_data = new Map();
+                var original_data = new Map().constructor;
                 console.log('created empty map for original_data');
                 original_data.TS_orig = source.data['TS'].slice();
                 console.log('add TS to original_data');
