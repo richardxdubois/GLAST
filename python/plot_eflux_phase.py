@@ -369,6 +369,7 @@ class plot_eflux_phase():
                 original_data.E_cut_orig = source.data['E_cut'].slice();
                 original_data.int_f = source.data['int_f'].slice();
                 original_data.fpy_flux = source.data['fpy_flux'].slice();
+                original_data.fpy_alpha = source.data['fpy_alpha'].slice();
                 }
             const data = source.data;
             const y = data['y'];
@@ -379,6 +380,7 @@ class plot_eflux_phase():
             const E_cut = data['E_cut'];
             const int_f = data['int_f'];
             const fpy_flux = data['fpy_flux'];
+            const fpy_alpha = data['fpy_alpha'];
             
             const lowerLimit_TS = slider0.value[0];
             const upperLimit_TS = slider0.value[1];
@@ -403,6 +405,7 @@ class plot_eflux_phase():
                     E_cut[i] = -1.;
                     int_f[i] = -1.
                     fpy_flux[i] = -1.;
+                    fpy_alpha[i] = -1.;
                 } else {
                     source.data["TS"][i] = original_data.TS_orig[i];
                     source.data["A"][i] = original_data.A_orig[i];
@@ -410,6 +413,7 @@ class plot_eflux_phase():
                     source.data["E_cut"][i] = original_data.E_cut_orig[i];
                     source.data["int_f"][i] = original_data.int_f[i];
                     source.data["fpy_flux"][i] = original_data.fpy_flux[i];
+                    source.data["fpy_alpha"][i] = original_data.fpy_alpha[i];
                 }
             }
             source.change.emit();
