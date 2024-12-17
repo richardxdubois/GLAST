@@ -55,8 +55,6 @@ class plot_eflux_phase():
         self.base_fn_2 = None
         self.p_bins_2 = []
         self.failed_fits = 0
-        self.initial_guesses = [1e-4, 1., 1e3]
-        self.backup_guesses = [1e-4, -0.5, 1e3, 1e3]
 
         self.all_x = []
         self.all_y = []
@@ -99,12 +97,16 @@ class plot_eflux_phase():
         except KeyError:
             self.lowE = False
 
-        if self.lowE:
+        if not self.lowE:
             self.fit_func = SED_function
             self.int_func = flux_function
+            self.initial_guesses = [1e-4, 1., 1e3]
+            self.backup_guesses = [1e-4, -0.5, 1e3, 1e3]
         else:
             self.fit_func = SED_PL_function
             self.int_func = flux_PL_function
+            self.initial_guesses = [1e-4, 1.]
+            self.backup_guesses = [1e-4, -0.5, 1.e3]
 
     def shift_list(self, lst, n):
         n = n % len(lst)  # Ensure n is within the bounds of the list length
