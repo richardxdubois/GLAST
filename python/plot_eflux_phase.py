@@ -350,7 +350,7 @@ class plot_eflux_phase():
 
         # histograms
 
-        fpy_alpha_hist, fpy_alpha_edges = np.histogram(self.fermipy_alpha, bins=100)
+        fpy_alpha_hist, fpy_alpha_edges = np.histogram(self.fermipy_alpha, bins=25)
         alpha_hist = figure(title="fpy Alpha",
                             x_axis_label='Index', y_axis_label='counts',
                             width=750)
