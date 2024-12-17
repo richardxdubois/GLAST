@@ -7,7 +7,7 @@ import pickle
 from datetime import datetime
 from scipy.integrate import quad
 
-from fit_SED import SED_function, fit_SED, flux_function
+from fit_SED import SED_function, fit_SED, flux_function, SED_PL_function, flux_PL_function
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
@@ -93,6 +93,18 @@ class plot_eflux_phase():
             self.no_comp = data["no_comp"]
         except KeyError:
             self.no_comp = False
+
+        try:
+            self.lowE = data["lowE"]
+        except KeyError:
+            self.lowE = False
+
+        if self.lowE:
+            self.fit_func = SED_function
+            self.int_func = flux_function
+        else:
+            self.fit_func = SED_PL_function
+            self.int_func = flux_PL_function
 
     def shift_list(self, lst, n):
         n = n % len(lst)  # Ensure n is within the bounds of the list length
@@ -192,18 +204,23 @@ class plot_eflux_phase():
         self.fermipy_TS.append(self.fermipy_fit["ts"])
         self.fermipy_alpha.append(-1.*self.fermipy_fit["param_values"][1])
         try:
-            params, covariance = fit_SED(E, flux, errors, self.initial_guesses)
+            params, covariance = fit_SED(self.fit_func, flux, errors, self.initial_guesses)
             print("Fitted parameters:", params)
             self.all_A.append(params[0])
             self.all_alpha.append(params[1])
-            self.all_E_cut.append(params[2])
-            integrated_fits, int_error = quad(flux_function, 100., 10000., args=tuple(params))
+
+            if len(params) < 3:
+                self.all_E_cut.append(-999.)
+            else:
+                self.all_E_cut.append(params[2])
+
+            integrated_fits, int_error = quad(self.int_func, 100., 10000., args=tuple(params))
             self.integrated_fits.append(integrated_fits)
             self.covariance.append(covariance)
 
             # Generate data for the fit line
             E_fit = np.linspace(1e2, 1e4, 100)  # Energy range for the fit
-            flux_fit = SED_function(E_fit, *params)  # Calculate the fitted flux
+            flux_fit = self.fit_func(E_fit, *params)  # Calculate the fitted flux
             p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
             p_fig.legend.location = "bottom_left"
         except:
