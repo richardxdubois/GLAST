@@ -360,9 +360,10 @@ class plot_eflux_phase():
 
         # CustomJS callback to update rectangle colors based on slider values
         callback = CustomJS(
-            args=dict(source=source, slider1=slider_A, slider2=slider_alpha,
+            args=dict(source=source, slider0=slider_TS, slider1=slider_A, slider2=slider_alpha,
                       slider3=slider_E_cut), code="""
             if (Object.keys(original_data).length == 0) {
+                original_data.TS_orig = source.data['TS'].slice();
                 original_data.A_orig = source.data['A'].slice();
                 original_data.alpha_orig = source.data['alpha'].slice();
                 original_data.E_cut_orig = source.data['E_cut'].slice();
@@ -371,11 +372,14 @@ class plot_eflux_phase():
             const data = source.data;
             const y = data['y'];
             const x = data['x'];
+            const TS = data['TS'];
             const A = data['A'];
             const alpha = data['alpha'];
             const E_cut = data['E_cut'];
             const int_f = data['int_f'];
             
+            const lowerLimit_TS = slider0.value[0];
+            const upperLimit_TS = slider0.value[1];
             const lowerLimit_A = slider1.value[0];
             const upperLimit_A = slider1.value[1];
             const lowerLimit_alpha = slider2.value[0];
@@ -388,6 +392,8 @@ class plot_eflux_phase():
                 if (original_data.A_orig[i] < lowerLimit_A || original_data.A_orig[i] > upperLimit_A 
                 || original_data.alpha_orig[i] < lowerLimit_alpha 
                 || original_data.alpha_orig[i] > upperLimit_alpha 
+                || original_data.TS_orig[i] < lowerLimit_TS 
+                || original_data.TS_orig[i] > upperLimit_TS
                 ||original_data.E_cut_orig[i] < lowerLimit_E_cut || original_data.E_cut_orig[i] > upperLimit_E_cut) {
                     TS[i] = -1.;
                     A[i] = -1.;
