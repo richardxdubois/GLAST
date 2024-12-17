@@ -373,7 +373,7 @@ class plot_eflux_phase():
                 original_data.int_f = source.data['int_f'].slice();
                 original_data.fpy_flux = source.data['fpy_flux'].slice();
                 original_data.fpy_alpha = source.data['fpy_alpha'].slice();
-                console.log('original_data initialized';
+                console.log('original_data initialized');
                 }
             const data = source.data;
             const y = data['y'];
