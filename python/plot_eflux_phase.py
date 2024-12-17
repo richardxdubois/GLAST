@@ -6,6 +6,7 @@ import yaml
 import pickle
 from datetime import datetime
 from scipy.integrate import quad
+import traceback
 
 from fit_SED import SED_function, fit_SED, flux_function, SED_PL_function, flux_PL_function
 
@@ -225,15 +226,16 @@ class plot_eflux_phase():
             flux_fit = self.fit_func(E_fit, *params)  # Calculate the fitted flux
             p_fig.line(E_fit, flux_fit, color='red', legend_label='Fitted Model')
             p_fig.legend.location = "bottom_left"
-        except:
-            print("fit failed")
+        except Exception as e:
+            print("fit failed", e)
+            traceback.print_exc()
             self.failed_fits += 1
             self.all_A.append(-999.)
             self.all_alpha.append(-999.)
             self.all_E_cut.append(-999.)
             self.integrated_fits.append(-999.)
             self.covariance.append(-999.)
-            pass
+            exit(1)
 
         self.seds[phase_bin1].append(p_fig)
 
