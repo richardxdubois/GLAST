@@ -363,22 +363,15 @@ class plot_eflux_phase():
             args=dict(source=source, slider0=slider_TS, slider1=slider_A, slider2=slider_alpha,
                       slider3=slider_E_cut), code="""
             //if (Object.keys(original_data).length == 0) {
-            console.log('entering ', typeof original_data);
             if (typeof original_data == 'undefined') {
-                console.log('about to initialize original data');
                 window.original_data = new Map().constructor;
-                console.log('created empty map for original_data');
                 original_data.TS_orig = source.data['TS'].slice();
-                console.log('add TS to original_data');
                 original_data.A_orig = source.data['A'].slice();
-                console.log('add A to original_data');
                 original_data.alpha_orig = source.data['alpha'].slice();
                 original_data.E_cut_orig = source.data['E_cut'].slice();
                 original_data.int_f = source.data['int_f'].slice();
                 original_data.fpy_flux = source.data['fpy_flux'].slice();
                 original_data.fpy_alpha = source.data['fpy_alpha'].slice();
-                console.log('original_data initialized');
-                console.log('exiting ', typeof original_data);
                 }
             const data = source.data;
             const y = data['y'];
