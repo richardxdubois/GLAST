@@ -362,7 +362,10 @@ class plot_eflux_phase():
         callback = CustomJS(
             args=dict(source=source, slider0=slider_TS, slider1=slider_A, slider2=slider_alpha,
                       slider3=slider_E_cut), code="""
-            if (Object.keys(original_data).length == 0) {
+            // if (Object.keys(original_data).length == 0) {
+            if (typeof original_data == 'undefined') {
+                console.log('about to initialize original data');
+                original_data = new Map();
                 original_data.TS_orig = source.data['TS'].slice();
                 original_data.A_orig = source.data['A'].slice();
                 original_data.alpha_orig = source.data['alpha'].slice();
@@ -370,6 +373,7 @@ class plot_eflux_phase():
                 original_data.int_f = source.data['int_f'].slice();
                 original_data.fpy_flux = source.data['fpy_flux'].slice();
                 original_data.fpy_alpha = source.data['fpy_alpha'].slice();
+                console.log('original_data initialized';
                 }
             const data = source.data;
             const y = data['y'];
