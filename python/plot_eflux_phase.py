@@ -369,7 +369,7 @@ class plot_eflux_phase():
         flux_alpha_scat = figure(title="fpy Flux vs Alpha",
                             x_axis_label='Alpha', y_axis_label='Flux',
                             width=750)
-        flux_alpha_scat.scatter(x=fpy_alpha_hist, y=fpy_flux_hist, color="blue", size=2)
+        flux_alpha_scat.scatter(x=self.fermipy_alpha, y=self.fermipy_flux, color="blue", size=2)
 
         # create sliders
         steps = (high - low)/20.
