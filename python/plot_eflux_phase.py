@@ -371,6 +371,11 @@ class plot_eflux_phase():
                             width=750)
         flux_alpha_scat.scatter(x=self.fermipy_alpha, y=self.fermipy_flux, color="blue", size=2)
 
+        ts_alpha_scat = figure(title="fpy TS vs Alpha",
+                            x_axis_label='Alpha', y_axis_label='TS',
+                            width=750)
+        ts_alpha_scat.scatter(x=self.fermipy_alpha, y=self.fermipy_TS, color="red", size=2)
+
         # create sliders
         steps = (high - low)/20.
 
@@ -469,7 +474,8 @@ class plot_eflux_phase():
 
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
         s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
-        h_layout = row(column(del_div, s, column(heatmap_figs)), column(alpha_hist, flux_hist, flux_alpha_scat))
+        h_layout = row(column(del_div, s, column(heatmap_figs)),
+                       column(alpha_hist, flux_hist, flux_alpha_scat, ts_alpha_scat))
 
         if self.source_name == "LSI61303" and not self.no_comp:
 
