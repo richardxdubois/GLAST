@@ -356,7 +356,16 @@ class plot_eflux_phase():
                             width=750)
 
         alpha_hist.vbar(top=fpy_alpha_hist, x=fpy_alpha_edges[1:], width=fpy_alpha_edges[1] - fpy_alpha_edges[0],
-                        fill_color='red', fill_alpha=0.2, bottom=0)
+                        fill_color='red', fill_alpha=0.1, bottom=0)
+
+        fpy_flux_hist, fpy_flux_edges = np.histogram(self.fermipy_flux, bins=25)
+        flux_hist = figure(title="fpy Flux",
+                            x_axis_label='Flux', y_axis_label='counts',
+                            width=750)
+
+        flux_hist.vbar(top=fpy_flux_hist, x=fpy_flux_edges[1:], width=fpy_flux_edges[1] - fpy_flux_edges[0],
+                        fill_color='green', fill_alpha=0.1, bottom=0)
+
 
         # create sliders
         steps = (high - low)/20.
@@ -456,7 +465,7 @@ class plot_eflux_phase():
 
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
         s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
-        h_layout = row(column(del_div, s, column(heatmap_figs)), alpha_hist)
+        h_layout = row(column(del_div, s, column(heatmap_figs)), alpha_hist, flux_hist)
 
         if self.source_name == "LSI61303" and not self.no_comp:
 
