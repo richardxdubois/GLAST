@@ -207,7 +207,7 @@ class plot_eflux_phase():
         self.fermipy_TS.append(self.fermipy_fit["ts"])
         self.fermipy_alpha.append(-1.*self.fermipy_fit["param_values"][1])
         try:
-            params, covariance = fit_SED(self.fit_func, flux, errors, self.initial_guesses)
+            params, covariance = fit_SED(self.fit_func, E, flux, errors, self.initial_guesses)
             print("Fitted parameters:", params)
             self.all_A.append(params[0])
             self.all_alpha.append(params[1])
@@ -235,7 +235,7 @@ class plot_eflux_phase():
             self.all_E_cut.append(-999.)
             self.integrated_fits.append(-999.)
             self.covariance.append(-999.)
-            exit(1)
+            pass
 
         self.seds[phase_bin1].append(p_fig)
 
