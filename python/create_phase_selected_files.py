@@ -20,7 +20,7 @@ n_phase_bins = data["n_phase_bins"]
 phase_bin = data["phase_bin"]
 t0 = data["t0"]
 
-period = data["period"]
+period = str(data["period"])
 
 infile = data["infile"]
 
