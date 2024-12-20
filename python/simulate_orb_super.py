@@ -10,21 +10,22 @@ from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 
 # Define the time range
-time_days = 3650  # Example: 10 years
-time = np.arange(0, time_days, 1)  # Daily steps
+time = np.sort(np.random.uniform(0., 365.*15., 1000))
 
 # Define parameters for the modulations
 base_value = 10  # Constant base value
 amplitude_1 = 3  # Amplitude for the first period (26.496 days)
 period_1 = 26.496  # First modulation period in days
 
+amplitude_0 = 1.7
 amplitude_2 = 1  # Amplitude for the second period (1667 days)
 period_2 = 1667  # Second modulation period in days
 
 # Generate the time series
+modulation_0 = amplitude_0 * np.sin(2 * np.pi * time / period_1)
 modulation_1 = amplitude_1 * np.sin(2 * np.pi * time / period_1)
-modulation_2 = amplitude_2 * np.sin(2 * np.pi * time / period_2)
-time_series = base_value + modulation_1 + modulation_2
+modulation_2 = amplitude_2 * modulation_1 * np.sin(2 * np.pi * time / period_2)
+time_series = base_value + modulation_2 + modulation_0
 
 # Create a DataFrame for better handling and visualization
 time_series_df = pd.DataFrame({
@@ -43,6 +44,7 @@ freq_days = 1. / frequency
 power = LombScargle(t=time_series_df['Time (days)'], y=time_series_df['Value']).power(frequency)
 peaks_ls, props_ls = find_peaks(power, height=0.1 * max(power))
 pk_days = (1. / frequency[peaks_ls])
+print(pk_days)
 
 f1 = figure(title="full time span: power vs frequency",
             x_axis_label='period (days)', y_axis_label='power',
