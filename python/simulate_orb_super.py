@@ -9,22 +9,24 @@ from bokeh.models import ColumnDataSource, Span, LinearAxis, Range1d, LinearColo
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
 
-# Define the time range
-time = np.sort(np.random.uniform(0., 365.*15., 1000))
-
 # Define parameters for the modulations
 base_value = 10  # Constant base value
 amplitude_1 = 3  # Amplitude for the first period (26.496 days)
 period_1 = 26.496  # First modulation period in days
 
 amplitude_0 = 1.7
-amplitude_2 = 1  # Amplitude for the second period (1667 days)
+amplitude_2 = 0.55  # Amplitude for the second period (1667 days)
 period_2 = 1667  # Second modulation period in days
+# Define the time range
+time_gen = np.sort(np.random.uniform(0., 365.*15., 1000))
+
+yr_ind = [i for i, t in enumerate(time_gen) if (np.mod(t, period_1)/period_1 < 0.3)]
+time = time_gen[yr_ind]
 
 # Generate the time series
 modulation_0 = amplitude_0 * np.sin(2 * np.pi * time / period_1)
 modulation_1 = amplitude_1 * np.sin(2 * np.pi * time / period_1)
-modulation_2 = amplitude_2 * modulation_1 * np.sin(2 * np.pi * time / period_2)
+modulation_2 = modulation_1 * (0.45 + amplitude_2 * np.sin(2 * np.pi * time / period_2))
 time_series = base_value + modulation_2 + modulation_0
 
 # Create a DataFrame for better handling and visualization
