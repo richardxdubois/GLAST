@@ -399,7 +399,7 @@ class plot_eflux_phase():
 
         # Create contour map of flux
 
-        p_cont = figure(title="Contour Map Flux", width=600, height=600, x_axis_label='orbital', y_axis_label='super',
+        p_cont = figure(title="Contour Map Flux", width=750, x_axis_label='orbital', y_axis_label='super',
                         tooltips=tooltips[4])
 
         # Create a color mapper for the data
