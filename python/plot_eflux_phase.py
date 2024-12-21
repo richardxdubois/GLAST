@@ -412,9 +412,11 @@ class plot_eflux_phase():
         # Add a contour to the plot using contour levels
         contour_levels = np.linspace(np.array(self.fermipy_flux).min(),
                                      np.array(self.fermipy_flux).max(), num=10)  # Adjust the number of levels as needed
+        x_2d = np.array(self.all_x).reshape(self.num_pickles, self.num_pickles_2)
+        y_2d = np.array(self.all_y).reshape(self.num_pickles, self.num_pickles_2)
         z_2d = np.array(self.fermipy_flux).reshape(self.num_pickles, self.num_pickles_2)
         for level in contour_levels:
-            p_cont.contour(x=self.all_x, y=self.all_y, z=z_2d, levels=[level], line_color='black',
+            p_cont.contour(x=x_2d, y=y_2d, z=z_2d, levels=[level], line_color='black',
                            line_width=1)
 
         # Add color bar
