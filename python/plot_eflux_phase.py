@@ -531,7 +531,8 @@ class plot_eflux_phase():
 
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
         s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
-        h_layout = row(column(del_div, s, column(heatmap_figs.reverse())),
+
+        h_layout = row(column(del_div, s, column(heatmap_figs)),
                        column(p_cont, alpha_hist, flux_hist, flux_alpha_scat, ts_alpha_scat))
 
         if self.source_name == "LSI61303" and not self.no_comp:
