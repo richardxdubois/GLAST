@@ -402,7 +402,8 @@ class plot_eflux_phase():
         p_cont = figure(title="Contour Map Flux", width=600, height=600, x_axis_label='orbital', y_axis_label='super')
 
         # Create a color mapper for the data
-        cont_mapper = linear_cmap('value', palette=Viridis256, low=Z.min(), high=Z.max())
+        cont_mapper = linear_cmap('value', palette=Viridis256, low=self.fermipy_flux.min(),
+                                  high=self.fermipy_flux.max())
 
         r = p_cont.rect(x="x", y="y", width=1, height=1, source=source,
                    fill_color=fill_color,
