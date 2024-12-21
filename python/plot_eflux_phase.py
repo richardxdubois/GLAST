@@ -403,7 +403,7 @@ class plot_eflux_phase():
                         tooltips=tooltips[4])
 
         # Create a color mapper for the data
-        cont_mapper = linear_cmap('value', palette=palette, low=np.array(self.fermipy_flux).min(),
+        cont_mapper = linear_cmap('fpy_flux', palette=palette, low=np.array(self.fermipy_flux).min(),
                                   high=np.array(self.fermipy_flux).max())
 
         r = p_cont.rect(x="x", y="y", width=1, height=1, source=source,
