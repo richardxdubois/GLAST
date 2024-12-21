@@ -399,8 +399,7 @@ class plot_eflux_phase():
 
         # Create contour map of flux
 
-        X, Y = np.meshgrid(self.all_x, self.all_y)
-        Z = np.array(self.fermipy_alpha)
+        X, Y, Z = np.meshgrid(self.all_x, self.all_y, self.fermipy_alpha)
 
         p_cont = figure(title="Contour Map Flux", width=600, height=600, x_axis_label='orbital', y_axis_label='super')
 
