@@ -485,7 +485,7 @@ class plot_eflux_phase():
                 || original_data.TS_orig[i] < lowerLimit_TS 
                 || original_data.TS_orig[i] > upperLimit_TS
                 ||original_data.E_cut_orig[i] < lowerLimit_E_cut || original_data.E_cut_orig[i] > upperLimit_E_cut) {
-                    console.log("resetting element to -1 ", i, TS[i], slider0.value)
+                    console.log("set -1 ", i, TS[i], slider0.value, A[i], slider1.value, alpha[i], slider2.value, E_cut[i], slider3.value )
                     TS[i] = -1.;
                     A[i] = -1.;
                     alpha[i] = -1.;
