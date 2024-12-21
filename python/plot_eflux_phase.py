@@ -447,6 +447,7 @@ class plot_eflux_phase():
                       slider3=slider_E_cut), code="""
             //if (Object.keys(original_data).length == 0) {
             if (typeof original_data == 'undefined') {
+                console.log("Initialize original data")
                 window.original_data = new Map().constructor;
                 original_data.TS_orig = source.data['TS'].slice();
                 original_data.A_orig = source.data['A'].slice();
@@ -484,6 +485,7 @@ class plot_eflux_phase():
                 || original_data.TS_orig[i] < lowerLimit_TS 
                 || original_data.TS_orig[i] > upperLimit_TS
                 ||original_data.E_cut_orig[i] < lowerLimit_E_cut || original_data.E_cut_orig[i] > upperLimit_E_cut) {
+                    console.log("resetting element to -1 ", i)
                     TS[i] = -1.;
                     A[i] = -1.;
                     alpha[i] = -1.;
@@ -492,6 +494,7 @@ class plot_eflux_phase():
                     fpy_flux[i] = -1.;
                     fpy_alpha[i] = -1.;
                 } else {
+                    console.log("Resetting element ", i, " to initial values") 
                     source.data["TS"][i] = original_data.TS_orig[i];
                     source.data["A"][i] = original_data.A_orig[i];
                     source.data["alpha"][i] = original_data.alpha_orig[i];
