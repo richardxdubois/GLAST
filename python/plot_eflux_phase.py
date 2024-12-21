@@ -420,7 +420,7 @@ class plot_eflux_phase():
                            line_width=1)
 
         # Add color bar
-        p_cont.add_layout(r.construct_color_bar, 'right')
+        #p_cont.add_layout(r.construct_color_bar, 'right')
 
         # create sliders
         steps = (high - low)/20.
