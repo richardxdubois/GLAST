@@ -20,7 +20,7 @@ period_2 = 1667  # Second modulation period in days
 # Define the time range
 time_gen = np.sort(np.random.uniform(0., 365.*15., 1000))
 
-yr_ind = [i for i, t in enumerate(time_gen) if (np.mod(t, period_1)/period_1 < 0.3)]
+yr_ind = [i for i, t in enumerate(time_gen) if (np.mod(t, period_2)/period_2 > 0.3)]
 time = time_gen[yr_ind]
 
 # Generate the time series
