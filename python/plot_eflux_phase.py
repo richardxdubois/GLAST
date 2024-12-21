@@ -213,7 +213,7 @@ class plot_eflux_phase():
             self.all_alpha.append(params[1])
 
             if len(params) < 3:
-                self.all_E_cut.append(-999.)
+                self.all_E_cut.append(0.)
             else:
                 self.all_E_cut.append(params[2])
 
@@ -230,11 +230,11 @@ class plot_eflux_phase():
             print("fit failed", e)
             traceback.print_exc()
             self.failed_fits += 1
-            self.all_A.append(-999.)
-            self.all_alpha.append(-999.)
-            self.all_E_cut.append(-999.)
-            self.integrated_fits.append(-999.)
-            self.covariance.append(-999.)
+            self.all_A.append(0.)
+            self.all_alpha.append(0.)
+            self.all_E_cut.append(0.)
+            self.integrated_fits.append(0.)
+            self.covariance.append(0.)
             pass
 
         self.seds[phase_bin1].append(p_fig)
@@ -485,7 +485,7 @@ class plot_eflux_phase():
                 || original_data.TS_orig[i] < lowerLimit_TS 
                 || original_data.TS_orig[i] > upperLimit_TS
                 ||original_data.E_cut_orig[i] < lowerLimit_E_cut || original_data.E_cut_orig[i] > upperLimit_E_cut) {
-                    console.log("set -1 ", i, TS[i], slider0.value, A[i], slider1.value, alpha[i], slider2.value, E_cut[i], slider3.value )
+                    // console.log("set -1 ", i, TS[i], slider0.value, A[i], slider1.value, alpha[i], slider2.value, E_cut[i], slider3.value )
                     TS[i] = -1.;
                     A[i] = -1.;
                     alpha[i] = -1.;
@@ -531,7 +531,7 @@ class plot_eflux_phase():
 
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
         s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
-        h_layout = row(column(del_div, s, column(heatmap_figs)),
+        h_layout = row(column(del_div, s, column(heatmap_figs.reverse())),
                        column(p_cont, alpha_hist, flux_hist, flux_alpha_scat, ts_alpha_scat))
 
         if self.source_name == "LSI61303" and not self.no_comp:
