@@ -406,7 +406,7 @@ class plot_eflux_phase():
                                   high=np.array(self.fermipy_flux).max())
 
         r = p_cont.rect(x="x", y="y", width=1, height=1, source=source,
-                   fill_color=fill_color,
+                   fill_color=cont_mapper, tooltips=tooltips[4],
                    line_color=None, )
 
         # Add a contour to the plot using contour levels
