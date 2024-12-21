@@ -13,9 +13,9 @@ from fit_SED import SED_function, fit_SED, flux_function, SED_PL_function, flux_
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs,
-                          TabPanel, RangeSlider, CustomJS, Button, NumeralTickFormatter, BasicTickFormatter)
+                          TabPanel, RangeSlider, CustomJS, Button, ColorBar, BasicTickFormatter)
 from bokeh.models.widgets import Div
-from bokeh.palettes import Plasma256 as palette
+from bokeh.palettes import Viridis256, Plasma256 as palette
 from bokeh.transform import linear_cmap, log_cmap
 
 
@@ -397,6 +397,28 @@ class plot_eflux_phase():
                             width=750)
         ts_alpha_scat.scatter(x=self.fermipy_alpha, y=self.fermipy_TS, color="red", size=2)
 
+        # Create contour map of flux
+
+        X, Y = np.meshgrid(self.all_x, self.all_y)
+        Z = np.rray(self.fermipy_alpha)
+
+        p_cont = figure(title="Contour Map Flux", width=600, height=600, x_axis_label='orbital', y_axis_label='super')
+
+        # Create a color mapper for the data
+        cont_mapper = linear_cmap('value', palette=Viridis256, low=Z.min(), high=Z.max())
+
+        # Create an image representing the contours
+        p_cont.image(image=[Z], x=0, y=0, dw=10, dh=10, color_mapper=cont_mapper)
+
+        # Add a contour to the plot using contour levels
+        contour_levels = np.linspace(Z.min(), Z.max(), num=10)  # Adjust the number of levels as needed
+        for level in contour_levels:
+            p_cont.contour(X, Y, Z, levels=[level], line_color='black', line_width=1)
+
+        # Add color bar
+        color_bar = ColorBar(color_mapper=cont_mapper, width=8, location=(0, 0))
+        p_cont.add_layout(color_bar, 'right')
+
         # create sliders
         steps = (high - low)/20.
 
@@ -496,7 +518,7 @@ class plot_eflux_phase():
         # Layout the sliders and the plot - remove Button from layout. At some point, remove it from code.
         s = column(slider_TS, slider_A, slider_alpha, slider_E_cut)
         h_layout = row(column(del_div, s, column(heatmap_figs)),
-                       column(alpha_hist, flux_hist, flux_alpha_scat, ts_alpha_scat))
+                       column(p_cont, alpha_hist, flux_hist, flux_alpha_scat, ts_alpha_scat))
 
         if self.source_name == "LSI61303" and not self.no_comp:
 
