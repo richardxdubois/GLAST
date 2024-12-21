@@ -399,8 +399,6 @@ class plot_eflux_phase():
 
         # Create contour map of flux
 
-        X, Y, Z = np.meshgrid(self.all_x, self.all_y, self.fermipy_alpha)
-
         p_cont = figure(title="Contour Map Flux", width=600, height=600, x_axis_label='orbital', y_axis_label='super')
 
         # Create a color mapper for the data
@@ -413,7 +411,7 @@ class plot_eflux_phase():
         # Add a contour to the plot using contour levels
         contour_levels = np.linspace(Z.min(), Z.max(), num=10)  # Adjust the number of levels as needed
         for level in contour_levels:
-            p_cont.contour(X, y=Y, z=Z, levels=[level], line_color='black',
+            p_cont.contour(x="x", y="y", z="flux", levels=[level], line_color='black',
                            line_width=1)
 
         # Add color bar
