@@ -407,8 +407,9 @@ class plot_eflux_phase():
         # Create a color mapper for the data
         cont_mapper = linear_cmap('value', palette=Viridis256, low=Z.min(), high=Z.max())
 
-        # Create an image representing the contours
-        p_cont.image(image=[Z], x=0, y=0, dw=10, dh=10, color_mapper=cont_mapper)
+        r = p_cont.rect(x="x", y="y", width=1, height=1, source=source,
+                   fill_color=fill_color,
+                   line_color=None, )
 
         # Add a contour to the plot using contour levels
         contour_levels = np.linspace(Z.min(), Z.max(), num=10)  # Adjust the number of levels as needed
