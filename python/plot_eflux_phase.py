@@ -205,7 +205,7 @@ class plot_eflux_phase():
         print(flux, errors, E)
 
         self.fermipy_flux.append(self.fermipy_fit["flux"])
-        self.fermipy_flux_error.append(self.fermipy_fit["flux_error"])
+        self.fermipy_flux_error.append(self.fermipy_fit["flux_err"])
         self.fermipy_TS.append(self.fermipy_fit["ts"])
         self.fermipy_alpha.append(-1.*self.fermipy_fit["param_values"][1])
         try:
