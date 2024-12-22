@@ -38,26 +38,10 @@ class process_LAT_binned_exposure():
         self.timedel = None
         self.exposure = None
 
-
-# Open the FITS file
-        #if self.source == "LSI61303":
-            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_500s.fits'
-            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_0-2.fits'
-            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1deg_super_bins_mkt_500s_3-9.fits'
-            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_86400s.fits'
-            #self.fn ='/Users/richarddubois/Code/GLAST/tmp/LSI61303_1_deg_mkt_225000s.fits'
-            #fn = '/Users/richarddubois/Code/GLAST/tmp/LSI61303_3_deg_mkt_10800s.fits'
-
-            #self.f_start = 1./28.5/86400.  # 40.
-            #self.f_stop = 1./24.5/86400.   # 5.
-            #elf.nom_period = 26.496
-
-        #elif self.source == "LS5039":
-            #self.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_1deg_mkt_500s.fits'
-            #seld.fn = '/Users/richarddubois/Code/GLAST/tmp/LS5039_3_deg_10800s.fits'
-            #self.f_start = 1./4.2/86400.
-            #self.f_stop = 1./3.7/86400.
-            #self.nom_period = 3.905
+        try:
+            self.super_period = data["super_period"]
+        except KeyError:
+            self.super_period = 0.
 
         self.nom_freq = 1/self.nom_period/86400.
 
@@ -192,6 +176,7 @@ class process_LAT_binned_exposure():
         t_start = self.time[0]
         t_end = self.time[-1]
 
+        f_hists = []
         print("t_start", t_start, "t_end", t_end, "num orig bins", len(self.time), "num non-zero bins",
               len(self.counts))
 
@@ -229,6 +214,45 @@ class process_LAT_binned_exposure():
                           text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
                                str('{0:.3f}'.format(pk_error) + " days"))
         f1.add_layout(res_label)
+        f_hists.append(f1)
+
+        if self.super_period != 0.:
+
+            frequency = np.linspace(self.super_period, self.f_stop, 100000)  # for orbital 100000
+
+            if weights is None:
+                power = LombScargle(t=self.time, y=r_weighted).power(frequency)
+            else:
+                power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(frequency)
+
+            print(max(frequency), max(power))
+            print(min(frequency), min(power))
+            freq_days = 1. / frequency / 86400.
+
+            peaks_ls, props_ls = find_peaks(power, height=0.1 * max(power))
+            pk_days = (1. / frequency[peaks_ls] / 86400.)
+            close_idx = (np.abs(pk_days - self.nom_period)).argmin()
+            peak_idx = peaks_ls[close_idx]
+
+            pk_error = self.calc_peak_error(frequency=frequency, power=power, peak_index=peak_idx)
+
+            print(peaks_ls, props_ls)
+            print(frequency[peaks_ls])
+            print(pk_days)
+            print("peak error", pk_error)
+
+            fs = figure(title="full super time span: power vs frequency", x_axis_type="log",
+                        x_axis_label='period (days)', y_axis_label='power',
+                        width=750)
+            fs.line(freq_days, power, line_width=2)
+            vline_p1 = Span(location=self.nom_period, dimension='height', line_color='red', line_width=2,
+                            line_dash='dashed')
+            fs.add_layout(vline_p1)
+            res_label = Label(x=min(freq_days), y=props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
+                              text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
+                                   str('{0:.3f}'.format(pk_error) + " days"))
+            fs.add_layout(res_label)
+            f_hists.append(fs)
 
         timespan = self.time[-1] - self.time[0]
         yr_bins = 4
@@ -336,7 +360,7 @@ class process_LAT_binned_exposure():
         del_div = Div(text=self.source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " for " + self.fn)
 
         output_file(self.html_name)
-        l = layout(column(del_div, f1, f2, q_hist, r_hist, s_hist, f3, column(yr_figs), column(yr_c), column(yr_exp)))
+        l = layout(column(del_div, column(f_hists), f2, q_hist, r_hist, s_hist, f3, column(yr_figs), column(yr_c), column(yr_exp)))
         save(l, title=self.source + " Power vs Frequency")
 
 
