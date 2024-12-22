@@ -68,6 +68,7 @@ class plot_eflux_phase():
 
         self.fermipy_fit = []
         self.fermipy_flux = []
+        self.fermipy_flux_error = []
         self.fermipy_alpha = []
         self.fermipy_TS = []
 
@@ -204,6 +205,7 @@ class plot_eflux_phase():
         print(flux, errors, E)
 
         self.fermipy_flux.append(self.fermipy_fit["flux"])
+        self.fermipy_flux_error.append(self.fermipy_fit["flux_error"])
         self.fermipy_TS.append(self.fermipy_fit["ts"])
         self.fermipy_alpha.append(-1.*self.fermipy_fit["param_values"][1])
         try:
@@ -279,8 +281,8 @@ class plot_eflux_phase():
                 self.seds[s][o].line(E_fit, flux_fit, color='blue', legend_label='pulsarness')
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
-                            self.integrated_fits, self.fermipy_flux, self.fermipy_alpha, self.fermipy_TS,
-                            self.covariance]
+                            self.integrated_fits, self.fermipy_flux, self.fermipy_flux_error, self.fermipy_alpha,
+                            self.fermipy_TS, self.covariance]
 
         # Write to a pickle file
         with open(self.params_save_pickle, 'wb') as file:
