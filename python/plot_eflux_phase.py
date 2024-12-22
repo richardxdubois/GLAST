@@ -279,7 +279,8 @@ class plot_eflux_phase():
                 self.seds[s][o].line(E_fit, flux_fit, color='blue', legend_label='pulsarness')
 
         all_lists_params = [self.all_x, self.all_y, self.all_A, self.all_alpha, self.all_E_cut,
-                            self.integrated_fits, self.covariance]
+                            self.integrated_fits, self.fermipy_flux, self.fermipy_alpha, self.fermipy_TS,
+                            self.covariance]
 
         # Write to a pickle file
         with open(self.params_save_pickle, 'wb') as file:
