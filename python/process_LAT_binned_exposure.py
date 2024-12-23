@@ -108,10 +108,10 @@ class process_LAT_binned_exposure():
             meanerr = (cerr1 + cerr2)/2.
             rmserr = np.sqrt((cerr1*cerr1 + cerr2*cerr2)/2.)
 
-            rate = cnts[i]/e
-            err_rate = rmserr/e
-
             if self.do_weights:
+                rate = cnts[i] / e
+                err_rate = rmserr / e
+
                 r_weighted.append(rate)
                 weights.append(err_rate)
             else:
