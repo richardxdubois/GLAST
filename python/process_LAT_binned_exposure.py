@@ -220,16 +220,16 @@ class process_LAT_binned_exposure():
 
         if self.super_period != 0.:
 
-            frequency = np.linspace(self.s_start, self.f_stop, 100000)  # for orbital 100000
+            s_frequency = np.linspace(self.s_start, self.f_stop, 100000)  # for orbital 100000
 
             if weights is None:
-                power = LombScargle(t=self.time, y=r_weighted).power(frequency)
+                power = LombScargle(t=self.time, y=r_weighted).power(s_frequency)
             else:
-                power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(frequency)
+                power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(s_frequency)
 
             print(max(frequency), max(power))
             print(min(frequency), min(power))
-            freq_days = 1. / frequency / 86400.
+            freq_days = 1. / s_frequency / 86400.
 
             peaks_ls, props_ls = find_peaks(power, height=0.1 * max(power))
             pk_days = (1. / frequency[peaks_ls] / 86400.)
