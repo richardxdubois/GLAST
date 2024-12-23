@@ -232,14 +232,14 @@ class process_LAT_binned_exposure():
             freq_days = 1. / s_frequency / 86400.
 
             peaks_ls, props_ls = find_peaks(power, height=0.1 * max(power))
-            pk_days = (1. / frequency[peaks_ls] / 86400.)
+            pk_days = (1. / s_frequency[peaks_ls] / 86400.)
             close_idx = (np.abs(pk_days - self.nom_period)).argmin()
             peak_idx = peaks_ls[close_idx]
 
-            pk_error = self.calc_peak_error(frequency=frequency, power=power, peak_index=peak_idx)
+            pk_error = self.calc_peak_error(frequency=s_frequency, power=power, peak_index=peak_idx)
 
             print(peaks_ls, props_ls)
-            print(frequency[peaks_ls])
+            print(s_frequency[peaks_ls])
             print(pk_days)
             print("peak error", pk_error)
 
