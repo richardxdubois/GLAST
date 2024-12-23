@@ -225,7 +225,7 @@ class process_LAT_binned_exposure():
 
             s_frequency = np.linspace(self.s_start, self.f_stop, 100000)  # for orbital 100000
 
-            if weights is None:
+            if not self.do_weights:
                 power = LombScargle(t=self.time, y=r_weighted).power(s_frequency)
             else:
                 power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(s_frequency)
