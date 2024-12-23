@@ -104,7 +104,7 @@ class process_LAT_binned_exposure():
             perr = np.sqrt(pop_counts)
 
             cerr1 = 0.5 + np.sqrt(cnts[i] + 0.25)
-            cerr2 = -0.5 + np.sqrt(cnts[i] - 0.25)
+            cerr2 = -0.5 + np.sqrt(max(0.,cnts[i]) - 0.25)
             meanerr = (cerr1 + cerr2)/2.
             rmserr = np.sqrt((cerr1*cerr1 + cerr2*cerr2)/2.)
 
