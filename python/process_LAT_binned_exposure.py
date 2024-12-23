@@ -40,9 +40,9 @@ class process_LAT_binned_exposure():
 
         try:
             self.super_period = data["super_period"]
+            self.s_start = 1. / self.super_period / 86400.
         except KeyError:
             self.super_period = 0.
-            self.s_start = 1. / self.super_period / 86400.
 
         self.nom_freq = 1/self.nom_period/86400.
 
