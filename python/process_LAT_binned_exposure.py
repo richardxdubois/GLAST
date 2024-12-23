@@ -40,7 +40,8 @@ class process_LAT_binned_exposure():
 
         try:
             self.super_period = data["super_period"]
-            self.s_start = 1. / self.super_period / 86400.
+            self.super_start = data["super_start"]
+            self.s_start = 1. / self.super_start / 86400.
         except KeyError:
             self.super_period = 0.
 
@@ -249,6 +250,10 @@ class process_LAT_binned_exposure():
             vline_p1 = Span(location=self.nom_period, dimension='height', line_color='red', line_width=2,
                             line_dash='dashed')
             fs.add_layout(vline_p1)
+            vline_p2 = Span(location=self.super_period, dimension='height', line_color='blue', line_width=2,
+                            line_dash='dashed')
+            fs.add_layout(vline_p1)
+            fs.add_layout(vline_p2)
             res_label = Label(x=min(freq_days), y=props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
                               text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
                                    str('{0:.3f}'.format(pk_error) + " days"))
