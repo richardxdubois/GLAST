@@ -288,7 +288,7 @@ class process_LAT_binned_exposure():
             yr_exposure = self.exposure[yr_ind]
             sum_weights = np.sum(yr_weights)
 
-            if weights is None:
+            if not self.do_weights:
                 yr_power = LombScargle(t=yr_times, y=yr_counts).power(frequency)
             else:
                 yr_power = LombScargle(t=yr_times, y=yr_counts, dy=yr_weights).power(frequency)
