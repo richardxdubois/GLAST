@@ -42,6 +42,7 @@ class process_LAT_binned_exposure():
             self.super_period = data["super_period"]
         except KeyError:
             self.super_period = 0.
+            self.s_start = 1. / self.super_period / 86400.
 
         self.nom_freq = 1/self.nom_period/86400.
 
@@ -218,7 +219,7 @@ class process_LAT_binned_exposure():
 
         if self.super_period != 0.:
 
-            frequency = np.linspace(self.super_period, self.f_stop, 100000)  # for orbital 100000
+            frequency = np.linspace(self.s_start, self.f_stop, 100000)  # for orbital 100000
 
             if weights is None:
                 power = LombScargle(t=self.time, y=r_weighted).power(frequency)
