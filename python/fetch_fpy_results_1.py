@@ -197,7 +197,7 @@ v_hist.add_layout(Whisker(source=ef_source, base="groups", upper="upper", lower=
 v_hist.y_range.start = 1.e-5
 
 output_file(data["html"])
-del_div = Div(text=source_name + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+del_div = Div(text=source_name + " " + pickle_base + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 l = layout(del_div, u_hist, v_hist, q_hist, r_hist, s_hist, t_hist)
 #l = layout(del_div, u_hist, v_hist)
