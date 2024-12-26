@@ -6,6 +6,7 @@ import pickle
 import os
 import shutil
 import yaml
+from pathlib import Path
 
 from prepare_gti import prepare_gti
 
@@ -46,6 +47,22 @@ class prepare_super_orbital():
         print("Finished loading input yaml file")
 
         self.prep_gti = prepare_gti()
+
+        with open(self.config, "r") as f_config:
+            save_config = f_config.read()
+
+        with open(self.batch, "r") as f_batch:
+            save_batch = f_batch.read()
+            for pickle_version in save_batch.split():
+                if pickle_version.startswith("pickle"):
+                    break
+
+        yaml_name = Path(input_yaml).stem
+        pickle_config = "prepare_" + yaml_name + "_" + pickle_version + "_config,pkl"
+        pickle_config_data = [data, save_config, save_batch]
+
+        with open(pickle_config, 'wb') as pickle_file:
+            pickle.load(pickle_config_data, pickle_file)
 
     def prepare_file(self, template_file_path, tgt_file_path, bin=""):
 
