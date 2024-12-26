@@ -288,7 +288,7 @@ class plot_eflux_phase():
         with open(self.params_save_pickle, 'wb') as file:
             pickle.dump(all_lists_params, file)
 
-        del_div = Div(text=self.source_name + " Run on: " +
+        del_div = Div(text=self.source_name + " " + self.sed_prefix + " Run on: " +
                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
         output_file(self.html)
