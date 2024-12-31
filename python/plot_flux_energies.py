@@ -261,7 +261,7 @@ class plot_flux_energies():
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
 
-                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green",
+                a_hist.square(self.phase_h, fluxs_1000, size=6, fill_color="green",
                                legend_label="1000-10000 MeV", y_range_name="y2")
                 a_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
 
@@ -317,7 +317,7 @@ class plot_flux_energies():
 
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
-                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green",
+                a_hist.square(self.phase_h, fluxs_1000, size=6, fill_color="green",
                                legend_label="1000-10000 MeV", y_range_name="y2")
 
             a_hist.xaxis.ticker = self.phase_h
