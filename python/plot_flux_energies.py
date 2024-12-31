@@ -333,9 +333,11 @@ class plot_flux_energies():
             e_panel.append(TabPanel(child=l_e, title=self.energy_index_flux[e]))
 
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
+        del_div = Div(text=self.source_name + " " + self.sed_prefix + " Run on: " +
+                           datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
         output_file(self.html)
-        save(l_hists, title=self.page_title)
+        save(column(del_div, l_hists), title=self.page_title)
 
 
 if __name__ == "__main__":
