@@ -303,7 +303,7 @@ class plot_flux_energies():
             if not self.no_energy_overlay:
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
-                a_hist.scatter(self.phase_h, fluxs_1000*10., size=6, fill_color="green", legend_label="1000-10000 MeV")
+                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
                 a_hist.y_range = Range1d(0., self.hist_flux_max)
 
             a_hist.xaxis.ticker = self.phase_h
