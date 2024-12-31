@@ -96,9 +96,8 @@ class plot_flux_energies():
                 infile = infile_b + "_" + self.fgl_source + "_sed.npy"
 
                 p = np.load(infile, allow_pickle=True).flat[0]
-                E_in = np.power(10, p["e_max"])
 
-                for i, E_i in enumerate(E_in):
+                for i, E_i in enumerate(p["flux"]):
                     E_end = p["e_max"][i]
                     if E_end < E_end_bin[2] and not pd.isna(p["e2dnde_err_lo"][i]):
                         if E_end > E_end_bin[index_e_bin]:
