@@ -243,7 +243,7 @@ class plot_flux_energies():
             fluxs_100.extend(fluxs_100)
             fluxs_300 = list(self.orbital_per_super_300_1000[s_phase].values())
             fluxs_300.extend(fluxs_300)
-            fluxs_1000 = list(self.orbital_per_super_1000_10000[s_phase].values()*10.)
+            fluxs_1000 = list(self.orbital_per_super_1000_10000[s_phase].values())
             fluxs_1000.extend(fluxs_1000)
 
             title = "orbital flux per super bin " + str(s_phase)
@@ -290,7 +290,7 @@ class plot_flux_energies():
             fluxs_100.extend(fluxs_100)
             fluxs_300 = list(self.super_per_orbital_300_1000[o_phase].values())
             fluxs_300.extend(fluxs_300)
-            fluxs_1000 = list(self.super_per_orbital_1000_10000[o_phase].values()*10.)
+            fluxs_1000 = list(self.super_per_orbital_1000_10000[o_phase].values())
             fluxs_1000.extend(fluxs_1000)
 
             title = "super flux per orbital bin " + str(o_phase)
@@ -303,7 +303,7 @@ class plot_flux_energies():
             if not self.no_energy_overlay:
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
-                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
+                a_hist.scatter(self.phase_h, fluxs_1000*10., size=6, fill_color="green", legend_label="1000-10000 MeV")
                 a_hist.y_range = Range1d(0., self.hist_flux_max)
 
             a_hist.xaxis.ticker = self.phase_h
