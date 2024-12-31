@@ -79,14 +79,7 @@ class plot_flux_energies():
 
     def fill_maps(self):
 
-        flux_i = []
-        errors_i = []
-        E_ii = []
-
         E_end_bin = [300, 1000, 10000]
-        flux_E_bin = np.zeros(4)  #index 3 is total flux
-        flux_errors_E_bin = np.zeros(4)
-        index_e_bin = 0
 
         for s in self.p_bins:
             for o in self.p_bins:
@@ -96,6 +89,10 @@ class plot_flux_energies():
                 infile = infile_b + "_" + self.fgl_source + "_sed.npy"
 
                 p = np.load(infile, allow_pickle=True).flat[0]
+
+                flux_E_bin = np.zeros(4)  # index 3 is total flux
+                flux_errors_E_bin = np.zeros(4)
+                index_e_bin = 0
 
                 for i, E_i in enumerate(p["flux"]):
                     E_end = p["e_max"][i]
