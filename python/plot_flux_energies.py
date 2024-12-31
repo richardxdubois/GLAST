@@ -31,6 +31,7 @@ class plot_flux_energies():
         self.num_pickles = data["num_pickles"]
         self.p_bins = np.arange(self.num_pickles)
         self.html = data["html"]
+        self.hist_flux_max = data["hist_flux_max"]
         self.params_save_pickle = self.html.split(".")[0] + "_params.pkl"
         self.page_title = data["page_title"]
         self.fig_height = data["fig_height"]
@@ -181,7 +182,7 @@ class plot_flux_energies():
             u_hist.scatter(self.phase_h, np.array(fluxs_100), size=6, fill_color="black", legend_label="100-300 MeV")
             u_hist.scatter(self.phase_h, np.array(fluxs_300), size=6, fill_color="blue", legend_label="300-1000 MeV")
             u_hist.scatter(self.phase_h, np.array(fluxs_1000), size=6, fill_color="green", legend_label="1000-10000 MeV")
-            u_hist.y_range = Range1d(0., 1.1e-6)
+            u_hist.y_range = Range1d(0., self.hist_flux_max)
 
         u_hist.xaxis.ticker = self.phase_h
         u_hist.xaxis.major_label_overrides = self.dict_ticker
@@ -222,7 +223,7 @@ class plot_flux_energies():
             v_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
             v_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
             v_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
-            v_hist.y_range = Range1d(0., 1.1e-6)
+            v_hist.y_range = Range1d(0., self.hist_flux_max)
 
         v_hist.xaxis.ticker = self.phase_h
         v_hist.xaxis.major_label_overrides = self.dict_ticker
@@ -255,7 +256,7 @@ class plot_flux_energies():
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
                 a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
-                a_hist.y_range = Range1d(0., 1.1e-6)
+                a_hist.y_range = Range1d(0., self.hist_flux_max)
 
             a_hist.xaxis.ticker = self.phase_h
             a_hist.xaxis.major_label_overrides = self.dict_ticker
@@ -303,7 +304,7 @@ class plot_flux_energies():
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
                 a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
-                a_hist.y_range = Range1d(0., 1.1e-6)
+                a_hist.y_range = Range1d(0., self.hist_flux_max)
 
             a_hist.xaxis.ticker = self.phase_h
             a_hist.xaxis.major_label_overrides = self.dict_ticker
