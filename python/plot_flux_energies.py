@@ -252,11 +252,18 @@ class plot_flux_energies():
                         fill_color='red', fill_alpha=0.05, bottom=0)
             a_hist.scatter(self.phase_h, locals().get(self.energy_index_flux[self.energy_index]), size=6,
                            fill_color="white")
+            a_hist.y_range = Range1d(0., self.hist_flux_max)
+
             if not self.no_energy_overlay:
+                # Create a second y-axis
+                a_hist.extra_y_ranges = {"y2": Range1d(start=0, end=1.e-7)}
+                a_hist.add_layout(a_hist.yaxis[0], 'left')  # Attach the first y-axis
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
-                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
-                a_hist.y_range = Range1d(0., self.hist_flux_max)
+
+                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green",
+                               legend_label="1000-10000 MeV", y_range_name="y2")
+                a_hist.yaxis[1].axis_label = "1000-10000 MeV"
 
             a_hist.xaxis.ticker = self.phase_h
             a_hist.xaxis.major_label_overrides = self.dict_ticker
@@ -301,6 +308,8 @@ class plot_flux_energies():
 
             a_hist.scatter(self.phase_h, locals().get(self.energy_index_flux[self.energy_index]), size=6,
                            fill_color="white")
+            a_hist.y_range = Range1d(0., self.hist_flux_max)
+
             if not self.no_energy_overlay:
                 # Create a second y-axis
                 a_hist.extra_y_ranges = {"y2": Range1d(start=0, end=1.e-7)}
@@ -310,7 +319,7 @@ class plot_flux_energies():
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
                 a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green",
                                legend_label="1000-10000 MeV", y_range_name="y2")
-                a_hist.y_range = Range1d(0., self.hist_flux_max)
+
                 a_hist.yaxis[1].axis_label = "1000-10000 MeV"
 
             a_hist.xaxis.ticker = self.phase_h
