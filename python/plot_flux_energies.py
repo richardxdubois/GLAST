@@ -336,7 +336,8 @@ class plot_flux_energies():
 
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
 
-        save(l_hists, title="Phase dependence with Flux Integrations")
+        output_file(self.html)
+        save(l_hists, title=self.page_title)
 
 
 if __name__ == "__main__":
