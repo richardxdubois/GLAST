@@ -317,66 +317,6 @@ class plot_flux_energies():
 
         return fig_orb_by_super, fig_super_by_orb
 
-    def make_heatmap(self):
-
-        # first attempt at pulsar-ness of flux bins
-
-        x = self.data_dict["x"]  # orbital phase
-        y = self.data_dict["y"]  # super phase
-        int_f = self.data_dict["int_f"]
-
-        min_flux = min(int_f)
-        max_flux = max(int_f)
-
-        flux_diffs = []
-        for f in int_f:
-            f_diff_ratio = (f-min_flux)/(max_flux - min_flux)
-            flux_diffs.append(f_diff_ratio)
-
-        # do heatmaps of fit parameters
-
-        source = ColumnDataSource(data=dict(x=x, y=y, flux_d=flux_diffs))
-
-        # this is the colormap from the original NYTimes plot
-        colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
-
-        TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
-
-        tooltips = [('phases', 'super: @y orbital: @x'), ('flux_d', '@flux_d')]
-
-        p = figure(title="Flux ratio",
-                   x_axis_location="above", width=900, height=900,
-                   tools=TOOLS, toolbar_location='below', y_axis_label="super phase", x_axis_label="orbital phase",
-                   tooltips=tooltips)
-
-        p.grid.grid_line_color = None
-        p.axis.axis_line_color = None
-        p.axis.major_tick_line_color = None
-        p.axis.major_label_text_font_size = "12px"
-        p.axis.major_label_standoff = 0
-        p.xaxis.major_label_orientation = np.pi / 3
-
-        fill_color = linear_cmap("flux_d", palette=palette, low=0, high=1)
-
-        r = p.rect(x="x", y="y", width=1, height=1, source=source,
-                   fill_color=fill_color,
-                   line_color=None, )
-        p.xaxis.ticker = x
-        p.xaxis.major_label_overrides = self.dict_ticker
-        p.yaxis.ticker = y
-        p.yaxis.major_label_overrides = self.dict_ticker
-
-        p.add_layout(r.construct_color_bar(
-            major_label_text_font_size="12px",
-            ticker=BasicTicker(desired_num_ticks=len(colors)),
-
-            label_standoff=6,
-            border_line_color=None,
-            padding=5,
-        ), 'right')
-
-        return p
-
     def make_plots(self):
 
         rc = self.fill_maps()
@@ -395,19 +335,9 @@ class plot_flux_energies():
             l_e = row(column(u_h, column(f_o)), column(v_h, column(f_s)))
             e_panel.append(TabPanel(child=l_e, title=self.energy_index_flux[e]))
 
-        p = self.make_heatmap()
-
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
 
-        panel1 = TabPanel(child=p, title="Flux ratio heatmap")
-        panel2 = TabPanel(child=l_hists, title="Phase Histograms")
-
-        if self.no_energy_overlay:
-            tabs = Tabs(tabs=[panel1, panel2, *e_panel])
-        else:
-            tabs = Tabs(tabs=[panel1, panel2])
-
-        save(tabs, title="Phase dependence with Flux Integrations")
+        save(l_hists, title="Phase dependence with Flux Integrations")
 
 
 if __name__ == "__main__":
