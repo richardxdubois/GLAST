@@ -265,6 +265,7 @@ class plot_flux_energies():
                                legend_label="1000-10000 MeV", y_range_name="y2")
                 a_hist.add_layout(a_hist.yaxis[1], 'right')  # Attach the first y-axis
                 a_hist.yaxis[1].axis_label = "1000-10000 MeV"
+                a_hist.yaxis[1].axis_label_standoff = 10  # Space between the label and the axis
 
             a_hist.xaxis.ticker = self.phase_h
             a_hist.xaxis.major_label_overrides = self.dict_ticker
@@ -323,6 +324,7 @@ class plot_flux_energies():
 
                 a_hist.add_layout(a_hist.yaxis[1], 'right')  # Attach the first y-axis
                 a_hist.yaxis[1].axis_label = "1000-10000 MeV"
+                a_hist.yaxis[1].axis_label_standoff = 10  # Space between the label and the axis
 
             a_hist.xaxis.ticker = self.phase_h
             a_hist.xaxis.major_label_overrides = self.dict_ticker
