@@ -50,10 +50,10 @@ class plot_flux_energies():
         self.type_2 = data["type_2"]
 
         self.dict_ticker = {}
-        self.phase_h = np.arange(self.num_pickles)
-        self.phase_h = np.append(self.phase_h, self.phase_h)
+        self.phase_h = np.arange(2*self.num_pickles)
+        ticker_phase_h = np.append(self.p_bins, self.p_bins)
         for i, ph in enumerate(self.phase_h):
-            self.dict_ticker[i] = str(self.phase_h[i] / self.num_pickles)
+            self.dict_ticker[i] = str(ticker_phase_h[i] / self.num_pickles)
 
         self.orbital = {}
         self.orbital_100_300 = {}
