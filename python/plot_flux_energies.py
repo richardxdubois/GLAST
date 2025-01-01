@@ -297,12 +297,16 @@ class plot_flux_energies():
 
             r_hist = figure(title=title, x_axis_label='Phase', width=750)
             r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label="100-300 MeV")
+            r_hist.line(self.phase_h, r100, color="black")
             r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+            r_hist.line(self.phase_h, r300, color="blue")
 
             r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.1)}
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
             r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
                           legend_label="1000-10000 MeV", y_range_name="y2")
+            r_hist.line(self.phase_h, r1000, color="green")
+
             r_hist.xaxis.ticker = self.phase_h
             r_hist.xaxis.major_label_overrides = self.dict_ticker
             r_hist.xaxis.major_label_orientation = 0.7
@@ -360,12 +364,16 @@ class plot_flux_energies():
 
             r_hist = figure(title=title, x_axis_label='Phase', width=750)
             r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label="100-300 MeV")
+            r_hist.line(self.phase_h, r100, color="black")
             r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+            r_hist.line(self.phase_h, r300, color="blue")
 
             r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.1)}
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
             r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
                           legend_label="1000-10000 MeV", y_range_name="y2")
+            r_hist.line(self.phase_h, r1000, color="green")
+
             r_hist.xaxis.ticker = self.phase_h
             r_hist.xaxis.major_label_overrides = self.dict_ticker
             r_hist.xaxis.major_label_orientation = 0.7
