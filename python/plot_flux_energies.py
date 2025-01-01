@@ -51,7 +51,7 @@ class plot_flux_energies():
 
         self.dict_ticker = {}
         self.phase_h = np.arange(self.num_pickles)
-        self.phase_h = np.concatenate(self.phase_h, self.phase_h)
+        self.phase_h = np.append(self.phase_h, self.phase_h)
         for i, ph in enumerate(self.phase_h):
             self.dict_ticker[i] = str(self.phase_h[i] / self.num_pickles)
 
