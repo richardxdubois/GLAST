@@ -235,6 +235,8 @@ class plot_flux_energies():
         # orbital per super phase
 
         fig_orb_by_super = []
+        ratio_orb_by_super = []
+
         for s_phase in self.orbital_per_super:
 
             fluxs = list(self.orbital_per_super[s_phase].values())
@@ -245,6 +247,14 @@ class plot_flux_energies():
             fluxs_300.extend(fluxs_300)
             fluxs_1000 = list(self.orbital_per_super_1000_10000[s_phase].values())
             fluxs_1000.extend(fluxs_1000)
+
+            orb_flux = list(self.orbital.values())
+            orb_flux.extend(orb_flux)
+            orb_flux = np.array(orb_flux)
+
+            r100 = np.array(fluxs_100) / orb_flux
+            r300 = np.array(fluxs_300) / orb_flux
+            r1000 = np.array(fluxs_1000) / orb_flux
 
             title = "orbital flux per super bin " + str(s_phase)
             a_hist = figure(title=title, x_axis_label='Phase', width=750)
@@ -284,11 +294,23 @@ class plot_flux_energies():
             a_hist.add_layout(vline_p2)
             a_hist.add_layout(vline_a2)
 
+            r_hist = figure(title=title, x_axis_label='Phase', width=750)
+            r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label="100-300 MeV")
+            r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+
+            r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.2)}
+            r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
+            r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
+                          legend_label="1000-10000 MeV", y_range_name="y2")
+
             fig_orb_by_super.append(a_hist)
+            ratio_orb_by_super.append(r_hist)
 
         # orbital per super phase
 
         fig_super_by_orb = []
+        ratio_super_by_orb = []
+
         for o_phase in self.super_per_orbital:
 
             fluxs = list(self.super_per_orbital[o_phase].values())
@@ -299,6 +321,14 @@ class plot_flux_energies():
             fluxs_300.extend(fluxs_300)
             fluxs_1000 = list(self.super_per_orbital_1000_10000[o_phase].values())
             fluxs_1000.extend(fluxs_1000)
+
+            super_flux = list(self.super.values())
+            super_flux.extend(super_flux)
+            super_flux = np.array(super_flux)
+
+            r100 = np.array(fluxs_100) / super_flux
+            r300 = np.array(fluxs_300) / super_flux
+            r1000 = np.array(fluxs_1000) / super_flux
 
             title = "super flux per orbital bin " + str(o_phase)
             a_hist = figure(title=title, x_axis_label='Phase', width=750)
@@ -324,18 +354,31 @@ class plot_flux_energies():
             a_hist.xaxis.major_label_overrides = self.dict_ticker
             a_hist.xaxis.major_label_orientation = 0.7
 
-            fig_super_by_orb.append(a_hist)
+            r_hist = figure(title=title, x_axis_label='Phase', width=750)
+            r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label="100-300 MeV")
+            r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label="300-1000 MeV")
 
-        return fig_orb_by_super, fig_super_by_orb
+            r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.2)}
+            r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
+            r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
+                          legend_label="1000-10000 MeV", y_range_name="y2")
+
+            fig_super_by_orb.append(a_hist)
+            ratio_super_by_orb.append(r_hist)
+
+        return fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb
 
     def make_plots(self):
 
         rc = self.fill_maps()
         u_hist, v_hist = self.top_level_hists()
-        fig_orb_by_super, fig_super_by_orb = self.matrix_hists()
+        fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb = self.matrix_hists()
+
+        """
         e_orb_super = {}
         e_super_orb = {}
         self.no_energy_overlay = True
+        
         e_panel = []
         for e in range(4):
             self.energy_index = e
@@ -345,13 +388,20 @@ class plot_flux_energies():
             e_super_orb[e] = f_s
             l_e = row(column(u_h, column(f_o)), column(v_h, column(f_s)))
             e_panel.append(TabPanel(child=l_e, title=self.energy_index_flux[e]))
+        """
 
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
         del_div = Div(text=self.source_name + " " + self.sed_prefix + " Run on: " +
                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
+        r_hists = row(column(column(ratio_orb_by_super)), column(column(ratio_super_by_orb)))
+
+        panel1 = TabPanel(child=l_hists, title="Phase plots")
+        panel2 = TabPanel(child=r_hists, title="Phase ratios")
+        tabs = Tabs(tabs=[panel1, panel2])
+
         output_file(self.html)
-        save(column(del_div, l_hists), title=self.page_title)
+        save(column(del_div, tabs), title=self.page_title)
 
 
 if __name__ == "__main__":
