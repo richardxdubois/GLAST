@@ -303,6 +303,9 @@ class plot_flux_energies():
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
             r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
                           legend_label="1000-10000 MeV", y_range_name="y2")
+            r_hist.xaxis.ticker = self.phase_h
+            r_hist.xaxis.major_label_overrides = self.dict_ticker
+            r_hist.xaxis.major_label_orientation = 0.7
 
             fig_orb_by_super.append(a_hist)
             ratio_orb_by_super.append(r_hist)
@@ -363,6 +366,9 @@ class plot_flux_energies():
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
             r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
                           legend_label="1000-10000 MeV", y_range_name="y2")
+            r_hist.xaxis.ticker = self.phase_h
+            r_hist.xaxis.major_label_overrides = self.dict_ticker
+            r_hist.xaxis.major_label_orientation = 0.7
 
             fig_super_by_orb.append(a_hist)
             ratio_super_by_orb.append(r_hist)
