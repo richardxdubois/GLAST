@@ -5,7 +5,7 @@ import argparse
 import yaml
 import pickle
 from datetime import datetime
-from scipy.integrate import quad
+import holoviews as hv
 
 from fit_SED import SED_function, fit_SED, flux_function, fit_SED_errors
 
@@ -55,6 +55,9 @@ class plot_flux_energies():
         for i, ph in enumerate(self.phase_h):
             self.dict_ticker[i] = str(ticker_phase_h[i] / self.num_pickles)
 
+        self.x = []
+        self.y = []
+
         self.orbital = {}
         self.orbital_100_300 = {}
         self.orbital_300_1000 = {}
@@ -85,6 +88,9 @@ class plot_flux_energies():
 
         for s in self.p_bins:
             for o in self.p_bins:
+
+                self.y.append(s)
+                self.x.append(o)
 
                 infile_b = (self.base_fn + str(s) + "/" + self.base_fn_2 +
                           str(o) + "/" + self.sed_prefix + str(o))
@@ -389,21 +395,10 @@ class plot_flux_energies():
         u_hist, v_hist = self.top_level_hists()
         fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb = self.matrix_hists()
 
-        """
-        e_orb_super = {}
-        e_super_orb = {}
-        self.no_energy_overlay = True
-        
-        e_panel = []
-        for e in range(4):
-            self.energy_index = e
-            u_h, v_h = self.top_level_hists()
-            f_o, f_s = self.matrix_hists()
-            e_orb_super[e] = f_o
-            e_super_orb[e] = f_s
-            l_e = row(column(u_h, column(f_o)), column(v_h, column(f_s)))
-            e_panel.append(TabPanel(child=l_e, title=self.energy_index_flux[e]))
-        """
+        # make 3D view with holoviews
+
+        bar_plot = hv.Scatter3D((self.x, self.y, self.orbital_per_super.flatten()))
+        bar_plot = bar_plot.opts(color='z', cmap='fire', size=4, width=750, height=750, marker="diamond")
 
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
         del_div = Div(text=self.source_name + " " + self.sed_prefix + " Run on: " +
@@ -413,7 +408,9 @@ class plot_flux_energies():
 
         panel1 = TabPanel(child=l_hists, title="Phase plots")
         panel2 = TabPanel(child=r_hists, title="Phase ratios")
-        tabs = Tabs(tabs=[panel1, panel2])
+        panel3 = TabPanel(child=bar_plot, title="3D view")
+
+        tabs = Tabs(tabs=[panel1, panel2, panel3])
 
         output_file(self.html)
         save(column(del_div, tabs), title=self.page_title)
