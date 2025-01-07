@@ -394,26 +394,42 @@ class plot_flux_energies():
 
         return fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb
 
-    def make_plots(self):
-
-        rc = self.fill_maps()
-        u_hist, v_hist = self.top_level_hists()
-        fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb = self.matrix_hists()
-
+    def make_surface(self, flux_matrix, title):
         # make 3D view with holoviews
 
         z_2d = np.zeros((2*self.num_pickles, 2*self.num_pickles))
         for s in range(self.num_pickles):
             for o in range(self.num_pickles):
-                z_2d[s][o] = self.orbital_per_super[s][o]
-                z_2d[s, o + self.num_pickles] = self.orbital_per_super[s][o]
-                z_2d[s + self.num_pickles, o] = self.orbital_per_super[s][o]
-                z_2d[s + self.num_pickles, o + self.num_pickles] = self.orbital_per_super[s][o]
+                z_2d[s][o] = flux_matrix[s][o]
+                z_2d[s, o + self.num_pickles] = flux_matrix[s][o]
+                z_2d[s + self.num_pickles, o] = flux_matrix[s][o]
+                z_2d[s + self.num_pickles, o + self.num_pickles] = flux_matrix[s][o]
 
         bar_plot = hv.Surface((np.arange(20), np.arange(20), z_2d))
         bar_plot = bar_plot.opts(colorbar=True, cmap='fire', width=1000, height=1000, xlabel="Orbital",
                                  ylabel="Super", zlabel="Flux",
-                                 title="Flux vs super and orbital phases")
+                                 title=title)
+
+        return bar_plot
+
+    def make_plots(self):
+
+        rc = self.fill_maps()
+
+        surfaces = []
+        s_full = self.make_surface(flux_matrix=self.orbital_per_super, title="All energies")
+        surfaces.append(s_full)
+        s_100 = self.make_surface(flux_matrix=self.orbital_per_super_100_300, title="100-300 MeV")
+        surfaces.append(s_100)
+        s_300 = self.make_surface(flux_matrix=self.orbital_per_super_300_1000, title="300-1000 MeV")
+        surfaces.append(s_300)
+        s_1000 = self.make_surface(flux_matrix=self.orbital_per_super_1000_10000, title="1000-10000 MeV")
+        surfaces.append(s_1000)
+
+
+
+        u_hist, v_hist = self.top_level_hists()
+        fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb = self.matrix_hists()
 
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
         del_div = Div(text=self.source_name + " " + self.sed_prefix + " Run on: " +
@@ -428,7 +444,7 @@ class plot_flux_energies():
 
         output_file(self.html)
         save(column(del_div, tabs), title=self.page_title)
-        hv.save(bar_plot, self.hv_html)
+        hv.save(hv.columns(surfaces), self.hv_html)
 
 
 if __name__ == "__main__":
