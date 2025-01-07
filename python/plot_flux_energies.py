@@ -407,7 +407,7 @@ class plot_flux_energies():
 
         bar_plot = hv.Surface((np.arange(20), np.arange(20), z_2d))
         bar_plot = bar_plot.opts(colorbar=True, cmap='fire', width=1000, height=1000, xlabel="Orbital",
-                                 ylabel="Super", zlabel="Flux", framewise=True,
+                                 ylabel="Super", zlabel="Flux", axiswise=True,
                                  title=title)
 
         return bar_plot
