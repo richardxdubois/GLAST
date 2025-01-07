@@ -381,7 +381,7 @@ class plot_flux_energies():
 
             r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.1)}
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
-            r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
+            r_hist.scatter(self.phase_h, r1000, size=6, fill_color="green", marker="square",
                           legend_label="1000-10000 MeV", y_range_name="y2")
             r_hist.line(self.phase_h, r1000, color="green", y_range_name="y2")
 
@@ -402,7 +402,7 @@ class plot_flux_energies():
 
         # make 3D view with holoviews
 
-        z_2d = np.zeros(self.num_pickles, self.num_pickles)
+        z_2d = np.zeros((self.num_pickles, self.num_pickles))
         for s in range(self.num_pickles):
             for o in range(self.num_pickles):
                 z_2d[s][o] = self.orbital_per_super[s][o]
