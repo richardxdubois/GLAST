@@ -442,7 +442,7 @@ class plot_flux_energies():
 
         output_file(self.html)
         save(column(del_div, tabs), title=self.page_title)
-        hv_vertical = hv.column(surfaces)
+        hv_vertical = hv.Layout(surfaces).cols(1)
         hv.save(hv_vertical, self.hv_html)
 
 
