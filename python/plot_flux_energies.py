@@ -30,7 +30,10 @@ class plot_flux_energies():
 
         self.num_pickles = data["num_pickles"]
         self.p_bins = np.arange(self.num_pickles)
+
         self.html = data["html"]
+        self.hv_html = self.html.split('.')[0] + "_hv.html"
+
         self.hist_flux_max = data["hist_flux_max"]
         self.params_save_pickle = self.html.split(".")[0] + "_params.pkl"
         self.page_title = data["page_title"]
@@ -81,6 +84,8 @@ class plot_flux_energies():
         self.no_energy_overlay = False
         self.energy_index = 0
         self.energy_index_flux = ["fluxs", "fluxs_100", "fluxs_300", "fluxs_1000"]
+
+        hv.extension('plotly')
 
     def fill_maps(self):
 
@@ -278,7 +283,7 @@ class plot_flux_energies():
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
 
-                a_hist.square(self.phase_h, fluxs_1000, size=6, fill_color="green",
+                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", marker="square",
                                legend_label="1000-10000 MeV", y_range_name="y2")
                 a_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
 
@@ -309,7 +314,7 @@ class plot_flux_energies():
 
             r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.1)}
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
-            r_hist.square(self.phase_h, r1000, size=6, fill_color="green",
+            r_hist.scatter(self.phase_h, r1000, size=6, fill_color="green", marker="square",
                           legend_label="1000-10000 MeV", y_range_name="y2")
             r_hist.line(self.phase_h, r1000, color="green", y_range_name="y2")
 
@@ -361,7 +366,7 @@ class plot_flux_energies():
 
                 a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
                 a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
-                a_hist.square(self.phase_h, fluxs_1000, size=6, fill_color="green",
+                a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", marker="square",
                                legend_label="1000-10000 MeV", y_range_name="y2")
 
             a_hist.xaxis.ticker = self.phase_h
@@ -397,8 +402,14 @@ class plot_flux_energies():
 
         # make 3D view with holoviews
 
-        bar_plot = hv.Scatter3D((self.x, self.y, self.orbital_per_super.flatten()))
-        bar_plot = bar_plot.opts(color='z', cmap='fire', size=4, width=750, height=750, marker="diamond")
+        z_2d = np.zeros(self.num_pickles, self.num_pickles)
+        for s in range(self.num_pickles):
+            for o in range(self.num_pickles):
+                z_2d[s][o] = self.orbital_per_super[s][o]
+        bar_plot = hv.Surface((self.p_bins, self.p_bins, z_2d))
+        bar_plot = bar_plot.opts(colorbar=True, cmap='fire', width=1000, height=1000, xlabel="Orbital",
+                                 ylabel="Super", zlabel="Flux",
+                                 title="Flux vs super and orbital phases")
 
         l_hists = row(column(u_hist, column(fig_orb_by_super)), column(v_hist, column(fig_super_by_orb)))
         del_div = Div(text=self.source_name + " " + self.sed_prefix + " Run on: " +
@@ -408,12 +419,12 @@ class plot_flux_energies():
 
         panel1 = TabPanel(child=l_hists, title="Phase plots")
         panel2 = TabPanel(child=r_hists, title="Phase ratios")
-        panel3 = TabPanel(child=bar_plot, title="3D view")
 
-        tabs = Tabs(tabs=[panel1, panel2, panel3])
+        tabs = Tabs(tabs=[panel1, panel2])
 
         output_file(self.html)
         save(column(del_div, tabs), title=self.page_title)
+        hv.save(bar_plot, self.hv_html)
 
 
 if __name__ == "__main__":
