@@ -410,7 +410,7 @@ class plot_flux_energies():
                 z_2d[s + self.num_pickles, o] = self.orbital_per_super[s][o]
                 z_2d[s + self.num_pickles, o + self.num_pickles] = self.orbital_per_super[s][o]
 
-        bar_plot = hv.Surface((self.p_bins, self.p_bins, z_2d))
+        bar_plot = hv.Surface((np.arange(20), np.arange(20), z_2d))
         bar_plot = bar_plot.opts(colorbar=True, cmap='fire', width=1000, height=1000, xlabel="Orbital",
                                  ylabel="Super", zlabel="Flux",
                                  title="Flux vs super and orbital phases")
