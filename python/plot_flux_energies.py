@@ -426,8 +426,6 @@ class plot_flux_energies():
         s_1000 = self.make_surface(flux_matrix=self.orbital_per_super_1000_10000, title="1000-10000 MeV")
         surfaces.append(s_1000)
 
-
-
         u_hist, v_hist = self.top_level_hists()
         fig_orb_by_super, fig_super_by_orb, ratio_orb_by_super, ratio_super_by_orb = self.matrix_hists()
 
@@ -444,7 +442,8 @@ class plot_flux_energies():
 
         output_file(self.html)
         save(column(del_div, tabs), title=self.page_title)
-        hv.save(hv.columns(surfaces), self.hv_html)
+        hv_vertical = hv.column(surfaces)
+        hv.save(hv_vertical, self.hv_html)
 
 
 if __name__ == "__main__":
