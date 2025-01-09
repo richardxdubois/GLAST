@@ -12,6 +12,7 @@ parser.add_argument('--source', default='4FGL J1826.2-1450', help="source name")
 parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
 parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
 parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
+parser.add_argument('--cutoffPL', action='store_true', help="cutoff power law")
 parser.add_argument('--gated', default='', help="replace named gated pulsar with log parabola")
 parser.add_argument('--add_fixed', action='store_true', help="add fixed source at target location")
 
@@ -41,6 +42,17 @@ if args.lowE:
                     'SpectrumType' : 'PowerLaw', 'Index': 2.0,
                     'Scale': 1000, 'Prefactor': 1e-11,
                     'SpatialModel': 'PointSource'})
+
+if args.cutoffPL:
+    print("switching ", args.source, "to cutoff PL model")
+
+    gta.delete_source(args.source)
+
+    # Add Source back to the model
+    gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
+                    'SpectrumType' : 'PowerLaw', 'Index': 2.0,
+                    'Scale': 1000, 'Prefactor': 1e-11, 'Eb': 1500.,
+                    'SpatialModel': 'ExpCutoff'})
 
 
 # Free Normalization of all Sources within specified deg of ROI center
