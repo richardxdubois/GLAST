@@ -50,9 +50,9 @@ if args.cutoffPL:
 
     # Add Source back to the model
     gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
-                    'SpectrumType' : 'PowerLaw', 'Index': 2.0,
-                    'Scale': 1000, 'Prefactor': 1e-11, 'Eb': 1500.,
-                    'SpatialModel': 'ExpCutoff'})
+                    'SpectrumType' : 'ExpCutoff', 'Index': 2.0,
+                    'Scale': 1000, 'Prefactor': 1e-11, 'Ebreak': 1500., 'P1': 100,
+                    'SpatialModel': 'PointSource'})
 
 
 # Free Normalization of all Sources within specified deg of ROI center
