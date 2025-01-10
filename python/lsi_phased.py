@@ -56,8 +56,8 @@ if args.cutoffPL:
                     'SpatialModel': 'PointSource'})
 """
     gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
-                    'SpectrumType' : 'ExponentialPowerLaw', 'alpha': 2.0,
-                    'Scale': 1000, 'norm': 1e-11, 'E_cut': 1500., 'beta': 0,
+                    'SpectrumType' : 'PLSuperExpCutoff4', 'IndexS': -2.0,
+                    'Scale': 1000, 'Prefactor': 1e-11, 'ExpfactorS': 0.4, 'Index2': 0.5,
                     'SpatialModel': 'PointSource'})
 
 
