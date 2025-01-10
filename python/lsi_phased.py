@@ -49,12 +49,7 @@ if args.cutoffPL:
     gta.delete_source(args.source)
 
     # Add Source back to the model
-    """
-    gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
-                    'SpectrumType' : 'ExpCutoff', 'Index': 2.0,
-                    'Scale': 1000, 'Prefactor': 1e-11, 'Ebreak': 1500., 'P1': 100,
-                    'SpatialModel': 'PointSource'})
-"""
+
     gta.add_source(args.source, { 'glon': source_glon, 'glat': source_glat,
                     'SpectrumType' : 'PLSuperExpCutoff4', 'IndexS': -2.0,
                     'Scale': 1000, 'Prefactor': 1e-11, 'ExpfactorS': 0.4, 'Index2': 0.5,
