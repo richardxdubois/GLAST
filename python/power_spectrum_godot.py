@@ -2,8 +2,7 @@ import pylab as pl
 import numpy as np
 from scipy.stats import chi2,norm
 
-import core, load_data
-from load_data import data_path, get_data
+from godot import core
 
 
 ft1 = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/LSI61303_1_deg_mkt.fits"
