@@ -5,8 +5,8 @@ from scipy.stats import chi2,norm
 from godot import core
 
 
-ft1 = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/LSI61303_1_deg_mkt.fits"
-ft2 = "/sdf/home/r/richard/fermi-user/LSI61303/fssc_data/L24082417075904476C3F57_SC00.fits"
+ft1 = ["/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/LSI61303_1_deg_mkt.fits"]
+ft2 = ["/sdf/home/r/richard/fermi-user/LSI61303/fssc_data/L24082417075904476C3F57_SC00.fits"]
 
 ra = 40.143
 dec = 61.229
