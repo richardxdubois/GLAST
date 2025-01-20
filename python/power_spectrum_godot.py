@@ -6,14 +6,14 @@ import core, load_data
 from load_data import data_path, get_data
 
 
-ft1 = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/LSI61303_1_deg_mkt_500s.fits"
+ft1 = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/LSI61303_1_deg_mkt.fits"
 ft2 = "/sdf/home/r/richard/fermi-user/LSI61303/fssc_data/L24082417075904476C3F57_SC00.fits"
 
 ra = 40.143
 dec = 61.229
 spectrum = lambda E: (E/1000)**-2.1
 
-data = core.Data(ft1, ft2, ra, dec, "LSI61303", base_spectrum=spectrum,zenith_cut=90)
+data = core.Data(ft1, ft2, ra, dec, "LSI61303", base_spectrum=spectrum, zenith_cut=90)
 
 print("done so far")
 
