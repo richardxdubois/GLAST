@@ -87,7 +87,7 @@ class plot_flux_energies():
         self.energy_index = 0
         self.energy_index_flux = ["fluxs", "fluxs_100", "fluxs_300", "fluxs_1000"]
         self.E_edges = None
-        self.E_labels = []
+        self.E_labels = ["", "", "", ""]
 
         hv.extension('plotly')
 
