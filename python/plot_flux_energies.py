@@ -87,6 +87,7 @@ class plot_flux_energies():
         self.energy_index = 0
         self.energy_index_flux = ["fluxs", "fluxs_100", "fluxs_300", "fluxs_1000"]
         self.E_edges = None
+        self.E_labels = []
 
         hv.extension('plotly')
 
@@ -127,8 +128,15 @@ class plot_flux_energies():
                         flux_E_bin[3] += p["flux"][i]
                         flux_errors_E_bin[3] += p["flux_err"][i] ** 2
 
-                self.E_edges[3][0] = self.E_edges[0][0]
-                self.E_edges[3][1] = self.E_edges[2][1]
+                if edges_once:
+                    edges_once = False
+                    self.E_edges[3][0] = self.E_edges[0][0]
+                    self.E_edges[3][1] = self.E_edges[2][1]
+                    self.E_labels[0] = "%.1f - %.1f MeV" % (self.E_edges[0][0], self.E_edges[0][1])
+                    self.E_labels[1] = "%.1f - %.1f MeV" % (self.E_edges[1][0], self.E_edges[1][1])
+                    self.E_labels[2] = "%.1f - %.1f MeV" % (self.E_edges[2][0], self.E_edges[2][1])
+                    self.E_labels[3] = "%.1f - %.1f MeV" % (self.E_edges[3][0], self.E_edges[3][1])
+                    
                 flux_errors_E_bin_rms = np.sqrt(flux_errors_E_bin)
 
                 rc = self.orbital.setdefault(o, 0.)
@@ -206,9 +214,9 @@ class plot_flux_energies():
         u_hist.scatter(self.phase_h, locals().get(self.energy_index_flux[self.energy_index]), size=6,
                        fill_color="white")
         if not self.no_energy_overlay or self.energy_index == 0:
-            u_hist.scatter(self.phase_h, np.array(fluxs_100), size=6, fill_color="black", legend_label="100-300 MeV")
-            u_hist.scatter(self.phase_h, np.array(fluxs_300), size=6, fill_color="blue", legend_label="300-1000 MeV")
-            u_hist.scatter(self.phase_h, np.array(fluxs_1000), size=6, fill_color="green", legend_label="1000-10000 MeV")
+            u_hist.scatter(self.phase_h, np.array(fluxs_100), size=6, fill_color="black", legend_label=self.E_labels[0])
+            u_hist.scatter(self.phase_h, np.array(fluxs_300), size=6, fill_color="blue", legend_label=self.E_labels[1])
+            u_hist.scatter(self.phase_h, np.array(fluxs_1000), size=6, fill_color="green", legend_label=self.E_labels[2])
             u_hist.y_range = Range1d(0., self.hist_flux_max)
 
         u_hist.xaxis.ticker = self.phase_h
@@ -247,9 +255,9 @@ class plot_flux_energies():
         v_hist.scatter(self.phase_h, locals().get(self.energy_index_flux[self.energy_index]), size=6,
                        fill_color="white")
         if not self.no_energy_overlay or self.energy_index == 0:
-            v_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
-            v_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
-            v_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label="1000-10000 MeV")
+            v_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label=self.E_labels[0])
+            v_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label=self.E_labels[1])
+            v_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", legend_label=self.E_labels[2])
             v_hist.y_range = Range1d(0., self.hist_flux_max)
 
         v_hist.xaxis.ticker = self.phase_h
@@ -295,11 +303,11 @@ class plot_flux_energies():
                 # Create a second y-axis
                 a_hist.extra_y_ranges = {"y2": Range1d(start=0, end=1.e-7)}
                 #a_hist.add_layout(a_hist.yaxis[0], 'left')  # Attach the first y-axis
-                a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
-                a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+                a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label=self.E_labels[0])
+                a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label=self.E_labels[1])
 
                 a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", marker="square",
-                               legend_label="1000-10000 MeV", y_range_name="y2")
+                               legend_label=self.E_labels[2], y_range_name="y2")
                 a_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
 
             a_hist.xaxis.ticker = self.phase_h
@@ -322,15 +330,15 @@ class plot_flux_energies():
             a_hist.add_layout(vline_a2)
 
             r_hist = figure(title=title, x_axis_label='Phase', width=750)
-            r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label="100-300 MeV")
+            r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label=self.E_labels[0])
             r_hist.line(self.phase_h, r100, color="black")
-            r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+            r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label=self.E_labels[1])
             r_hist.line(self.phase_h, r300, color="blue")
 
             r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.1)}
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
             r_hist.scatter(self.phase_h, r1000, size=6, fill_color="green", marker="square",
-                          legend_label="1000-10000 MeV", y_range_name="y2")
+                          legend_label=self.E_labels[2], y_range_name="y2")
             r_hist.line(self.phase_h, r1000, color="green", y_range_name="y2")
 
             r_hist.xaxis.ticker = self.phase_h
@@ -379,25 +387,25 @@ class plot_flux_energies():
                 a_hist.extra_y_ranges = {"y2": Range1d(start=0, end=1.e-7)}
                 a_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
 
-                a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label="100-300 MeV")
-                a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+                a_hist.scatter(self.phase_h, fluxs_100, size=6, fill_color="black", legend_label=self.E_labels[0])
+                a_hist.scatter(self.phase_h, fluxs_300, size=6, fill_color="blue", legend_label=self.E_labels[1])
                 a_hist.scatter(self.phase_h, fluxs_1000, size=6, fill_color="green", marker="square",
-                               legend_label="1000-10000 MeV", y_range_name="y2")
+                               legend_label=self.E_labels[2], y_range_name="y2")
 
             a_hist.xaxis.ticker = self.phase_h
             a_hist.xaxis.major_label_overrides = self.dict_ticker
             a_hist.xaxis.major_label_orientation = 0.7
 
             r_hist = figure(title=title, x_axis_label='Phase', width=750)
-            r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label="100-300 MeV")
+            r_hist.scatter(self.phase_h, r100, size=6, fill_color="black", legend_label=self.E_labels[0])
             r_hist.line(self.phase_h, r100, color="black")
-            r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label="300-1000 MeV")
+            r_hist.scatter(self.phase_h, r300, size=6, fill_color="blue", legend_label=self.E_labels[1])
             r_hist.line(self.phase_h, r300, color="blue")
 
             r_hist.extra_y_ranges = {"y2": Range1d(start=0, end=0.1)}
             r_hist.add_layout(LinearAxis(y_range_name="y2", axis_label='1000-10000 MeV'), 'right')
             r_hist.scatter(self.phase_h, r1000, size=6, fill_color="green", marker="square",
-                          legend_label="1000-10000 MeV", y_range_name="y2")
+                          legend_label=self.E_labels[2], y_range_name="y2")
             r_hist.line(self.phase_h, r1000, color="green", y_range_name="y2")
 
             r_hist.xaxis.ticker = self.phase_h
