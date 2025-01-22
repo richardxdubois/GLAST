@@ -112,12 +112,14 @@ class plot_flux_energies():
                 flux_errors_E_bin = np.zeros(4)
                 index_e_bin = 0
 
+                self.E_edges[0][0] = p["e_min"][0]
                 for i, E_i in enumerate(p["flux"]):
                     E_end = p["e_max"][i]
-                    self.E_edges[index_e_bin][0] = E_end
                     if E_end < E_end_bin[2] and not pd.isna(p["e2dnde_err_lo"][i]):
                         self.E_edges[index_e_bin][1] = E_end
                         if E_end > E_end_bin[index_e_bin]:
+                            self.E_edges[index_e_bin+1][0] = self.E_edges[index_e_bin][0]
+                            self.E_edges[index_e_bin][1] = E_end
                             index_e_bin += 1
                         flux_E_bin[index_e_bin] += p["flux"][i]
                         flux_errors_E_bin[index_e_bin] += p["flux_err"][i] ** 2
@@ -450,7 +452,7 @@ class plot_flux_energies():
                                                   title="All energies")
         surfaces.append(s_full)
         surfaces.append(s_full_errors)
-        title = "%.1f - %.1f MeV" % (self.E_edges[3][0], self.E_edges[3][1])
+        title = "%.1f - %.1f MeV" % (self.E_edges[0][0], self.E_edges[0][1])
         s_100 = self.make_surface(flux_matrix=self.orbital_per_super_100_300, title=title)
         surfaces.append(s_100)
         s_300 = self.make_surface(flux_matrix=self.orbital_per_super_300_1000, title="300-1000 MeV")
