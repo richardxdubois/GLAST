@@ -86,12 +86,15 @@ class plot_flux_energies():
         self.no_energy_overlay = False
         self.energy_index = 0
         self.energy_index_flux = ["fluxs", "fluxs_100", "fluxs_300", "fluxs_1000"]
+        self.E_edges = None
 
         hv.extension('plotly')
 
     def fill_maps(self):
 
         E_end_bin = [300, 1000, 10000]
+        self.E_edges = [[0., 0.], [0., 0.], [0., 0.], [0., 0.]]
+        edges_once = True
 
         for s in self.p_bins:
             for o in self.p_bins:
@@ -111,7 +114,9 @@ class plot_flux_energies():
 
                 for i, E_i in enumerate(p["flux"]):
                     E_end = p["e_max"][i]
+                    self.E_edges[index_e_bin][0] = E_end
                     if E_end < E_end_bin[2] and not pd.isna(p["e2dnde_err_lo"][i]):
+                        self.E_edges[index_e_bin][1] = E_end
                         if E_end > E_end_bin[index_e_bin]:
                             index_e_bin += 1
                         flux_E_bin[index_e_bin] += p["flux"][i]
@@ -120,6 +125,8 @@ class plot_flux_energies():
                         flux_E_bin[3] += p["flux"][i]
                         flux_errors_E_bin[3] += p["flux_err"][i] ** 2
 
+                self.E_edges[3][0] = self.E_edges[0][0]
+                self.E_edges[3][1] = self.E_edges[2][1]
                 flux_errors_E_bin_rms = np.sqrt(flux_errors_E_bin)
 
                 rc = self.orbital.setdefault(o, 0.)
@@ -443,7 +450,8 @@ class plot_flux_energies():
                                                   title="All energies")
         surfaces.append(s_full)
         surfaces.append(s_full_errors)
-        s_100 = self.make_surface(flux_matrix=self.orbital_per_super_100_300, title="100-300 MeV")
+        title = "%.1f - %.1f MeV" % (self.E_edges[3][0], self.E_edges[3][1])
+        s_100 = self.make_surface(flux_matrix=self.orbital_per_super_100_300, title=title)
         surfaces.append(s_100)
         s_300 = self.make_surface(flux_matrix=self.orbital_per_super_300_1000, title="300-1000 MeV")
         surfaces.append(s_300)
