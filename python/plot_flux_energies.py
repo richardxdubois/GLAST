@@ -118,7 +118,7 @@ class plot_flux_energies():
                     if E_end < E_end_bin[2] and not pd.isna(p["e2dnde_err_lo"][i]):
                         self.E_edges[index_e_bin][1] = E_end
                         if E_end > E_end_bin[index_e_bin]:
-                            self.E_edges[index_e_bin+1][0] = self.E_edges[index_e_bin][0]
+                            self.E_edges[index_e_bin+1][0] = E_end
                             self.E_edges[index_e_bin][1] = E_end
                             index_e_bin += 1
                         flux_E_bin[index_e_bin] += p["flux"][i]
