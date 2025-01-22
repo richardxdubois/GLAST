@@ -447,17 +447,20 @@ class plot_flux_energies():
         rc = self.fill_maps()
 
         surfaces = []
+        title = "%.1f - %.1f MeV" % (self.E_edges[3][0], self.E_edges[3][1])
         s_full, s_full_errors = self.make_surface(flux_matrix=self.orbital_per_super,
                                                   flux_matrix_errors=self.orbital_per_super_error,
-                                                  title="All energies")
+                                                  title=title)
         surfaces.append(s_full)
         surfaces.append(s_full_errors)
         title = "%.1f - %.1f MeV" % (self.E_edges[0][0], self.E_edges[0][1])
         s_100 = self.make_surface(flux_matrix=self.orbital_per_super_100_300, title=title)
         surfaces.append(s_100)
-        s_300 = self.make_surface(flux_matrix=self.orbital_per_super_300_1000, title="300-1000 MeV")
+        title = "%.1f - %.1f MeV" % (self.E_edges[1][0], self.E_edges[1][1])
+        s_300 = self.make_surface(flux_matrix=self.orbital_per_super_300_1000, title=title)
         surfaces.append(s_300)
-        s_1000 = self.make_surface(flux_matrix=self.orbital_per_super_1000_10000, title="1000-10000 MeV")
+        title = "%.1f - %.1f MeV" % (self.E_edges[2][0], self.E_edges[2][1])
+        s_1000 = self.make_surface(flux_matrix=self.orbital_per_super_1000_10000, title=title)
         surfaces.append(s_1000)
 
         u_hist, v_hist = self.top_level_hists()
