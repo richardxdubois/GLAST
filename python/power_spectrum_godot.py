@@ -10,6 +10,7 @@ in_dir = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/godot/diff
 # Get the list of files in the directory
 ft1_u = [f for f in os.listdir(in_dir) if os.path.isfile(os.path.join(in_dir, f))]
 ft1 = sorted(ft1_u)
+print("Input files:", ft1)
 
 ft2 = ["/sdf/home/r/richard/fermi-user/LSI61303/fssc_data/L24082417075904476C3F57_SC00.fits"]
 
