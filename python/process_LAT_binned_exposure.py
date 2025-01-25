@@ -113,7 +113,7 @@ class process_LAT_binned_exposure():
                 err_rate = rmserr / e
 
                 r_weighted.append(rate)
-                weights.append(err_rate)
+                weights.append(1./err_rate**2)
             else:
                 r_weighted.append(cnts[i])
                 weights.append(0.)
@@ -221,7 +221,7 @@ class process_LAT_binned_exposure():
         f1.add_layout(res_label)
         f_hists.append(f1)
 
-        if self.super_period != 0.:
+        if self.super_period != 0.:  # larger frequency range to include super orbital period
 
             s_frequency = np.linspace(self.s_start, self.f_stop, 100000)  # for orbital 100000
 
