@@ -1,18 +1,23 @@
 import pylab as pl
 import numpy as np
 from scipy.stats import chi2,norm
+import os
 
 from godot import core
 
+in_dir = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/godot/diffrsp/fits/"
 
-ft1 = ["/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/LSI61303_1deg_mkt.fits"]
+# Get the list of files in the directory
+ft1_u = [f for f in os.listdir(in_dir) if os.path.isfile(os.path.join(in_dir, f))]
+ft1 = sorted(ft1_u)
+
 ft2 = ["/sdf/home/r/richard/fermi-user/LSI61303/fssc_data/L24082417075904476C3F57_SC00.fits"]
 
 ra = 40.143
 dec = 61.229
 spectrum = lambda E: (E/1000)**-2.1
 
-data = core.Data(ft1, ft2, ra, dec, "LSI61303", base_spectrum=spectrum, zenith_cut=90)
+data = core.Data(ft1, ft2, ra, dec, weight_col="4FGL J0240.5+6113", base_spectrum=spectrum, zenith_cut=90)
 
 print("done so far")
 
