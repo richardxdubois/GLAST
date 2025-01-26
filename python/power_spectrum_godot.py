@@ -58,18 +58,24 @@ f1.line(fday[fmask], dlogl_nobg[fmask])
 pday = np.array([1./f for f in fday if f != 0])
 pmask = [i for i in range(len(pday)) if pday[i] > 23 and pday[i] < 29]
 
-f2 = figure(title="period", y_axis_type="log", width=800, height=640)
+f2 = figure(title="periodL dlogl", y_axis_type="log", width=800, height=640)
 f2.line(pday[pmask], dlogl[pmask])
 
-f3 = figure(title="period", width=800, height=640)
+f3 = figure(title="period: dlogl", width=800, height=640)
 f3.line(pday[pmask], dlogl[pmask])
+
+f3a = figure(title="period: dlogl_nobg", width=800, height=640)
+f3a.line(pday[pmask], dlogl_nobg[pmask])
+
+f3b = figure(title="period: dlogl_nobg + add_power", width=800, height=640)
+f3b.line(pday[pmask], (dlogl+add_power)[pmask])
 
 smask = [i for i in range(len(pday)) if pday[i] > 1000 and pday[i] < 3000]
 
 f4 = figure(title="period", width=800, height=640)
 f4.line(pday[smask], dlogl[smask])
 
-l = layout(f1, row(f2, f3), f4)
+l = layout(f1, row(f2, f3), row(f3a, f3b), f4)
 
 output_file("power_spectrum_godot.html")
 save(l)
