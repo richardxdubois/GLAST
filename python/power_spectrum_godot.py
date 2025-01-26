@@ -56,7 +56,7 @@ f1 = figure(title="frequency", y_axis_type="log", width=800, height=640)
 f1.line(fday[fmask], dlogl_nobg[fmask])
 
 pday = 1./fday
-pmask = pday > 23. and pday < 29.
+pmask = np.where((pday > 23.) & (pday < 29.))
 
 f1 = figure(title="period", y_axis_type="log", width=800, height=640)
 f2.line(pday[pmask], dlogl[pmask])
