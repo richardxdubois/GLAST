@@ -58,7 +58,7 @@ f1.line(fday[fmask], dlogl_nobg[fmask])
 pday = [1./f for f in fday if f != 0]
 pmask = [i for i in range(len(pday)) if pday[i] > 23 and pday[i] < 29]
 
-f1 = figure(title="period", y_axis_type="log", width=800, height=640)
+f2 = figure(title="period", y_axis_type="log", width=800, height=640)
 f2.line(pday[pmask], dlogl[pmask])
 
 output_file("power_spectrum_godot.html")
