@@ -72,10 +72,13 @@ f3b.line(pday[pmask], (dlogl+add_power)[pmask])
 
 smask = [i for i in range(len(pday)) if pday[i] > 1000 and pday[i] < 3000]
 
-f4 = figure(title="period", width=800, height=640)
+f4 = figure(title="period: dlogl", width=800, height=640)
 f4.line(pday[smask], dlogl[smask])
 
-l = layout(f1, row(f2, f3), row(f3a, f3b), f4)
+f4a = figure(title="period: dlogl_nobg", width=800, height=640)
+f4a.line(pday[smask], dlogl_nobg[smask])
+
+l = layout(f1, row(f2, f3), row(f3a, f3b), row(f4, f4a))
 
 output_file("power_spectrum_godot.html")
 save(l)
