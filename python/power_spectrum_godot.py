@@ -52,33 +52,56 @@ print("power spectrum done")
 
 fmask = fday < 0.1
 
-f1 = figure(title="frequency", y_axis_type="log", width=800, height=640)
-f1.line(fday[fmask], dlogl_nobg[fmask])
-
 pday = np.array([1./f for f in fday if f != 0])
+print("pday: ", len(pday), max(pday), min(pday))
+
 pmask = [i for i in range(len(pday)) if pday[i] > 23 and pday[i] < 29]
-
-f2 = figure(title="periodL dlogl", y_axis_type="log", width=800, height=640)
-f2.line(pday[pmask], dlogl[pmask])
-
-f3 = figure(title="period: dlogl", width=800, height=640)
-f3.line(pday[pmask], dlogl[pmask])
-
-f3a = figure(title="period: dlogl_nobg", width=800, height=640)
-f3a.line(pday[pmask], dlogl_nobg[pmask])
-
-f3b = figure(title="period: dlogl_nobg + add_power", width=800, height=640)
-f3b.line(pday[pmask], (dlogl+add_power)[pmask])
-
 smask = [i for i in range(len(pday)) if pday[i] > 1000 and pday[i] < 3000]
 
-f4 = figure(title="period: dlogl", width=800, height=640)
-f4.line(pday[smask], dlogl[smask])
+fig1 = figure(title="frequency: dlogl", y_axis_type="log", width=800, height=640)
+fig1.line(fday[fmask], dlogl_nobg[fmask])
 
-f4a = figure(title="period: dlogl_nobg", width=800, height=640)
-f4a.line(pday[smask], dlogl_nobg[smask])
+fig2 = figure(title="period: dlogl", y_axis_type="log", width=800, height=640)
+fig2.line(pday[pmask], dlogl[pmask])
 
-l = layout(f1, row(f2, f3), row(f3a, f3b), row(f4, f4a))
+fig3 = figure(title="period: dlogl", width=800, height=640)
+fig3.line(pday[pmask], dlogl[pmask])
+
+fig3a = figure(title="period: dlogl_nobg", width=800, height=640)
+fig3a.line(pday[pmask], dlogl_nobg[pmask])
+
+fig3b = figure(title="period: dlogl_nobg + add_power", width=800, height=640)
+fig3b.line(pday[pmask], (dlogl+add_power)[pmask])
+
+fig4 = figure(title="period: dlogl", width=800, height=640)
+fig4.line(pday[smask], dlogl[smask])
+
+fig4a = figure(title="period: dlogl_nobg", width=800, height=640)
+fig4a.line(pday[smask], dlogl_nobg[smask])
+
+fig12 = figure(title="frequency: dlogl2", y_axis_type="log", width=800, height=640)
+fig12.line(fday[fmask], dlogl2[fmask])
+
+fig22 = figure(title="period: dlogl", y_axis_type="log", width=800, height=640)
+fig22.line(pday[pmask], dlogl2[pmask])
+
+fig32 = figure(title="period: dlogl2", width=800, height=640)
+fig32.line(pday[pmask], dlogl2[pmask])
+
+fig32a = figure(title="period: dlogl_nobg2", width=800, height=640)
+fig32a.line(pday[pmask], dlogl_nobg2[pmask])
+
+fig32b = figure(title="period: dlogl_nobg2 + add_power", width=800, height=640)
+fig32b.line(pday[pmask], (dlogl_nobg2+add_power)[pmask])
+
+fig42 = figure(title="period: dlogl2", width=800, height=640)
+fig42.line(pday[smask], dlogl2[smask])
+
+fig42a = figure(title="period: dlogl_nobg2", width=800, height=640)
+fig42a.line(pday[smask], dlogl_nobg2[smask])
+
+l = layout(fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
+           fig12, row(fig22, fig32), row(fig32a, fig32b), row(fig42, fig42a))
 
 output_file("power_spectrum_godot.html")
 save(l)
