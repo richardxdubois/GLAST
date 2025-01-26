@@ -1,17 +1,15 @@
 import pylab as pl
 import numpy as np
 from scipy.stats import chi2,norm
+from scipy.signal import find_peaks
+
 import os
 
 from godot import core
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
-from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataSource, BasicTicker, Tabs,
-                          TabPanel, RangeSlider, CustomJS, Button, NumeralTickFormatter, BasicTickFormatter)
-from bokeh.models.widgets import Div
-from bokeh.palettes import Plasma256 as palette
-from bokeh.transform import linear_cmap, log_cmap
+from bokeh.models import Label, Span
 
 in_dir = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/godot/diffrsp/fits/"
 
@@ -35,6 +33,9 @@ f,window = core.power_spectrum_fft(ts,exp_only=True)
 scale = 50./40000
 f,dlogl_nobg,dlogl,dlogl_null = core.power_spectrum_fft(ts)
 fday = f*86400
+
+peaks_ls, props_ls = find_peaks(dlogl_nobg, height=0.5 * max(dlogl_nobg))
+pk_days = (1. / f[peaks_ls] / 86400.)
 
 porb = 26.495
 psuper = 1667.
@@ -66,6 +67,10 @@ vline_p1 = Span(location=porb, dimension='height', line_color='red', line_width=
 vline_p2 = Span(location=psuper, dimension='height', line_color='blue', line_width=2,
                 line_dash='dashed')
 
+res_label = Label(x=23.5, y=400., text_font_size="8pt",
+                  text="Peak : " + str('{0:.3f}'.format(pk_days[0])) + " days")
+
+
 fig1 = figure(title="frequency: dlogl", y_axis_type="log", width=800, height=640)
 fig1.line(fday[fmask], dlogl_nobg[fmask])
 
@@ -80,6 +85,7 @@ fig3.add_layout(vline_p1)
 fig3a = figure(title="period: dlogl_nobg", width=800, height=640)
 fig3a.line(pday[pmask], dlogl_nobg[pmask])
 fig3a.add_layout(vline_p1)
+fig3a.add_layout(res_label)
 
 fig3b = figure(title="period: dlogl_nobg + add_power", width=800, height=640)
 fig3b.line(pday[pmask], (dlogl+add_power)[pmask])
