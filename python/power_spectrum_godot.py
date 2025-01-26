@@ -52,7 +52,7 @@ print("power spectrum done")
 
 fmask = fday < 0.1
 
-f1 = figure(title="frequency", yaxis_type="log", plot_width=800, plot_height=400)
+f1 = figure(title="frequency", y_axis_type="log", plot_width=800, plot_height=400)
 f1.line(fday[fmask], dlogl_nobg[fmask])
 
 save(f1)
