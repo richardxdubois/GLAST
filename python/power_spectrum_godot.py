@@ -55,4 +55,5 @@ fmask = fday < 0.1
 f1 = figure(title="frequency", y_axis_type="log", width=800, height=640)
 f1.line(fday[fmask], dlogl_nobg[fmask])
 
+output_file("power_spectrum_godot.html")
 save(f1)
