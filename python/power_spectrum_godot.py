@@ -64,7 +64,12 @@ f2.line(pday[pmask], dlogl[pmask])
 f3 = figure(title="period", width=800, height=640)
 f3.line(pday[pmask], dlogl[pmask])
 
-l = layout(f1, row(f2, f3))
+smask = [i for i in range(len(pday)) if pday[i] > 0 and pday[i] < 2000]
+
+f4 = figure(title="period", width=800, height=640)
+f4.line(pday[smask], dlogl[smask])
+
+l = layout(f1, row(f2, f3), f4)
 
 output_file("power_spectrum_godot.html")
 save(l)
