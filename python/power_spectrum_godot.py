@@ -55,11 +55,12 @@ fmask = fday < 0.1
 f1 = figure(title="frequency", y_axis_type="log", width=800, height=640)
 f1.line(fday[fmask], dlogl_nobg[fmask])
 
-pday = [1./f for f in fday if f != 0]
+pday = np.array([1./f for f in fday if f != 0])
 pmask = [i for i in range(len(pday)) if pday[i] > 23 and pday[i] < 29]
 
 f2 = figure(title="period", y_axis_type="log", width=800, height=640)
 f2.line(pday[pmask], dlogl[pmask])
 
+l = layout(f1, f2)
 output_file("power_spectrum_godot.html")
-save(f1, f2)
+save(l)
