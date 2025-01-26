@@ -64,7 +64,7 @@ f2.line(pday[pmask], dlogl[pmask])
 f3 = figure(title="period", width=800, height=640)
 f3.line(pday[pmask], dlogl[pmask])
 
-smask = [i for i in range(len(pday)) if pday[i] > 0 and pday[i] < 2000]
+smask = [i for i in range(len(pday)) if pday[i] > 1000 and pday[i] < 2000]
 
 f4 = figure(title="period", width=800, height=640)
 f4.line(pday[smask], dlogl[smask])
