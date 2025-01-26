@@ -36,8 +36,8 @@ scale = 50./40000
 f,dlogl_nobg,dlogl,dlogl_null = core.power_spectrum_fft(ts)
 fday = f*86400
 
-#forb = 2.963145573933919e-06
-forb = 4.3676e-7
+forb = 2.963145573933919e-06
+#forb = 4.3676e-7
 fprec = 2.1777777777777778e-07
 freqs = np.asarray([fprec,forb,2*forb])
 corr,pows = core.get_orbital_modulation(ts,freqs)
