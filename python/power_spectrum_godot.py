@@ -36,6 +36,7 @@ scale = 50./40000
 f,dlogl_nobg,dlogl,dlogl_null = core.power_spectrum_fft(ts)
 fday = f*86400
 
+porb = 26.495
 forb = 2.963145573933919e-06
 #forb = 4.3676e-7
 fprec = 2.1777777777777778e-07
@@ -58,47 +59,63 @@ print("pday: ", len(pday), max(pday), min(pday))
 pmask = [i for i in range(len(pday)) if pday[i] > 23 and pday[i] < 29]
 smask = [i for i in range(len(pday)) if pday[i] > 1000 and pday[i] < 3000]
 
+vline_p1 = Span(location=porb, dimension='height', line_color='red', line_width=2,
+                line_dash='dashed')
+
 fig1 = figure(title="frequency: dlogl", y_axis_type="log", width=800, height=640)
 fig1.line(fday[fmask], dlogl_nobg[fmask])
 
 fig2 = figure(title="period: dlogl", y_axis_type="log", width=800, height=640)
 fig2.line(pday[pmask], dlogl[pmask])
+fig2.add_layout(vline_p1)
 
 fig3 = figure(title="period: dlogl", width=800, height=640)
 fig3.line(pday[pmask], dlogl[pmask])
+fig3.add_layout(vline_p1)
 
 fig3a = figure(title="period: dlogl_nobg", width=800, height=640)
 fig3a.line(pday[pmask], dlogl_nobg[pmask])
+fig3a.add_layout(vline_p1)
 
 fig3b = figure(title="period: dlogl_nobg + add_power", width=800, height=640)
 fig3b.line(pday[pmask], (dlogl+add_power)[pmask])
+fig3b.add_layout(vline_p1)
 
 fig4 = figure(title="period: dlogl", width=800, height=640)
 fig4.line(pday[smask], dlogl[smask])
+fig4.add_layout(vline_p1)
 
 fig4a = figure(title="period: dlogl_nobg", width=800, height=640)
 fig4a.line(pday[smask], dlogl_nobg[smask])
+fig4a.add_layout(vline_p1)
 
 fig12 = figure(title="frequency: dlogl2", y_axis_type="log", width=800, height=640)
 fig12.line(fday[fmask], dlogl2[fmask])
+fig12.add_layout(vline_p1)
 
 fig22 = figure(title="period: dlogl", y_axis_type="log", width=800, height=640)
 fig22.line(pday[pmask], dlogl2[pmask])
+fig22.add_layout(vline_p1)
 
 fig32 = figure(title="period: dlogl2", width=800, height=640)
 fig32.line(pday[pmask], dlogl2[pmask])
+fig32.add_layout(vline_p1)
 
 fig32a = figure(title="period: dlogl_nobg2", width=800, height=640)
 fig32a.line(pday[pmask], dlogl_nobg2[pmask])
+fig32a.add_layout(vline_p1)
 
 fig32b = figure(title="period: dlogl_nobg2 + add_power", width=800, height=640)
 fig32b.line(pday[pmask], (dlogl_nobg2+add_power)[pmask])
+fig32b.add_layout(vline_p1)
 
 fig42 = figure(title="period: dlogl2", width=800, height=640)
 fig42.line(pday[smask], dlogl2[smask])
+fig42.add_layout(vline_p1)
 
 fig42a = figure(title="period: dlogl_nobg2", width=800, height=640)
 fig42a.line(pday[smask], dlogl_nobg2[smask])
+fig42a.add_layout(vline_p1)
 
 l = layout(fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
            fig12, row(fig22, fig32), row(fig32a, fig32b), row(fig42, fig42a))
