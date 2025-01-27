@@ -50,6 +50,7 @@ class process_LAT_binned_exposure():
         try:
             self.original_ft1 = data["original_ft1"]
             self.do_src_prob = data["do_src_prob"]
+            self.fgl_src = data["fgl_src"]
         except KeyError:
             self.original_ft1 = None
             self.do_src_prob = False
