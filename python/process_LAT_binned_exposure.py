@@ -164,7 +164,7 @@ class process_LAT_binned_exposure():
         bin_i = np.digitize(t, edges)
         print("done with digitize")
 
-        binned_sums = np.zeros(len(self.time))
+        binned_sums = np.zeros(len(self.time)+1)
 
         for i in range(len(t)):
             if 0 <= bin_i[i] < len(binned_sums):
