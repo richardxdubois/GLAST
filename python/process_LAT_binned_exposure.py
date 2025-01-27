@@ -35,6 +35,7 @@ class process_LAT_binned_exposure():
         self.hdul = None
         self.time = None
         self.indices = []
+        self.indices_exp = []
         self.time_in = None
         self.counts = None
         self.timedel = None
@@ -82,11 +83,11 @@ class process_LAT_binned_exposure():
             self.exposure = data.EXPOSURE[self.indices]
             self.counts = data.COUNTS[self.indices]
 
-            indices_exp = np.where(self.exposure != 0)
+            self.indices_exp = np.where(self.exposure != 0)
 
-            self.time = self.time[indices_exp] #+ self.timedel[0]/2.
-            self.exposure = self.exposure[indices_exp]
-            self.counts = self.counts[indices_exp]
+            self.time = self.time[self.indices_exp] #+ self.timedel[0]/2.
+            self.exposure = self.exposure[self.indices_exp]
+            self.counts = self.counts[self.indices_exp]
         else:
             self.time = data.TIME + self.timedel[0]/2.
             self.exposure = data.EXPOSURE
@@ -175,8 +176,8 @@ class process_LAT_binned_exposure():
 
         if self.suppress_zero:
             print("self.indices, binned_sums", len(self.indices), len(binned_sums))
-            binned_sums = binned_sums[self.indices]
-            print("len of binned_sums after indices", len(binned_sums))
+            binned_sums = binned_sums[self.indices][self.indices_exp]
+            print("len of binned_sums after indices, exp", len(binned_sums))
 
         return binned_sums
 
