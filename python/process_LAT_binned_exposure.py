@@ -176,7 +176,7 @@ class process_LAT_binned_exposure():
         if self.suppress_zero:
             print("self.indices, binned_sums", len(self.indices), len(binned_sums))
             binned_sums = binned_sums[self.indices]
-            print("len of binned_sums after indices")
+            print("len of binned_sums after indices", len(binned_sums))
 
         return binned_sums
 
