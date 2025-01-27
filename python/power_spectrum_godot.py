@@ -23,7 +23,6 @@ args = parser.parse_args()
 with open(args.app_config, "r") as f:
     data = yaml.safe_load(f)
 
-in_dir = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/godot/diffrsp/fits/"
 in_dir = data["in_dir"]
 ft2 = data["ft2"]
 
