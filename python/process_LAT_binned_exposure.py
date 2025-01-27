@@ -146,8 +146,8 @@ class process_LAT_binned_exposure():
             t_f = data.TIME
             s_prob_f = data.field(self.fgl_src)  # source prob column
 
-            t.append(t_f)
-            s_prob.append(s_prob_f)
+            t.extend(t_f)
+            s_prob.extend(s_prob_f)
 
             h.close()
 
