@@ -2,6 +2,8 @@ import pylab as pl
 import numpy as np
 from scipy.stats import chi2,norm
 from scipy.signal import find_peaks
+import yaml
+import argparse
 
 import os
 
@@ -11,17 +13,41 @@ from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import Label, Span
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--app_config',
+                    default="process_exposure_config.yaml",
+                    help="overall app config file")
+args = parser.parse_args()
+
+with open(args.app_config, "r") as f:
+    data = yaml.safe_load(f)
+
 in_dir = "/sdf/home/r/richard/fermi-user/LSI61303/periods/periodicity/godot/diffrsp/fits/"
+in_dir = data["in_dir"]
+ft2 = data["ft2"]
+
+ra = data["ra"]
+dec = data["dec"]
+
+porb = data["porb"]
+psuper = data["psuper"]
+forb = data["forb"]
+fprec = data["fprec"]
+
+orb_low = data["orb_low"]
+orb_high = data["orb_high"]
+super_low = data["super_low"]
+super_high = data["super_high"]
+
+html_file = data["html_file"]
+html_title = data["html_title"]
 
 # Get the list of files in the directory
 ft1_u = [os.path.join(in_dir, f) for f in os.listdir(in_dir) if os.path.isfile(os.path.join(in_dir, f))]
 ft1 = sorted(ft1_u)
 print("Input files:", ft1)
 
-ft2 = ["/sdf/home/r/richard/fermi-user/LSI61303/fssc_data/L24082417075904476C3F57_SC00.fits"]
-
-ra = 40.143
-dec = 61.229
 spectrum = lambda E: (E/1000)**-2.1
 
 data = core.Data(ft1, ft2, ra, dec, weight_col="4FGL J0240.5+6113", base_spectrum=spectrum, zenith_cut=90)
@@ -37,12 +63,6 @@ fday = f*86400
 peaks_ls, props_ls = find_peaks(dlogl_nobg, height=0.5 * max(dlogl_nobg))
 pk_days = (1. / f[peaks_ls] / 86400.)
 
-porb = 26.495
-psuper = 1667.
-
-forb = 2.963145573933919e-06
-#forb = 4.3676e-7
-fprec = 2.1777777777777778e-07
 freqs = np.asarray([fprec,forb,2*forb])
 corr,pows = core.get_orbital_modulation(ts,freqs)
 f2,dlogl_nobg2,dlogl2,dlogl_null2 = core.power_spectrum_fft(ts, exposure_correction=corr)
@@ -59,8 +79,8 @@ fmask = fday < 0.1
 pday = np.array([1./f for f in fday if f != 0])
 print("pday: ", len(pday), max(pday), min(pday))
 
-pmask = [i for i in range(len(pday)) if pday[i] > 23 and pday[i] < 29]
-smask = [i for i in range(len(pday)) if pday[i] > 1000 and pday[i] < 3000]
+pmask = [i for i in range(len(pday)) if pday[i] > orb_low and pday[i] < orb_high]
+smask = [i for i in range(len(pday)) if pday[i] > super_low and pday[i] < super_high]
 
 vline_p1 = Span(location=porb, dimension='height', line_color='red', line_width=2,
                 line_dash='dashed')
@@ -129,5 +149,5 @@ fig42a.add_layout(vline_p2)
 l = layout(fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
            fig12, row(fig22, fig32), row(fig32a, fig32b), row(fig42, fig42a))
 
-output_file("power_spectrum_godot.html")
-save(l)
+output_file(html_file)
+save(l, title=html_title)
