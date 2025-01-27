@@ -33,6 +33,8 @@ ft2 = data["ft2"]
 
 ra = data["ra"]
 dec = data["dec"]
+emin = data["emin"]
+emax = data["emax"]
 
 porb = data["porb"]
 psuper = data["psuper"]
