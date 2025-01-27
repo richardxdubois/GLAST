@@ -139,7 +139,7 @@ class process_LAT_binned_exposure():
 
         for f in self.original_ft1:
             h = fits.open(f)
-            h.info()
+            print(f)
 
             data = h[1].data
 
@@ -151,13 +151,18 @@ class process_LAT_binned_exposure():
 
             h.close()
 
+        print("length of t and s_prob", len(t), len(s_prob))
+
         edges = [self.time[0] + i*self.timedel for i in range(len(self.time)+1)]
         bin_i = np.digitize(t, edges)
+        print("done with digitize")
+
         binned_sums = np.zeros(range(self.time))
 
         for i in range(len(t)):
             if 0 <= bin_i[i] < len(binned_sums):
                 binned_sums[bin_i[i]] += 1./s_prob[i]
+        print("finished summing probs")
 
         return binned_sums
 
