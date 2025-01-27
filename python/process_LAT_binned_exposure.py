@@ -156,7 +156,7 @@ class process_LAT_binned_exposure():
             h.close()
 
         print("length of time_in, t and s_prob", len(self.time_in), len(t), len(s_prob))
-        print("time_in[0], timedel", self.time_in[0], self.timedel[0])
+        print("time_in[0], timedel, t[-1]", self.time_in[0], self.timedel[0], t[-1])
 
         edges = []
         i = 0
