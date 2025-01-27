@@ -159,7 +159,7 @@ class process_LAT_binned_exposure():
         print("time_in[0], time_in[-1], timedel, t[-1]", self.time_in[0], self.time_in[-1], self.timedel[0], t[-1])
 
         edges = self.time_in
-        edges.extend(self.time_in[-1]+self.timedel[0])
+        edges = np.append(edges, self.time_in[-1]+self.timedel[0])
 
         print("len edges", len(edges))
 
