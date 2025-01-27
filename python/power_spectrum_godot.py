@@ -62,6 +62,7 @@ fday = f*86400
 
 peaks_ls, props_ls = find_peaks(dlogl_nobg, height=0.5 * max(dlogl_nobg))
 pk_days = (1. / f[peaks_ls] / 86400.)
+print("found power peaks (days)", pk_days)
 
 freqs = np.asarray([fprec,forb,2*forb])
 corr,pows = core.get_orbital_modulation(ts,freqs)
