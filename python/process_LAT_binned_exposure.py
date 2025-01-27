@@ -179,6 +179,7 @@ class process_LAT_binned_exposure():
             print("self.indices, binned_sums", len(self.indices), len(binned_sums))
             binned_sums = binned_sums[self.indices][self.indices_exp]
             print("len of binned_sums after indices, exp", len(binned_sums))
+            print("binned_sums: mean, min, max", np.mean(binned_sums), np.min(binned_sums), np.max(binned_sums))
 
         return binned_sums
 
