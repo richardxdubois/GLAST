@@ -34,7 +34,7 @@ class process_LAT_binned_exposure():
 
         self.hdul = None
         self.time = None
-        self.indices = None
+        self.indices = []
         self.time_in = None
         self.counts = None
         self.timedel = None
