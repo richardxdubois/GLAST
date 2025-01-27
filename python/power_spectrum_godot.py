@@ -56,7 +56,7 @@ print("Input files:", ft1)
 
 spectrum = lambda E: (E/1000)**-2.1
 
-data = core.Data(ft1, ft2, ra, dec, weight_col=source_FGL, base_spectrum=spectrum, zenith_cut=90, e_min=emin,
+data = core.Data(ft1, ft2, ra, dec, weight_col=source_FGL, base_spectrum=spectrum, zenith_cut=90, emin=emin,
                  emax=emax)
 
 print("data prep done so far")
