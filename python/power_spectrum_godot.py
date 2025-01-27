@@ -4,11 +4,13 @@ from scipy.stats import chi2,norm
 from scipy.signal import find_peaks
 import yaml
 import argparse
+from datetime import datetime, date
 
 import os
 
 from godot import core
 
+from bokeh.models.widgets import Div
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column, gridplot
 from bokeh.models import Label, Span
@@ -22,6 +24,9 @@ args = parser.parse_args()
 
 with open(args.app_config, "r") as f:
     data = yaml.safe_load(f)
+
+source = data["source"]
+source_FGL = data["source_FGL"]
 
 in_dir = data["in_dir"]
 ft2 = data["ft2"]
@@ -49,7 +54,7 @@ print("Input files:", ft1)
 
 spectrum = lambda E: (E/1000)**-2.1
 
-data = core.Data(ft1, ft2, ra, dec, weight_col="4FGL J0240.5+6113", base_spectrum=spectrum, zenith_cut=90)
+data = core.Data(ft1, ft2, ra, dec, weight_col=source_FGL, base_spectrum=spectrum, zenith_cut=90)
 
 print("data prep done so far")
 
@@ -146,7 +151,9 @@ fig42a = figure(title="period: dlogl_nobg2", width=800, height=640)
 fig42a.line(pday[smask], dlogl_nobg2[smask])
 fig42a.add_layout(vline_p2)
 
-l = layout(fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
+del_div = Div(text=source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+l = layout(del_div, fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
            fig12, row(fig22, fig32), row(fig32a, fig32b), row(fig42, fig42a))
 
 output_file(html_file)
