@@ -47,6 +47,13 @@ class process_LAT_binned_exposure():
 
         self.nom_freq = 1/self.nom_period/86400.
 
+        try:
+            self.original_ft1 = data["original_ft1"]
+            self.do_src_prob = data["do_src_prob"]
+        except KeyError:
+            self.original_ft1 = None
+            self.do_src_prob = False
+
     def get_data(self):
         # Print information about the FITS file
         self.hdul = fits.open(self.fn)
@@ -116,12 +123,41 @@ class process_LAT_binned_exposure():
                 weights.append(err_rate)
             else:
                 r_weighted.append(cnts[i])
-                weights.append(0.)
+                weights.append(1.)
 
         r_weighted = np.array(r_weighted)
         weights = np.array(weights)
 
         return r_weighted, weights
+
+    def get_src_probs(self):
+
+        t = np.array()
+        s_prob = np.array()
+
+        for f in self.original_ft1:
+            h = fits.open(f)
+            h.info()
+
+            data = h[1].data
+
+            t_f = data.TIME
+            s_prob_f = data.field(24)  # source prob column
+
+            t.append(t_f)
+            s_prob.append(s_prob_f)
+
+            h.close()
+
+        edges = [self.time[0] + i*self.timedel for i in range(len(self.time)+1)]
+        bin_i = np.digitize(t, edges)
+        binned_sums = np.zeros(range(self.time))
+
+        for i in range(len(t)):
+            if 0 <= bin_i[i] < len(binned_sums):
+                binned_sums[bin_i[i]] += 1./s_prob[i]
+
+        return binned_sums
 
     def calc_peak_error(self, frequency=None, power=None, peak_index=None):
 
@@ -152,6 +188,9 @@ class process_LAT_binned_exposure():
     def make_plots(self):
 
         r_weighted, weights = self.Robin_exp_weight()
+        if self.do_src_prob:
+            src_weights = self.get_src_probs()
+            weights = weights * src_weights
 
         counts_hist, counts_edges = np.histogram(self.counts, bins=100)
         q_hist = figure(title="Counts",
@@ -187,10 +226,7 @@ class process_LAT_binned_exposure():
 
         frequency = np.linspace(self.f_start, self.f_stop, 1000)  # for orbital 100000
 
-        if not self.do_weights:
-            power = LombScargle(t=self.time, y=r_weighted).power(frequency)
-        else:
-            power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(frequency)
+        power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(frequency)
 
 
         print(max(frequency), max(power))
@@ -225,10 +261,7 @@ class process_LAT_binned_exposure():
 
             s_frequency = np.linspace(self.s_start, self.f_stop, 100000)  # for orbital 100000
 
-            if not self.do_weights:
-                power = LombScargle(t=self.time, y=r_weighted).power(s_frequency)
-            else:
-                power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(s_frequency)
+            power = LombScargle(t=self.time, y=r_weighted, dy=weights).power(s_frequency)
 
             print(max(frequency), max(power))
             print(min(frequency), min(power))
@@ -288,10 +321,7 @@ class process_LAT_binned_exposure():
             yr_exposure = self.exposure[yr_ind]
             sum_weights = np.sum(yr_weights)
 
-            if not self.do_weights:
-                yr_power = LombScargle(t=yr_times, y=yr_counts).power(frequency)
-            else:
-                yr_power = LombScargle(t=yr_times, y=yr_counts, dy=yr_weights).power(frequency)
+            yr_power = LombScargle(t=yr_times, y=yr_counts, dy=yr_weights).power(frequency)
 
             freq_days = 1. / frequency / 86400.
 
