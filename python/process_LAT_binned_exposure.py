@@ -132,8 +132,8 @@ class process_LAT_binned_exposure():
 
     def get_src_probs(self):
 
-        t = np.array()
-        s_prob = np.array()
+        t = np.empty()
+        s_prob = np.empty()
 
         for f in self.original_ft1:
             h = fits.open(f)
