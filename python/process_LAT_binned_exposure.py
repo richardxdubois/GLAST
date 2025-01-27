@@ -156,8 +156,9 @@ class process_LAT_binned_exposure():
             h.close()
 
         print("length of time_in, t and s_prob", len(self.time_in), len(t), len(s_prob))
+        print("time_in[0], timedel", self.time_in[0], self.timedel[0])
 
-        edges = [self.time_in[0] + i*self.timedel for i in range(len(self.time_in)+1)]
+        edges = [self.time_in[0] + i*self.timedel[0] for i in range(len(self.time_in)+1)]
         print("len edges", len(edges))
 
         bin_i = np.digitize(t, edges)
