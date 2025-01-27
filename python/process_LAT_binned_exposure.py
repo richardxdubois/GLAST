@@ -53,6 +53,7 @@ class process_LAT_binned_exposure():
         except KeyError:
             self.original_ft1 = None
             self.do_src_prob = False
+            self.fgl_src = None
 
     def get_data(self):
         # Print information about the FITS file
@@ -142,7 +143,7 @@ class process_LAT_binned_exposure():
             data = h[1].data
 
             t_f = data.TIME
-            s_prob_f = data.field(24)  # source prob column
+            s_prob_f = data.field(self.fgl_src)  # source prob column
 
             t.append(t_f)
             s_prob.append(s_prob_f)
