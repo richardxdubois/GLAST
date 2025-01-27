@@ -174,8 +174,9 @@ class process_LAT_binned_exposure():
         print("finished summing probs")
 
         if self.suppress_zero:
-            print("self.indices", len(self.indices))
+            print("self.indices, binned_sums", len(self.indices), len(binned_sums))
             binned_sums = binned_sums[self.indices]
+            print("len of binned_sums after indices")
 
         return binned_sums
 
