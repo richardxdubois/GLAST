@@ -166,7 +166,7 @@ class process_LAT_binned_exposure():
         bin_i = np.digitize(t, edges)
         print("done with digitize")
 
-        binned_sums = np.zeros(len(edges))
+        binned_sums = np.zeros(len(self.time_in))
 
         for i in range(len(t)):
             if 0 <= bin_i[i] < len(binned_sums):
@@ -174,6 +174,7 @@ class process_LAT_binned_exposure():
         print("finished summing probs")
 
         if self.suppress_zero:
+            print("self.indices", len(self.indices))
             binned_sums = binned_sums[self.indices]
 
         return binned_sums
