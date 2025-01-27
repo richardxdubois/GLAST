@@ -34,6 +34,8 @@ class process_LAT_binned_exposure():
 
         self.hdul = None
         self.time = None
+        self.indices = None
+        self.time_in = None
         self.counts = None
         self.timedel = None
         self.exposure = None
@@ -69,14 +71,16 @@ class process_LAT_binned_exposure():
         header = primary_hdu.header
         data = self.hdul[1].data
 
-        indices = np.where(data.COUNTS > 0.)
+        self.indices = np.where(data.COUNTS > 0.)
         self.timedel = data.TIMEDEL
 
+        self.time_in = data.TIME
+
         if self.suppress_zero:
-            self.exposure = data.EXPOSURE[indices]
-            self.time = data.TIME[indices] #+ self.timedel[0]/2.
-            self.exposure = data.EXPOSURE[indices]
-            self.counts = data.COUNTS[indices]
+            self.exposure = data.EXPOSURE[self.indices]
+            self.time = data.TIME[self.indices] #+ self.timedel[0]/2.
+            self.exposure = data.EXPOSURE[self.indices]
+            self.counts = data.COUNTS[self.indices]
 
             indices_exp = np.where(self.exposure != 0)
 
@@ -151,9 +155,11 @@ class process_LAT_binned_exposure():
 
             h.close()
 
-        print("length of t and s_prob", len(t), len(s_prob))
+        print("length of time_in, t and s_prob", self.time_in, len(t), len(s_prob))
 
-        edges = [self.time[0] + i*self.timedel for i in range(len(self.time)+1)]
+        edges = [self.time_in[0] + i*self.timedel for i in range(len(self.time_in)+1)]
+        print("len edges", len(edges))
+
         bin_i = np.digitize(t, edges)
         print("done with digitize")
 
@@ -163,6 +169,9 @@ class process_LAT_binned_exposure():
             if 0 <= bin_i[i] < len(binned_sums):
                 binned_sums[bin_i[i]] += 1./s_prob[i]
         print("finished summing probs")
+
+        if self.suppress_zero:
+            binned_sums = binned_sums[self.indices]
 
         return binned_sums
 
