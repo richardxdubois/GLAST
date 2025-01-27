@@ -171,7 +171,8 @@ class process_LAT_binned_exposure():
 
         for i in range(len(t)):
             if 0 <= bin_i[i] < len(binned_sums):
-                binned_sums[bin_i[i]] += 1./s_prob[i]
+                if s_prob[i] != 0.:
+                    binned_sums[bin_i[i]] += 1./s_prob[i]
         print("finished summing probs")
 
         if self.suppress_zero:
