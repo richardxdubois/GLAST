@@ -40,6 +40,13 @@ dec = data["dec"]
 emin = data["emin"]
 emax = data["emax"]
 
+try:
+    tmin = data["tmin"]
+    tmax = data["tmax"]
+except KeyError:
+    tmax = None
+    tmin = None
+
 porb = data["porb"]
 psuper = data["psuper"]
 forb = data["forb"]
@@ -65,7 +72,7 @@ print("Input files:", ft1)
 spectrum = lambda E: (E/1000)**-2.1
 
 data = core.Data(ft1, ft2, ra, dec, weight_col=source_FGL, base_spectrum=spectrum, zenith_cut=90, emin=emin,
-                 emax=emax)
+                 emax=emax, tstart=tmin, tstop=tmax)
 
 print("data prep done so far")
 
