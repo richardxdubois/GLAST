@@ -27,6 +27,10 @@ with open(args.app_config, "r") as f:
 
 source = data["source"]
 source_FGL = data["source_FGL"]
+try:
+    in_file = data["in_file"]
+except KeyError:
+    in_file = None
 
 in_dir = data["in_dir"]
 ft2 = data["ft2"]
@@ -49,9 +53,13 @@ super_high = data["super_high"]
 html_file = data["html_file"]
 html_title = data["html_title"]
 
-# Get the list of files in the directory
-ft1_u = [os.path.join(in_dir, f) for f in os.listdir(in_dir) if os.path.isfile(os.path.join(in_dir, f))]
-ft1 = sorted(ft1_u)
+if in_file is None:
+    # Get the list of files in the directory
+    ft1_u = [os.path.join(in_dir, f) for f in os.listdir(in_dir) if os.path.isfile(os.path.join(in_dir, f))]
+    ft1 = sorted(ft1_u)
+else:
+    ft1 = [in_file]
+
 print("Input files:", ft1)
 
 spectrum = lambda E: (E/1000)**-2.1
