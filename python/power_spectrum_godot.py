@@ -169,7 +169,13 @@ fig42a = figure(title="period: dlogl_nobg2", width=800, height=640)
 fig42a.line(pday[smask], dlogl_nobg2[smask])
 fig42a.add_layout(vline_p2)
 
-del_div = Div(text=source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+d_text = source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+if in_file is None:
+    d_text += " " + in_dir
+else:
+    d_text += " " + in_file
+
+del_div = Div(text=d_text)
 
 l = layout(del_div, fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
            fig12, row(fig22, fig32), row(fig32a, fig32b), row(fig42, fig42a))
