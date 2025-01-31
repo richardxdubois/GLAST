@@ -62,7 +62,7 @@ class prepare_super_orbital():
         pickle_config_data = [data, save_config, save_batch]
 
         with open(pickle_config, 'wb') as pickle_file:
-            pickle.load(pickle_config_data, pickle_file)
+            pickle.dump(pickle_config_data, pickle_file)
 
     def prepare_file(self, template_file_path, tgt_file_path, bin=""):
 
