@@ -402,38 +402,39 @@ class plot_eflux_phase():
                             width=750)
         ts_alpha_scat.scatter(x=self.fermipy_alpha, y=self.fermipy_TS, color="red", size=2)
 
-        # Create contour map of flux
+        if self.source_name == "LSI61303":
+            # Create contour map of flux
 
-        p_cont = figure(title="Contour Map Flux", width=750, x_axis_label='orbital', y_axis_label='super',
-                        tooltips=tooltips[4])
+            p_cont = figure(title="Contour Map Flux", width=750, x_axis_label='orbital', y_axis_label='super',
+                            tooltips=tooltips[4])
 
-        # Create a color mapper for the data
-        cont_mapper = linear_cmap('fpy_flux', palette=palette, low=np.array(self.fermipy_flux).min(),
-                                  high=np.array(self.fermipy_flux).max())
+            # Create a color mapper for the data
+            cont_mapper = linear_cmap('fpy_flux', palette=palette, low=np.array(self.fermipy_flux).min(),
+                                      high=np.array(self.fermipy_flux).max())
 
-        r = p_cont.rect(x="x", y="y", width=1, height=1, source=source,
-                   fill_color=cont_mapper,
-                   line_color=None, )
+            r = p_cont.rect(x="x", y="y", width=1, height=1, source=source,
+                       fill_color=cont_mapper,
+                       line_color=None, )
 
-        # Add a contour to the plot using contour levels
-        contour_levels = np.linspace(np.array(self.fermipy_flux).min(),
-                                     np.array(self.fermipy_flux).max(), num=10)  # Adjust the number of levels as needed
-        x_2d = np.array(self.all_x).reshape(self.num_pickles, self.num_pickles_2)
-        y_2d = np.array(self.all_y).reshape(self.num_pickles, self.num_pickles_2)
-        z_2d = np.array(self.fermipy_flux).reshape(self.num_pickles, self.num_pickles_2)
-        for level in contour_levels:
-            p_cont.contour(x=x_2d, y=y_2d, z=z_2d, levels=[level], line_color='black',
-                           line_width=1)
+            # Add a contour to the plot using contour levels
+            contour_levels = np.linspace(np.array(self.fermipy_flux).min(),
+                                         np.array(self.fermipy_flux).max(), num=10)  # Adjust the number of levels as needed
+            x_2d = np.array(self.all_x).reshape(self.num_pickles, self.num_pickles_2)
+            y_2d = np.array(self.all_y).reshape(self.num_pickles, self.num_pickles_2)
+            z_2d = np.array(self.fermipy_flux).reshape(self.num_pickles, self.num_pickles_2)
+            for level in contour_levels:
+                p_cont.contour(x=x_2d, y=y_2d, z=z_2d, levels=[level], line_color='black',
+                               line_width=1)
 
-        # Add color bar
-        p_cont.add_layout(r.construct_color_bar(
-            major_label_text_font_size="12px",
-            ticker=BasicTicker(desired_num_ticks=len(colors)),
+            # Add color bar
+            p_cont.add_layout(r.construct_color_bar(
+                major_label_text_font_size="12px",
+                ticker=BasicTicker(desired_num_ticks=len(colors)),
 
-            label_standoff=6,
-            border_line_color=None,
-            padding=5,
-        ), 'right')
+                label_standoff=6,
+                border_line_color=None,
+                padding=5,
+            ), 'right')
 
         # create sliders
         steps = (high - low)/20.
