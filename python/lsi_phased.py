@@ -13,8 +13,8 @@ parser.add_argument('--overwrite', action='store_true', help="overwrite files?")
 parser.add_argument('--freeze', default=3., type=float, help="source freeze radius")
 parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
 parser.add_argument('--cutoffPL', action='store_true', help="cutoff power law")
-parser.add_argument('--gated', default='', help="replace named gated pulsar with log parabola")
-parser.add_argument('--remove_pulsar', action='store_true', help="remove pulsar")
+parser.add_argument('--gated', default='', help="replace named gated pulsar")
+parser.add_argument('--pulsar_logP', action='store_true', help="set pulsar to log parabola")
 parser.add_argument('--add_fixed', action='store_true', help="add fixed source at target location")
 
 args = parser.parse_args()
@@ -85,7 +85,7 @@ if args.gated != '':
 
     gta.delete_source(args.gated)
 
-    if not args.remove_pulsar:
+    if args.pulsar_logP:
         # Add Source back to the model
         gta.add_source(args.gated, {'glon': p_glon, 'glat': p_glat,
                                      'SpectrumType': 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
@@ -110,7 +110,7 @@ fit_results = gta.fit()
 print('Fit Quality: ', fit_results['fit_quality'])
 print(gta.roi[args.source])
 
-if not args.remove_pulsar:
+if args.pulsar_logP:
     print(gta.roi[args.gated])
 
 if args.add_fixed:
