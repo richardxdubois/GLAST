@@ -58,7 +58,7 @@ class prepare_super_orbital():
                     break
 
         yaml_name = Path(input_yaml).stem
-        pickle_config = "prepare_" + yaml_name + "_" + pickle_version + "_config,pkl"
+        pickle_config = "prepare_" + yaml_name + "_" + pickle_version + "_config.pkl"
         pickle_config_data = [data, save_config, save_batch]
 
         with open(pickle_config, 'wb') as pickle_file:
