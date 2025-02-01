@@ -14,6 +14,7 @@ parser.add_argument('--freeze', default=3., type=float, help="source freeze radi
 parser.add_argument('--lowE', action='store_true', help="low energy fit (PL)")
 parser.add_argument('--cutoffPL', action='store_true', help="cutoff power law")
 parser.add_argument('--gated', default='', help="replace named gated pulsar with log parabola")
+parser.add_argument('--remove_pulsar', action='store_true', help="remove pulsar")
 parser.add_argument('--add_fixed', action='store_true', help="add fixed source at target location")
 
 args = parser.parse_args()
@@ -83,15 +84,16 @@ if args.gated != '':
     p_glat = model_p['glat']
 
     gta.delete_source(args.gated)
-    """
-    # Add Source back to the model
-    gta.add_source(args.gated, {'glon': p_glon, 'glat': p_glat,
-                                 'SpectrumType': 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
-                                 'Scale': 1000, 'norm': 1e-11,
-                                 'SpatialModel': 'PointSource'})
-    print("switching pulsar", args.gated, "to LogParabola model, and freeing")
 
-    gta.free_source(args.gated) """
+    if not args.remove_pulsar:
+        # Add Source back to the model
+        gta.add_source(args.gated, {'glon': p_glon, 'glat': p_glat,
+                                     'SpectrumType': 'LogParabola', 'alpha': 2.0, 'beta': 1.e-4,
+                                     'Scale': 1000, 'norm': 1e-11,
+                                     'SpatialModel': 'PointSource'})
+        print("switching pulsar", args.gated, "to LogParabola model, and freeing")
+
+        gta.free_source(args.gated)
 
 free_sources = []
 source_model = gta.roi.get_sources()
