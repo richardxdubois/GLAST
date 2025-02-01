@@ -110,6 +110,9 @@ fit_results = gta.fit()
 print('Fit Quality: ', fit_results['fit_quality'])
 print(gta.roi[args.source])
 
+if not args.remove_pulsar:
+    print(gta.roi[args.gated])
+
 if args.add_fixed:
     print(gta.roi[fixed_source_name])
 
