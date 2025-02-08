@@ -665,7 +665,8 @@ class plot_eflux_phase():
         save(tabs, title=self.page_title)
 
         if self.num_pickles_2 == 0:
-            rc = self.overlay_seds(self.overlay_html, plots)
+            sed_list = list(self.seds.values())
+            rc = self.overlay_seds(self.overlay_html, sed_list)
 
 
 if __name__ == "__main__":
