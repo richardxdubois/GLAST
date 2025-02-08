@@ -254,8 +254,8 @@ class plot_eflux_phase():
         divs = []
         for overlay in overlay_figures:
             script, div = components(overlay)
-        scripts.append(script)
-        divs.append(div)
+            scripts.append(script)
+            divs.append(div)
 
         # Create the HTML content with embedded JavaScript
         # Using f-strings for cleaner formatting and embedding components
