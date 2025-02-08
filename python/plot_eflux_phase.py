@@ -17,12 +17,12 @@ from bokeh.models import (Label, Span, LinearAxis, Range1d, Whisker, ColumnDataS
 from bokeh.models.widgets import Div
 from bokeh.palettes import Viridis256, Plasma256 as palette
 from bokeh.transform import linear_cmap, log_cmap
+from bokeh.embed import components
 
 
 class plot_eflux_phase():
 
     def __init__(self, app_config):
-
 
         with open(app_config, "r") as f:
             data = yaml.safe_load(f)
@@ -34,6 +34,7 @@ class plot_eflux_phase():
         self.p_bins = np.arange(self.num_pickles)
         self.html = data["html"]
         self.params_save_pickle = self.html.split(".")[0] + "_params.pkl"
+        self.overlay_html = self.html.split(".")[0] + "_overlay.html"
         self.page_title = data["page_title"]
         self.fig_height = data["fig_height"]
         self.fig_width = data["fig_width"]
@@ -123,7 +124,6 @@ class plot_eflux_phase():
         shifted_dict = {key: map[key] for key in shifted_keys}
 
         return shifted_dict
-
 
     def loop_over_bins(self):
 
@@ -240,6 +240,64 @@ class plot_eflux_phase():
             pass
 
         self.seds[phase_bin1].append(p_fig)
+
+    def overlay_seds(self, o_html, overlay_figures):
+
+        # Prepare output HTML file
+        output_file(o_html, title="Overlay Animation")  # Explicitly set title
+
+        # Generate JavaScript code for figures and divs
+        scripts = []
+
+        divs = []
+        for overlay in overlay_figures:
+            script, div = components(overlay)
+        scripts.append(script)
+        divs.append(div)
+
+        # Create the HTML content with embedded JavaScript
+        # Using f-strings for cleaner formatting and embedding components
+        html_content = f"""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Bokeh Overlay Animation</title>
+                <link href="https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.css" rel="stylesheet" type="text/css">
+                <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.js"></script>
+            </head>
+            <body>
+    
+                <div id="plot-container">
+                    {" ".join(divs)} {""}
+                </div>
+    
+                <script>
+                    const divs = document.querySelectorAll('#plot-container div');
+                    let currentOverlayIndex = 0;
+    
+                    function updateOverlay() {{
+                        divs.forEach((div, index) => {{
+                            div.style.display = index === currentOverlayIndex ? 'block' : 'none';
+                        }});
+                        currentOverlayIndex = (currentOverlayIndex + 1) % divs.length;
+                    }}
+    
+                    setInterval(updateOverlay, 2000);
+                    updateOverlay();
+                </script>
+    
+                {" ".join(scripts)}
+    
+            </body>
+            </html>
+            """
+
+        # Write the HTML to the file
+        with open(o_html, "w") as f:
+            f.write(html_content)
+
+        print("Bokeh overlay animation HTML file created: ", o_html)
 
     def output_plot(self):
 
@@ -593,7 +651,6 @@ class plot_eflux_phase():
                 padding=5,
             ), 'right')
 
-
         panel1 = TabPanel(child=h_layout, title="Parameter heatmaps")
         panel2 = TabPanel(child=l, title="SED matrix")
 
@@ -604,6 +661,10 @@ class plot_eflux_phase():
             tabs = Tabs(tabs=[panel1, panel2])
 
         save(tabs, title=self.page_title)
+
+        if self.num_pickles_2 == 0:
+            rc = self.overlay_seds(self.overlay_html, self.seds[0])
+
 
 if __name__ == "__main__":
     # Command line arguments
