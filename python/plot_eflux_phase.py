@@ -666,6 +666,7 @@ class plot_eflux_phase():
 
         if self.num_pickles_2 == 0:
             sed_list = [f[0] for f in self.seds.values()]
+            print(sed_list)
             rc = self.overlay_seds(self.overlay_html, sed_list)
 
 
