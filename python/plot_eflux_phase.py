@@ -462,7 +462,7 @@ class plot_eflux_phase():
                             width=750)
         ts_alpha_scat.scatter(x=self.fermipy_alpha, y=self.fermipy_TS, color="red", size=2)
 
-        if self.source_name == "LSI61303":
+        if self.source_name == "LSI61303" and self.num_pickles_2 != 0:
             # Create contour map of flux
 
             p_cont = figure(title="Contour Map Flux", width=750, x_axis_label='orbital', y_axis_label='super',
