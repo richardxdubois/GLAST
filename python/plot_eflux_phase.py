@@ -243,6 +243,8 @@ class plot_eflux_phase():
 
     def overlay_seds(self, o_html, overlay_figures):
 
+        print(len(overlay_figures), " figures to process")
+
         # Prepare output HTML file
         output_file(o_html, title="Overlay Animation")  # Explicitly set title
 
@@ -263,8 +265,8 @@ class plot_eflux_phase():
             <head>
                 <meta charset="UTF-8">
                 <title>Bokeh Overlay Animation</title>
-                <link href="https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.css" rel="stylesheet" type="text/css">
-                <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.js"></script>
+                <link href="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.css" rel="stylesheet" type="text/css">
+                <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
             </head>
             <body>
     
