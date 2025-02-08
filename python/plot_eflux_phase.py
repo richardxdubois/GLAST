@@ -294,7 +294,6 @@ class plot_eflux_phase():
             </body>
             </html>
             """
-        print(html_content)
 
         # Write the HTML to the file
         with open(o_html, "w") as f:
