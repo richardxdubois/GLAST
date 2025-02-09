@@ -71,8 +71,9 @@ else:
 print("Input files:", ft1)
 
 for f in ft1:
-    hdu = fits.open(f)[0]
-    print(f, hdu.data['TSTART'], hdu.data['TSTOP'])
+    hdu = fits.open(f)
+    hp = hdu[0].header
+    print(f, hp.get('TSTART'), hp.get('TSTOP'))
 
 spectrum = lambda E: (E/1000)**-2.1
 
