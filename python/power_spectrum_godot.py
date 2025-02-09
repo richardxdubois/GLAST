@@ -5,6 +5,7 @@ from scipy.signal import find_peaks
 import yaml
 import argparse
 from datetime import datetime, date
+from astropy.io import fits
 
 import os
 
@@ -68,6 +69,10 @@ else:
     ft1 = [in_file]
 
 print("Input files:", ft1)
+
+for f in ft1:
+    hdu = fits.open(f)
+    print(f, hdu.data['start'], hdu.data['stop'])
 
 spectrum = lambda E: (E/1000)**-2.1
 
