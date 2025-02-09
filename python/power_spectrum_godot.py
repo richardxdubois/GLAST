@@ -8,6 +8,7 @@ from datetime import datetime, date
 from astropy.io import fits
 
 import os
+from pathlib import Path
 
 from godot import core
 
@@ -73,7 +74,8 @@ print("Input files:", ft1)
 for f in ft1:
     hdu = fits.open(f)
     hp = hdu[0].header
-    print(f, hp.get('TSTART'), hp.get('TSTOP'))
+    fpath = Path(f)
+    print(fpath.name, hp.get('TSTART'), hp.get('TSTOP'))
 
 spectrum = lambda E: (E/1000)**-2.1
 
