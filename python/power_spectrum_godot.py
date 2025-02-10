@@ -77,6 +77,7 @@ for f in ft1:
     hg = hdu['gti']
     fpath = Path(f)
     print(fpath.name, hp.get('TSTART'), hp.get('TSTOP'), hg.data['start'][0], hg.data['stop'][-1])
+    hdu.close()
 
 spectrum = lambda E: (E/1000)**-2.1
 
