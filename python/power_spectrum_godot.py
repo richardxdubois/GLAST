@@ -74,8 +74,9 @@ print("Input files:", ft1)
 for f in ft1:
     hdu = fits.open(f)
     hp = hdu[0].header
+    hg = hdu['gti']
     fpath = Path(f)
-    print(fpath.name, hp.get('TSTART'), hp.get('TSTOP'))
+    print(fpath.name, hp.get('TSTART'), hp.get('TSTOP'), hg.data['start'], hg.data['stop'])
 
 spectrum = lambda E: (E/1000)**-2.1
 
