@@ -124,60 +124,21 @@ res_label = Label(x=23.5, y=400., text_font_size="8pt",
                   text="Peak : " + str('{0:.3f}'.format(pk_days[0])) + " days")
 
 
-fig1 = figure(title="frequency: dlogl", y_axis_type="log", width=800, height=640)
+fig1 = figure(title="frequency: dlogl_nobg", y_axis_type="log", width=800, height=640)
 fig1.line(fday[fmask], dlogl_nobg[fmask])
 
-fig2 = figure(title="period: dlogl", y_axis_type="log", width=800, height=640)
-fig2.line(pday[pmask], dlogl[pmask])
+fig2 = figure(title="period: dlogl_nobg", y_axis_type="log", width=800, height=640)
+fig2.line(pday[pmask], dlogl_nobg[pmask])
 fig2.add_layout(vline_p1)
-
-fig3 = figure(title="period: dlogl", width=800, height=640)
-fig3.line(pday[pmask], dlogl[pmask])
-fig3.add_layout(vline_p1)
 
 fig3a = figure(title="period: dlogl_nobg", width=800, height=640)
 fig3a.line(pday[pmask], dlogl_nobg[pmask])
 fig3a.add_layout(vline_p1)
 fig3a.add_layout(res_label)
 
-fig3b = figure(title="period: dlogl_nobg + add_power", width=800, height=640)
-fig3b.line(pday[pmask], (dlogl+add_power)[pmask])
-fig3b.add_layout(vline_p1)
-
-fig4 = figure(title="period: dlogl", width=800, height=640)
-fig4.line(pday[smask], dlogl[smask])
-fig4.add_layout(vline_p2)
-
 fig4a = figure(title="period: dlogl_nobg", width=800, height=640)
 fig4a.line(pday[smask], dlogl_nobg[smask])
 fig4a.add_layout(vline_p2)
-
-fig12 = figure(title="frequency: dlogl2", y_axis_type="log", width=800, height=640)
-fig12.line(fday[fmask], dlogl2[fmask])
-
-fig22 = figure(title="period: dlogl", y_axis_type="log", width=800, height=640)
-fig22.line(pday[pmask], dlogl2[pmask])
-fig22.add_layout(vline_p1)
-
-fig32 = figure(title="period: dlogl2", width=800, height=640)
-fig32.line(pday[pmask], dlogl2[pmask])
-fig32.add_layout(vline_p1)
-
-fig32a = figure(title="period: dlogl_nobg2", width=800, height=640)
-fig32a.line(pday[pmask], dlogl_nobg2[pmask])
-fig32a.add_layout(vline_p1)
-
-fig32b = figure(title="period: dlogl_nobg2 + add_power", width=800, height=640)
-fig32b.line(pday[pmask], (dlogl_nobg2+add_power)[pmask])
-fig32b.add_layout(vline_p1)
-
-fig42 = figure(title="period: dlogl2", width=800, height=640)
-fig42.line(pday[smask], dlogl2[smask])
-fig42.add_layout(vline_p2)
-
-fig42a = figure(title="period: dlogl_nobg2", width=800, height=640)
-fig42a.line(pday[smask], dlogl_nobg2[smask])
-fig42a.add_layout(vline_p2)
 
 d_text = source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 if in_file is None:
@@ -185,10 +146,11 @@ if in_file is None:
 else:
     d_text += " " + in_file
 
-del_div = Div(text=d_text)
+c_text = "<br>Emin " + str(emin) + " Emax " + str(emax) + "Tmin " + str(tmin) + " Tmax " + str(tmax)
+div_text = d_text + c_text
+del_div = Div(text=div_text)
 
-l = layout(del_div, fig1, row(fig2, fig3), row(fig3a, fig3b), row(fig4, fig4a),
-           fig12, row(fig22, fig32), row(fig32a, fig32b), row(fig42, fig42a))
+l = layout(del_div, row(fig1, fig2), row(fig3a, fig4a))
 
 output_file(html_file)
 save(l, title=html_title)
