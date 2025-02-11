@@ -107,7 +107,7 @@ for freq,p in zip(freqs,pows):
 
 print("power spectrum done")
 
-fmask = fday < 0.1
+fmask = [i for i in range(len(fday)) if fday[i] > 1./orb_high and fday[i] < orb_low]
 
 pday = np.array([1./f for f in fday if f != 0])
 print("pday: ", len(pday), max(pday), min(pday))
@@ -126,6 +126,9 @@ res_label = Label(x=23.5, y=400., text_font_size="8pt",
 
 fig1 = figure(title="frequency: dlogl_nobg", y_axis_type="log", width=800, height=640)
 fig1.line(fday[fmask], dlogl_nobg[fmask])
+
+fig1a = figure(title="frequency: dlogl_nobg", width=800, height=640)
+fig1a.line(fday[fmask], dlogl_nobg[fmask])
 
 fig2 = figure(title="period: dlogl_nobg", y_axis_type="log", width=800, height=640)
 fig2.line(pday[pmask], dlogl_nobg[pmask])
@@ -150,7 +153,7 @@ c_text = "<br>Emin " + str(emin) + " Emax " + str(emax) + "Tmin " + str(tmin) + 
 div_text = d_text + c_text
 del_div = Div(text=div_text)
 
-l = layout(del_div, row(fig1, fig2), row(fig3a, fig4a))
+l = layout(del_div, row(fig1, fig1a), row(fig2, fig3a), fig4a)
 
 output_file(html_file)
 save(l, title=html_title)
