@@ -107,7 +107,7 @@ for freq,p in zip(freqs,pows):
 
 print("power spectrum done")
 
-fmask = [i for i in range(len(fday)) if fday[i] > 1./orb_high and fday[i] < orb_low]
+fmask = [i for i in range(len(fday)) if fday[i] > 1./orb_high and fday[i] < 1./orb_low]
 
 pday = np.array([1./f for f in fday if f != 0])
 print("pday: ", len(pday), max(pday), min(pday))
