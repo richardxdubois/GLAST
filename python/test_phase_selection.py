@@ -25,32 +25,10 @@ source = data["source"]
 html_name = data["html"]
 html_title = data["html_title"]
 histo_start_date = data["histo_start_date"]
+histo_end_date = data["histo_end_date"]
 histo_zoom_width = data["histo_zoom_width"]
 
 infile = OrderedDict(data["file_dict"])
-
-"""
-# Open the FITS file
-if source == "LSI61303":
-    infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/test/L24082417075904476C3F57_PH00.fits'] = []
-    infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase0/super_bins0/ft1_00.fits'] = []
-    infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/phase0/super_bins0/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase1/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase2/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase3/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase4/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase5/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase6/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase7/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase8/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase9/ft1_00.fits'] = []
-    #infile['/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/super_only/phase0/ft1_gti_updated-0.fits'] = []
-if source == "LS5039":
-    #infile = fits.open('/Users/richarddubois/Code/GLAST/tmp/LS5039_1_deg_500s.fits')
-    #infile['/Users/richarddubois/Code/GLAST/tmp/LS5039_J1826_merged_phase-save.fits'] = []
-    #infile['/Users/richarddubois/Code/GLAST/tmp/J1826_ft1_00.fits'] = []
-    infile['/Users/richarddubois/Code/GLAST/tmp/LS5039_ft1_00.fits'] = []
-"""
 
 for f in infile:
 
@@ -87,7 +65,7 @@ for f in infile:
 
     t_min = min(d_non_zero_times) - 10.
     counts_hist, counts_edges = np.histogram(d_non_zero_times,
-                                             range=(t_min, t_min+histo_zoom_width), bins=100)
+                                             range=(histo_start_date, t_min+histo_zoom_width), bins=100)
     p_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
     p_hist.x_range.start = histo_start_date
@@ -98,7 +76,8 @@ for f in infile:
     infile[f].append(q_hist)
 
     #counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(2780, 3580), bins=1000)
-    counts_hist, counts_edges = np.histogram(d_non_zero_times, bins=200)
+    counts_hist, counts_edges = np.histogram(d_non_zero_times, range=(histo_start_date, histo_end_date),
+                                             bins=200)
     q_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
     q_hist.x_range.start = histo_start_date
