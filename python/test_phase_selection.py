@@ -32,7 +32,7 @@ infile = OrderedDict(data["file_dict"])
 
 for f in infile:
 
-    del_div = Div(text="Run on: " + datetime.now().strftime("%Y-%m-%d") + " for " + f, width=400)
+    del_div = Div(text="Run on: " + datetime.now().strftime("%Y-%m-%d") + "<BR> for " + f, width=400)
     infile[f].append(del_div)
 
     # Print information about the FITS file
