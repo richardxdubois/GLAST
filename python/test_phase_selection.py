@@ -65,7 +65,7 @@ for f in infile:
 
     t_min = min(d_non_zero_times) - 10.
     counts_hist, counts_edges = np.histogram(d_non_zero_times,
-                                             range=(histo_start_date, t_min+histo_zoom_width), bins=100)
+                                             range=(histo_start_date, histo_start_date+histo_zoom_width), bins=100)
     p_hist.vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1]-counts_edges[0], fill_color='red',
                 fill_alpha=0.2, bottom=0)
     p_hist.x_range.start = histo_start_date
