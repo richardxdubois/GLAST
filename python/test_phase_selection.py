@@ -66,10 +66,10 @@ for f in infile:
     gti = h[2]
 
     # Get the data and header
-    print(h[1].columns)
-    print(gti.columns)
+    #print(h[1].columns)
+    #print(gti.columns)
     header = primary_hdu.header
-    print(header)
+    #print(header)
     data = h[1].data
 
     d_non_zero_times = data.TIME / 86400.
@@ -78,7 +78,7 @@ for f in infile:
     dec = data.DEC
     zenith_angle = data.ZENITH_ANGLE
 
-    print(len(d_non_zero_times))
+    print(len(d_non_zero_times), "tmin=", d_non_zero_times.min(), "tmax=", d_non_zero_times.max())
 
     p_hist = figure(title="Time",
                     x_axis_label='Time (days MET)', y_axis_label='counts',
