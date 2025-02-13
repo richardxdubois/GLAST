@@ -34,7 +34,7 @@ infile = OrderedDict(data["file_dict"])
 for f in infile:
     fpath = Path(f)
     d_text = "Run on: " + datetime.now().strftime("%Y-%m-%d")
-    d_text += "<BR> for " + fpath.parent + "<BR>" + fpath.name
+    d_text += "<BR> for " + str(fpath.parent) + "<BR>" + str(fpath.name)
     del_div = Div(text=d_text, width=450)
     infile[f].append(del_div)
 
