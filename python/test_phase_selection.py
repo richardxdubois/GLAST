@@ -4,6 +4,7 @@ import numpy as np
 from datetime import datetime, date, timedelta
 import yaml
 import argparse
+from pathlib import Path
 
 from bokeh.plotting import figure, output_file, reset_output, show, save
 from bokeh.layouts import row, layout, column
@@ -31,8 +32,10 @@ histo_zoom_width = data["histo_zoom_width"]
 infile = OrderedDict(data["file_dict"])
 
 for f in infile:
-
-    del_div = Div(text="Run on: " + datetime.now().strftime("%Y-%m-%d") + "<BR> for " + f, width=450)
+    fpath = Path(f)
+    d_text = "Run on: " + datetime.now().strftime("%Y-%m-%d")
+    d_text += "<BR> for " + fpath.parent + "<BR>" + fpath.name
+    del_div = Div(text=d_text, width=450)
     infile[f].append(del_div)
 
     # Print information about the FITS file
