@@ -55,6 +55,14 @@ for f in infile:
     primary_hdu = h[0]
     gti = h[2]
 
+    gti_starts = gti.data["START"]
+    gti_stops = gti.data["STOP"]
+
+    gti_intervals = gti_stops - gti_starts
+    gti_total_time = np.sum(gti_intervals)
+
+    print("GTI:", "Number", len(gti_starts), "total time", gti_total_time )
+
     ra_cut = []
     dec_cut = []
     zenith_cut = []
@@ -86,7 +94,7 @@ for f in infile:
             time_cut.append(time)
             energy_cut.append(energy[i])
 
-    print(len(time_cut), "tmin=", min(time_cut), "tmax=", max(time_cut))
+    print("Events after radius cut ", rad, len(time_cut), "tmin=", min(time_cut), "tmax=", max(time_cut))
 
     p_hist = figure(title="Time",
                     x_axis_label='Time (days MET)', y_axis_label='counts',
