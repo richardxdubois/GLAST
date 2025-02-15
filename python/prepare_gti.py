@@ -72,12 +72,13 @@ class prepare_gti():
 
         gti = []
         p = int(phase_bin)/num_bins
+        dp = 1./num_bins
 
         # start on orbit boundary before first time measure
         t = np.float128(self.t0_MET - math.ceil((self.t_min - self.t0_MET)/self.orb) * self.orb)
 
         while t < self.t_max + self.orb:
-            gti.append(np.array([t+p*self.orb, t+(p+0.1)*self.orb]))
+            gti.append(np.array([t+p*self.orb, t+(p+dp)*self.orb]))
             t += self.orb
 
         t_start = np.array(list(zip(*gti))[0])
