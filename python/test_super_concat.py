@@ -63,12 +63,6 @@ for f in infile:
 
     print("GTI:", "Number", len(gti_starts), "total time", gti_total_time )
 
-    ra_cut = []
-    dec_cut = []
-    zenith_cut = []
-    time_cut = []
-    energy_cut = []
-
     # Get the data and header
     #print(h[1].columns)
     #print(gti.columns)
@@ -82,17 +76,29 @@ for f in infile:
     dec = data.DEC
     zenith_angle = data.ZENITH_ANGLE
 
-    for i, time in enumerate(d_non_zero_times):
+    sky_pt = SkyCoord(ra=ra, dec=dec, frame='icrs', unit='deg')
+    sep = sky_LSI.separation(sky_pt)
+    index_rad = sep < rad * u.deg
 
-        sky_pt = SkyCoord(ra=ra[i], dec=dec[i], frame='icrs', unit='deg')
-        sep = sky_LSI.separation(sky_pt)
-        if sep < rad * u.deg:
+    ra_cut = ra[index_rad]
+    dec_cut = dec[index_rad]
+    zenith_cut = zenith_angle[index_rad]
+    time_cut = d_non_zero_times[index_rad]
+    energy_cut = energy[index_rad]
 
-            ra_cut.append(ra[i])
-            dec_cut.append(dec[i])
-            zenith_cut.append(zenith_angle[i])
-            time_cut.append(time)
-            energy_cut.append(energy[i])
+    """
+        for i, time in enumerate(d_non_zero_times):
+    
+            sky_pt = SkyCoord(ra=ra[i], dec=dec[i], frame='icrs', unit='deg')
+            sep = sky_LSI.separation(sky_pt)
+            if sep < rad * u.deg:
+    
+                ra_cut.append(ra[i])
+                dec_cut.append(dec[i])
+                zenith_cut.append(zenith_angle[i])
+                time_cut.append(time)
+                energy_cut.append(energy[i])
+    """
 
     print("Events after radius cut ", rad, len(time_cut), "tmin=", min(time_cut), "tmax=", max(time_cut))
 
