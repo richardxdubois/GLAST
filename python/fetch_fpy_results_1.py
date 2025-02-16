@@ -128,7 +128,7 @@ for i in r_bins:
 
 q_hist = figure(title="N0", x_axis_label='Phase bin', y_axis_label='ph/MeV/cm^2/s', width=750)
 q_hist.line(p_bins, norms, line_width=2)
-q_hist.circle(p_bins, norms, size=6, fill_color="white")
+q_hist.scatter(p_bins, norms, size=6, fill_color="white")
 upper = [x+e for x,e in zip(norms, norms_errors)]
 lower = [x-e for x,e in zip(norms, norms_errors)]
 source = ColumnDataSource(data=dict(groups=p_bins, counts=norms, upper=upper, lower=lower))
@@ -136,7 +136,7 @@ q_hist.add_layout(Whisker(source=source, base="groups", upper="upper", lower="lo
 
 r_hist = figure(title="Alpha", x_axis_label='Phase bin', width=750)
 r_hist.line(p_bins, alphas, line_width=2)
-r_hist.circle(p_bins, alphas, size=6, fill_color="white")
+r_hist.scatter(p_bins, alphas, size=6, fill_color="white")
 a_upper = [x+e for x,e in zip(alphas, alphas_errors)]
 a_lower = [x-e for x,e in zip(alphas, alphas_errors)]
 a_source = ColumnDataSource(data=dict(groups=p_bins, counts=alphas, upper=a_upper, lower=a_lower))
@@ -145,7 +145,7 @@ r_hist.y_range.start = 0
 
 s_hist = figure(title="Beta", x_axis_label='Phase bin', width=750)
 s_hist.line(p_bins, betas, line_width=2)
-s_hist.circle(p_bins, betas, size=6, fill_color="white")
+s_hist.scatter(p_bins, betas, size=6, fill_color="white")
 b_upper = [x+e for x,e in zip(betas, betas_errors)]
 b_lower = [x-e for x,e in zip(betas, betas_errors)]
 b_source = ColumnDataSource(data=dict(groups=p_bins, counts=betas, upper=b_upper, lower=b_lower))
@@ -154,15 +154,15 @@ s_hist.y_range.start = 0
 
 t_hist = figure(title="Npred (black) TS (red)", x_axis_label='Phase bin', width=750)
 t_hist.line(p_bins, npreds, line_width=2)
-t_hist.circle(p_bins, npreds, size=6, fill_color="white")
+t_hist.scatter(p_bins, npreds, size=6, fill_color="white")
 t_hist.line(p_bins, tss, line_width=2, color="red")
-t_hist.circle(p_bins, tss, size=6, fill_color="white")
+t_hist.scatter(p_bins, tss, size=6, fill_color="white")
 t_hist.y_range.start = 0
 
 u_hist = figure(title="flux", x_axis_label='Phase', width=750)
 #u_hist.line(p_bins, fluxs, line_width=2)
 u_hist.vbar(top=fluxs, x=r_bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
-u_hist.circle(r_bins, fluxs, size=6, fill_color="white")
+u_hist.scatter(r_bins, fluxs, size=6, fill_color="white")
 f_upper = [x+e for x,e in zip(fluxs, fluxs_errors)]
 f_lower = [x-e for x,e in zip(fluxs, fluxs_errors)]
 f_source = ColumnDataSource(data=dict(groups=r_bins, counts=fluxs, upper=f_upper, lower=f_lower))
@@ -189,7 +189,7 @@ if not super:
 
 v_hist = figure(title="eflux", x_axis_label='Phase bin', width=750)
 v_hist.line(p_bins, efluxs, line_width=2)
-v_hist.circle(p_bins, efluxs, size=6, fill_color="white")
+v_hist.scatter(p_bins, efluxs, size=6, fill_color="white")
 ef_upper = [x+e for x,e in zip(efluxs, efluxs_errors)]
 ef_lower = [x-e for x,e in zip(efluxs, efluxs_errors)]
 ef_source = ColumnDataSource(data=dict(groups=p_bins, counts=efluxs, upper=ef_upper, lower=ef_lower))
