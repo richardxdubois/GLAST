@@ -49,7 +49,7 @@ for s in range(0,10):
         npred = LSI["npred"]
         ts = LSI["ts"]
 
-        if s < 3:
+        if 2 <= s < 3:
             super_flux_1[o] += flux
             super_error_1[o] += flux_error**2
         else:
@@ -61,7 +61,7 @@ super_error_2 = np.sqrt(super_error_2)
 
 bins = np.arange(10)
 
-u_hist = figure(title="super 0-2 flux vs phase", x_axis_label='Phase', width=750)
+u_hist = figure(title="super 1-2 flux vs phase", x_axis_label='Phase', width=750)
 
 u_hist.vbar(top=super_flux_1, x=bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
 u_hist.scatter(bins, super_flux_1, size=6, fill_color="white")
@@ -70,7 +70,7 @@ f_lower = [x-e for x,e in zip(super_flux_1, super_error_1)]
 f_source = ColumnDataSource(data=dict(groups=bins, counts=super_flux_1, upper=f_upper, lower=f_lower))
 u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay"))
 
-v_hist = figure(title="super 3-9 flux vs phase", x_axis_label='Phase', width=750)
+v_hist = figure(title="super 3-9,0 flux vs phase", x_axis_label='Phase', width=750)
 
 v_hist.vbar(top=super_flux_2, x=bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
 v_hist.scatter(bins, super_flux_2, size=6, fill_color="white")
