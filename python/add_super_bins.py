@@ -70,7 +70,7 @@ f_source = ColumnDataSource(data=dict(groups=bins, counts=super_flux_1, upper=f_
 u_hist = figure(title="super 0-2 flux vs phase", x_axis_label='Orbital Phase', width=750, tooltips=tooltips)
 
 u_hist.vbar(top="counts", x="groups", width=1., fill_color='red', fill_alpha=0.05, bottom=0, source=f_source)
-u_hist.scatter(x="counts", y="counts", size=6, fill_color="white", source=f_source)
+u_hist.scatter(x="groups", y="counts", size=6, fill_color="white", source=f_source)
 
 u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay"))
 
