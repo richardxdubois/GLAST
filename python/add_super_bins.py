@@ -51,7 +51,7 @@ for s in range(0,10):
 
         if s < 3:
             super_flux_1[o] += flux
-            super_flux_2[o] += flux_error**2
+            super_error_1[o] += flux_error**2
         else:
             super_flux_2[o] += flux
             super_error_2[o] += flux_error**2
