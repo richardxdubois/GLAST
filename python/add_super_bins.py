@@ -26,7 +26,7 @@ for s in range(0,10):
 
         p = np.load(fn, allow_pickle=True).flat[0]
 
-        LSI = p["sources"]["4FGL_J0240.5+6113"]
+        LSI = p["sources"]["4FGL J0240.5+6113"]
 
         p_values = LSI["param_values"]
         p_errors = LSI["param_errors"]
