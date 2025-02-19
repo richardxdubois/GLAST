@@ -63,22 +63,26 @@ bins = np.arange(10)
 
 tooltips = [('phase', 'orbital: @groups'), ('flux', '@counts')]
 
-u_hist = figure(title="super 0-2 flux vs phase", x_axis_label='Orbital Phase', width=750, tooltips=tooltips)
-
-u_hist.vbar(top=super_flux_1, x=bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
-u_hist.scatter(bins, super_flux_1, size=6, fill_color="white")
 f_upper = [x+e for x,e in zip(super_flux_1, super_error_1)]
 f_lower = [x-e for x,e in zip(super_flux_1, super_error_1)]
 f_source = ColumnDataSource(data=dict(groups=bins, counts=super_flux_1, upper=f_upper, lower=f_lower))
+
+u_hist = figure(title="super 0-2 flux vs phase", x_axis_label='Orbital Phase', width=750, tooltips=tooltips)
+
+u_hist.vbar(top="counts", x="groups", width=1., fill_color='red', fill_alpha=0.05, bottom=0)
+u_hist.scatter(bins, super_flux_1, size=6, fill_color="white")
+
 u_hist.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay"))
 
 v_hist = figure(title="super 3-9 flux vs phase", x_axis_label='Orbital Phase', width=750, tooltips=tooltips)
 
-v_hist.vbar(top=super_flux_2, x=bins, width=1., fill_color='red', fill_alpha=0.05, bottom=0)
-v_hist.scatter(bins, super_flux_2, size=6, fill_color="white")
 v_upper = [x+e for x,e in zip(super_flux_2, super_error_2)]
 v_lower = [x-e for x,e in zip(super_flux_2, super_error_2)]
 v_source = ColumnDataSource(data=dict(groups=bins, counts=super_flux_2, upper=v_upper, lower=v_lower))
+
+v_hist.vbar(top="counts", x="groups", width=1., fill_color='red', fill_alpha=0.05, bottom=0)
+v_hist.scatter(bins, super_flux_2, size=6, fill_color="white")
+
 v_hist.add_layout(Whisker(source=v_source, base="groups", upper="upper", lower="lower", level="overlay"))
 
 output_file("LSI61303_super_sums.html")
