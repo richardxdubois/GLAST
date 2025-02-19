@@ -13,7 +13,7 @@ super_base = "/sdf/home/r/richard/fermi-user/LSI61303/periods/phased_1/analyses/
 
 super_bins = "phase"
 orb_bins = "orb_bins"
-pickle = "pickle_"
+pickle = "pickle1_"
 
 super_flux_1 = np.zeros(10)
 super_error_1 = np.zeros(10)
