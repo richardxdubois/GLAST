@@ -59,6 +59,11 @@ class process_LAT_binned_exposure():
             self.do_src_prob = False
             self.fgl_src = None
 
+        try:
+            self.do_years = data["do_years"]
+        except KeyError:
+            self.do_years = True
+
     def get_data(self):
         # Print information about the FITS file
         self.hdul = fits.open(self.fn)
@@ -321,110 +326,116 @@ class process_LAT_binned_exposure():
             fs.add_layout(res_label)
             f_hists.append(fs)
 
-        timespan = self.time[-1] - self.time[0]
-        yr_bins = 4
-        delta = timespan / yr_bins    # ~ 1 yr
-        yr_figs = []
-        yr_exp = []
-        yr_c = []
-        yr_orb_power = []
-        yr_peak = []
-        yr_peak_error = []
+        if self.do_years:
+            timespan = self.time[-1] - self.time[0]
+            yr_bins = 4
+            delta = timespan / yr_bins    # ~ 1 yr
+            yr_figs = []
+            yr_exp = []
+            yr_c = []
+            yr_orb_power = []
+            yr_peak = []
+            yr_peak_error = []
 
-        for yr in range(yr_bins):
-            tmin = self.time[0] + yr * delta
-            tmax = tmin + delta
+            for yr in range(yr_bins):
+                tmin = self.time[0] + yr * delta
+                tmax = tmin + delta
 
-            yr_ind = [i for i, t in enumerate(self.time) if (t >= tmin and t < tmax)]
+                yr_ind = [i for i, t in enumerate(self.time) if (t >= tmin and t < tmax)]
 
-            r_weighted, weights = self.Robin_exp_weight(timeslice=yr_ind)
+                r_weighted, weights = self.Robin_exp_weight(timeslice=yr_ind)
 
-            yr_times = self.time[yr_ind]
-            yr_counts_d = self.counts[yr_ind]
-            yr_counts = r_weighted
-            yr_weights = weights
-            yr_exposure = self.exposure[yr_ind]
-            sum_weights = np.sum(yr_weights)
+                yr_times = self.time[yr_ind]
+                yr_counts_d = self.counts[yr_ind]
+                yr_counts = r_weighted
+                yr_weights = weights
+                yr_exposure = self.exposure[yr_ind]
+                sum_weights = np.sum(yr_weights)
 
-            yr_power = LombScargle(t=yr_times, y=yr_counts, dy=yr_weights).power(frequency)
+                yr_power = LombScargle(t=yr_times, y=yr_counts, dy=yr_weights).power(frequency)
 
-            freq_days = 1. / frequency / 86400.
+                freq_days = 1. / frequency / 86400.
 
-            yr_figs.append(figure(title="time span: " + str(yr) + " " + str(tmin) + ", " + str(tmax) + " power vs frequency",
-                                x_axis_label='period (days)', y_axis_label='power',
+                yr_figs.append(figure(title="time span: " + str(yr) + " " + str(tmin) + ", " + str(tmax) + " power vs frequency",
+                                    x_axis_label='period (days)', y_axis_label='power',
+                                    width=750))
+                yr_figs[yr].line(freq_days, yr_power, line_width=2)
+                yr_figs[yr].add_layout(vline_p1)
+
+                yr_peaks_ls, yr_props_ls = find_peaks(yr_power, height=self.power_threshold * max(yr_power))
+
+                pk_days = (1. / frequency[yr_peaks_ls] / 86400.)
+                close_idx = (np.abs(pk_days - self.nom_period)).argmin()
+                peak_idx = yr_peaks_ls[close_idx]
+                pk_error = self.calc_peak_error(frequency=frequency, power=yr_power, peak_index=peak_idx)
+                yr_peak.append(pk_days[close_idx])
+                yr_peak_error.append(pk_error)
+
+                res_label = Label(x=min(freq_days), y=yr_props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
+                                  text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
+                                       str('{0:.3f}'.format(pk_error) + " days"))
+                yr_figs[yr].add_layout(res_label)
+
+                print("yr", yr, "tmin", tmin, "tmax", tmax, "t[0]", yr_times[0], "t[1]", yr_times[-1],
+                      "sum_weights", sum_weights, "num w bins", len(yr_weights), "num t bins", len(yr_counts))
+                print(yr_peaks_ls, yr_props_ls)
+                print(frequency[yr_peaks_ls])
+                print(pk_days)
+                print("peak error", pk_error)
+
+                orb_power = 0.
+                for p in np.arange(len(yr_peaks_ls)):
+                    i = yr_peaks_ls[p]
+                    if abs(frequency[i] - self.nom_freq) < 0.05 * self.nom_freq:
+                        orb_power = yr_props_ls["peak_heights"][p]
+                        print(i, frequency[i], orb_power)
+                        break
+                yr_orb_power.append(orb_power)
+
+                counts_hist, counts_edges = np.histogram(yr_counts_d, bins=100)
+
+                yr_c.append(figure(title="Counts",
+                                x_axis_label='Counts', y_axis_label='counts',
                                 width=750))
-            yr_figs[yr].line(freq_days, yr_power, line_width=2)
-            yr_figs[yr].add_layout(vline_p1)
 
-            yr_peaks_ls, yr_props_ls = find_peaks(yr_power, height=self.power_threshold * max(yr_power))
+                yr_c[yr].vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1] - counts_edges[0], fill_color='red',
+                            fill_alpha=0.2, bottom=0)
 
-            pk_days = (1. / frequency[yr_peaks_ls] / 86400.)
-            close_idx = (np.abs(pk_days - self.nom_period)).argmin()
-            peak_idx = yr_peaks_ls[close_idx]
-            pk_error = self.calc_peak_error(frequency=frequency, power=yr_power, peak_index=peak_idx)
-            yr_peak.append(pk_days[close_idx])
-            yr_peak_error.append(pk_error)
+                exp_hist, exp_edges = np.histogram(yr_exposure, bins=100)
+                yr_exp.append(figure(title="Exposure",
+                                x_axis_label='cm^2 s', y_axis_label='counts',
+                                width=750))
 
-            res_label = Label(x=min(freq_days), y=yr_props_ls["peak_heights"][close_idx] / 2., text_font_size="8pt",
-                              text="Peak : " + str('{0:.3f}'.format(pk_days[close_idx])) + "+/- " +
-                                   str('{0:.3f}'.format(pk_error) + " days"))
-            yr_figs[yr].add_layout(res_label)
+                yr_exp[yr].vbar(top=exp_hist, x=exp_edges[1:], width=exp_edges[1] - exp_edges[0], fill_color='red', fill_alpha=0.2,
+                            bottom=0)
 
-            print("yr", yr, "tmin", tmin, "tmax", tmax, "t[0]", yr_times[0], "t[1]", yr_times[-1],
-                  "sum_weights", sum_weights, "num w bins", len(yr_weights), "num t bins", len(yr_counts))
-            print(yr_peaks_ls, yr_props_ls)
-            print(frequency[yr_peaks_ls])
-            print(pk_days)
-            print("peak error", pk_error)
+            f2 = figure(title="orb results vs time bin",
+                                    x_axis_label='time bin', y_axis_label='power',
+                                    width=750)
+            f2.line(np.arange(yr_bins), yr_orb_power, line_width=2, legend_label="Power (left)")
 
-            orb_power = 0.
-            for p in np.arange(len(yr_peaks_ls)):
-                i = yr_peaks_ls[p]
-                if abs(frequency[i] - self.nom_freq) < 0.05 * self.nom_freq:
-                    orb_power = yr_props_ls["peak_heights"][p]
-                    print(i, frequency[i], orb_power)
-                    break
-            yr_orb_power.append(orb_power)
-
-            counts_hist, counts_edges = np.histogram(yr_counts_d, bins=100)
-
-            yr_c.append(figure(title="Counts",
-                            x_axis_label='Counts', y_axis_label='counts',
-                            width=750))
-
-            yr_c[yr].vbar(top=counts_hist, x=counts_edges[1:], width=counts_edges[1] - counts_edges[0], fill_color='red',
-                        fill_alpha=0.2, bottom=0)
-
-            exp_hist, exp_edges = np.histogram(yr_exposure, bins=100)
-            yr_exp.append(figure(title="Exposure",
-                            x_axis_label='cm^2 s', y_axis_label='counts',
-                            width=750))
-
-            yr_exp[yr].vbar(top=exp_hist, x=exp_edges[1:], width=exp_edges[1] - exp_edges[0], fill_color='red', fill_alpha=0.2,
-                        bottom=0)
-
-        f2 = figure(title="orb results vs time bin",
-                                x_axis_label='time bin', y_axis_label='power',
-                                width=750)
-        f2.line(np.arange(yr_bins), yr_orb_power, line_width=2, legend_label="Power (left)")
-
-        f2.scatter(np.arange(yr_bins), yr_orb_power, size=6, fill_color="white")
-        f2.y_range = Range1d(0.8*min(yr_orb_power), 1.2*max(yr_orb_power))
-        f2.extra_y_ranges = {"y2": Range1d(start=0.96*min(yr_peak), end=1.04*max(yr_peak))}
-        f2.add_layout(LinearAxis(y_range_name="y2"), 'right')
-        f2.line(np.arange(yr_bins), yr_peak, line_width=2, color="blue", legend_label="Period (right)",
-                y_range_name="y2")
-        f2.scatter(np.arange(yr_bins), yr_peak, size=6, fill_color="white", y_range_name="y2")
-        f_upper = [x + e for x, e in zip(yr_peak, yr_peak_error)]
-        f_lower = [x - e for x, e in zip(yr_peak, yr_peak_error)]
-        f_source = ColumnDataSource(data=dict(groups=np.arange(yr_bins), counts=yr_peak, upper=f_upper, lower=f_lower))
-        f2.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay",
-                      y_range_name="y2"))
+            f2.scatter(np.arange(yr_bins), yr_orb_power, size=6, fill_color="white")
+            f2.y_range = Range1d(0.8*min(yr_orb_power), 1.2*max(yr_orb_power))
+            f2.extra_y_ranges = {"y2": Range1d(start=0.96*min(yr_peak), end=1.04*max(yr_peak))}
+            f2.add_layout(LinearAxis(y_range_name="y2"), 'right')
+            f2.line(np.arange(yr_bins), yr_peak, line_width=2, color="blue", legend_label="Period (right)",
+                    y_range_name="y2")
+            f2.scatter(np.arange(yr_bins), yr_peak, size=6, fill_color="white", y_range_name="y2")
+            f_upper = [x + e for x, e in zip(yr_peak, yr_peak_error)]
+            f_lower = [x - e for x, e in zip(yr_peak, yr_peak_error)]
+            f_source = ColumnDataSource(data=dict(groups=np.arange(yr_bins), counts=yr_peak, upper=f_upper, lower=f_lower))
+            f2.add_layout(Whisker(source=f_source, base="groups", upper="upper", lower="lower", level="overlay",
+                          y_range_name="y2"))
 
         del_div = Div(text=self.source + " Run on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " for " + self.fn)
 
         output_file(self.html_name)
-        l = layout(column(del_div, column(f_hists), f2, q_hist, r_hist, s_hist, f3, column(yr_figs), column(yr_c), column(yr_exp)))
+        if self.do_years:
+            l = layout(column(del_div, column(f_hists), f2, q_hist, r_hist, s_hist, f3, column(yr_figs), column(yr_c),
+                              column(yr_exp)))
+        else:
+            l = layout(column(del_div, column(f_hists)))
+
         save(l, title=self.source + " Power vs Frequency")
 
 
